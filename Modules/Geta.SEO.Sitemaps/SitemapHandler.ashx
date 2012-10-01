@@ -1,0 +1,1 @@
+﻿<%@ WebHandler Language="C#" CodeBehind="SitemapHandler.ashx.cs" Class="Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps.SitemapHandler" %>
