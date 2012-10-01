@@ -30,7 +30,7 @@ Add a new sitemap definition and fill values for sitemap host and other fields:
 * Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry   
 * Format - currently standard or mobile (to specify [mobile content] (http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
 
-![Add a sitemap](//raw.github.com/Geta/SEO.Sitemaps/Screenshots/SitemapAdd.png)
+![Add a sitemap](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapAdd.png)
 
 In case of multiple sites you choose for which site to host this sitemap:   
 ![Add a sitemap multiple site](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapAddMultiSite.png)
