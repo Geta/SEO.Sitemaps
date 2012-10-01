@@ -37,6 +37,11 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
+            if (page.PageLink == PageReference.WasteBasket)
+            {
+                return true;
+            }
+
             return false;
         }
 
