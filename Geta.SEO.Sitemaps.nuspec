@@ -1,23 +1,24 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>Geta.SEO.Sitemaps</id>
-    <version>0.2</version>
-    <title>Geta.SEO.Sitemaps</title>
-    <authors>Gatis Bergspics and Valdis Iljuconoks</authors>
-    <owners>Geta AS</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Sitemaps provider for EPiServer CMS 6 R2</description>
-    <copyright>Geta AS 2011</copyright>
-    <language />
-    <tags>Sitemap SEO EPiServer</tags>
-    <dependencies>
-	  <dependency id="EPiServer.CMS.Core" version="6.1.379.0" />
-	  <dependency id="EPiServer.Framework" version="6.2.267.1" />
-	  <dependency id="log4net" version="1.2.10" />
-    </dependencies>
-  </metadata>
-  <files>
-    <file src="..\bin\Release\Geta.SEO.Sitemaps.dll" target="lib\net35\Geta.SEO.Sitemaps.dll" />
-  </files>
+    <metadata>
+        <id>Geta.SEO.Sitemaps</id>
+        <version>1.0.20</version>
+        <title />
+        <authors>Gatis Bergspics,Valdis Iljuconoks,Juris Augskalns</authors>
+        <owners />
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>XML sitemap provider for EPiServer CMS 6 R2</description>
+        <copyright>Copyright © Geta AS 2012</copyright>
+        <tags>Sitemap SEO EPiServer</tags>
+        <dependencies>
+            <dependency id="EPiServer.CMS.Core" version="6.1.379.0" />
+            <dependency id="EPiServer.Framework" version="6.2.267.1" />
+            <dependency id="log4net" version="1.2.10" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
+        <file src="Modules\Geta.SEO.Sitemaps\SitemapHandler.ashx" target="content\modules\Geta.SEO.Sitemaps\SitemapHandler.ashx" />
+        <file src="bin\Release\Geta.SEO.Sitemaps.dll" target="lib\net40\Geta.SEO.Sitemaps.dll" />
+    </files>
 </package>
