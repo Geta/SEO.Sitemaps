@@ -9,6 +9,7 @@ using EPiServer.Licensing;
 using EPiServer.PlugIn;
 using EPiServer.Security;
 using EPiServer.UI;
+using EPiServer.UI.Admin.SiteMgmt;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Services;
 
