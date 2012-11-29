@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="False" CodeBehind="AdminManageSitemap.aspx.cs" Inherits="Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps.AdminManageSitemap" %>
+<%@ Page Language="C#" AutoEventWireup="False" CodeBehind="AdminManageSitemap.aspx.cs" EnableViewState="true" Inherits="Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps.AdminManageSitemap" %>
 <%@ Import Namespace="Geta.SEO.Sitemaps.Entities" %>
 
 <asp:content ContentPlaceHolderID="MainRegion" runat="server">
