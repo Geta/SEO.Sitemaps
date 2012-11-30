@@ -11,8 +11,12 @@ namespace Geta.SEO.Sitemaps
     {
         public void Initialize(InitializationEngine context)
         {
-            RouteTable.Routes.MapPageRoute("Sitemap",
+            RouteTable.Routes.MapPageRoute("Sitemap with path",
                                            "{path}/sitemap.xml",
+                                           "~/modules/Geta.SEO.Sitemaps/SitemapHandler.aspx");
+
+            RouteTable.Routes.MapPageRoute("Sitemap without path",
+                                           "sitemap.xml",
                                            "~/modules/Geta.SEO.Sitemaps/SitemapHandler.aspx");
         }
 
