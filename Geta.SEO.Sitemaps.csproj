@@ -185,7 +185,9 @@
     <Compile Include="XML\StandardSitemapXmlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Geta.SEO.Sitemaps.nuspec" />
+    <None Include="Geta.SEO.Sitemaps.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
