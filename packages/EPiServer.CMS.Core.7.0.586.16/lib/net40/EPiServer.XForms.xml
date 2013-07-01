@@ -1,0 +1,2087 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EPiServer.XForms</name>
+    </assembly>
+    <members>
+        <member name="T:EPiServer.XForms.MapPageHandler">
+            <summary>
+            Handles page mapping event.
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.MapPageHandler.MapPageEvent">
+            <summary>
+            Event that is triggered when a page reference should be translated from int id to/from Guid.
+            </summary>
+            <remarks>This is normally handled by EPiServer.</remarks>
+        </member>
+        <member name="T:EPiServer.XForms.MapPageHandler.MapPageEventHandler">
+            <summary>
+            Defines signature for MapPageEvent event handlers.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.InputFragment">
+            <summary>
+            Represents a xforms:input element where the user can enter a value
+            </summary>
+            <example>
+                xforms:input
+                    xforms:label
+            </example>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.XFormsFragment">
+            <summary>
+            Base class for all XForms fragments
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.Parse(EPiServer.HtmlParsing.IHtmlParserContext)">
+            <summary>
+            Not used by XForms
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.ToWriter(System.IO.TextWriter)">
+            <summary>
+            Default rendering which is not handled by the parser but rather the presentation layer
+            </summary>
+            <param name="writer"></param>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+            Parse the current child fragment to build up the properties.
+            </summary>
+            <param name="stack">The hierarchy from the root xforms element down the current fragment</param>
+            <param name="currentFragment">The currently processed fragment</param>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.ReadAttribute(System.String)">
+            <summary>
+            Helper method to read an attribute
+            </summary>
+            <param name="name">The name of the attribute</param>
+            <returns>The value of the attribute or an empty string if not found</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.RequiredValidationFailed(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Validates a posted form collection against this xforms fragment
+            </summary>
+            <param name="formValues">The posted form values.</param>
+            <returns>True if the formValues are invalid.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsFragment.RegexValidationFailed(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Validates this xforms fragment according to it's ValidationType.
+            </summary>
+            <param name="formValues">The posted form values.</param>
+            <returns>True if the formValues are invalid.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.Class">
+            <summary>
+            CSS class
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.Reference">
+            <summary>
+            Which data item is being referenced
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.Title">
+            <summary>
+            The title used for help texts
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.Required">
+            <summary>
+            if value is required for the fragment
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.ValidationType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.XFormsFragment.Attributes">
+            <summary>
+            A collection of all attributes defined on this fragment
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.InputFragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+            Parse the label value
+            </summary>
+            <param name="stack">XformsFragments as stack</param>
+            <param name="currentFragment">The current processed fragment</param>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.InputFragment.Label">
+            <summary>
+            The heading for this fragment
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.InputFragment.Size">
+            <summary>
+            The size of the input field
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.IXFormsParser">
+            <summary>
+            The interface which handle the parsing of the XForm.Document
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.IXFormsParser.Parse(System.String)">
+            <summary>
+            Parse the xform content to a collection of HtmlFragment
+            </summary>
+            <param name="xformHtml">the xform document</param>
+            <returns></returns>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.Orientation">
+            <summary>
+            The orientation of a XForm element.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.Select1Fragment">
+            <summary>
+            Represents a xforms:select1 element which is a list of options where only 1 option can be selected (i.e.radio buttons or dropdownlists)
+            </summary>
+            <example>
+             xforms:select1 
+                xforms:item
+                    xforms:label
+                    xforms:value
+            </example>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.Select1Fragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+            Parse the label and options items
+            </summary>
+            <param name="stack"></param>
+            <param name="currentFragment"></param>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.Select1Fragment.Label">
+            <summary>
+            The heading for this fragment
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.Select1Fragment.Options">
+            <summary>
+            A list of options to select from
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.Select1Fragment.Orientation">
+            <summary>
+            The orientation of the optons.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.Select1AsRadiobuttonFragment">
+            <summary>
+            Represents a xforms:select1 element which is a list of options where only 1 option can be selected (especific for radio buttons)
+            </summary>
+            <example>
+             xforms:select1 
+                xforms:item
+                    xforms:label
+                    xforms:value
+            </example>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.Select1tAsDropdownListFragment">
+            <summary>
+            Represents a xforms:select1 element which is a list of options where only 1 option can be selected (especific for dropdownlists)
+            </summary>
+            <example>
+             xforms:select1 
+                xforms:item
+                    xforms:label
+                    xforms:value
+            </example>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.SelectOption">
+            <summary>
+            An option in a select control
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.SelectFragment">
+            <summary>
+            Represents a xforms:select element which is a list of options where multiple options can be selected (i.e. checkbox buttons)
+            </summary>
+            <example>
+            xforms:select 
+                xforms:item
+                    xforms:label
+            </example>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.SelectFragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+            Parse the label and options items
+            </summary>
+            <param name="stack"></param>
+            <param name="currentFragment"></param>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SelectFragment.Label">
+            <summary>
+            The heading for this fragment
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SelectFragment.Orientation">
+            <summary>
+            The orientation of the optons.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SelectFragment.Options">
+            <summary>
+            A list of options to select from
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.SubmitFragment">
+            <summary>
+            A button for posting xforms
+            </summary>
+            <example>
+            xforms:submit 
+                xforms:label
+            </example>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.SubmitFragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+             Parse the label value from text fragment
+            </summary>
+            <param name="stack"></param>
+            <param name="currentFragment"></param>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Label">
+            <summary>
+            Text of button
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Action">
+            <summary>
+            Read action attribute from attributes
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.SubmitId">
+            <summary>
+            Read name attribute
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.ChannelOptions">
+            <summary>
+            The ChannelOptions that is used when calling XFormControl.SubmitForm.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Receiver">
+            <summary>
+            The email address that and email is sent to.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Sender">
+            <summary>
+            The email address that is used as the sender of an email.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Subject">
+            <summary>
+            A custom subject for an email message. If this is not set the subject defined on the form is used.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.ActionSettings">
+            <summary>
+            A collection of name/values that are parsed from the value of the Action property.
+            </summary>
+            <remarks>The parsing is basically the same as the query string for a url.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Method">
+            <summary>
+            Http connection method. If not set, 'post' will be used
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.UniqueName">
+            <summary>
+            The name of the fragment. This are the same as the Action property and can be used as Id for buttons
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.Value">
+            <summary>
+            Value of the fragment. This are the same as the Label property
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.SubmitFragment.XsltUrl">
+            <summary>
+            Xslt file that is used to transform the xml document to readable text
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.TextareaFragment">
+            <summary>
+            A multi line text area where the user can enter text
+            </summary>
+            <example>
+             xforms:textarea 
+                xforms:label
+            </example>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.TextareaFragment.ParseFragment(System.Collections.Generic.Stack{EPiServer.HtmlParsing.HtmlFragment},EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+             Parse the label value from text fragment
+            </summary>
+            <param name="stack"></param>
+            <param name="currentFragment"></param>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.TextareaFragment.Label">
+            <summary>
+            The heading for the control
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.TextareaFragment.Columns">
+            <summary>
+            The horizontal size of the input field
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Parsing.TextareaFragment.Rows">
+            <summary>
+            The vertical size of the input field
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Parsing.XFormsParser">
+            <summary>
+            Parses raw HTML into fragments containg XFormsFragment classes representing input controls
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsParser.Parse(System.String)">
+            <summary>
+            Parse the xform definition to collection of htmlFragments
+            </summary>
+            <param name="xformHtml">The HTML containing XForms controls</param>
+            <returns>Collection of HtmlFragments (XForms controls will be represented by XFormsFragment)</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsParser.CreateXFormsFragment(EPiServer.HtmlParsing.HtmlFragment)">
+            <summary>
+                The CreateXFormsFragment handle only these xform tags, xforms:input, xforms:textarea, xforms:select, xforms:select1, xforms:submit 
+            </summary>
+            <param name="fragment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.XForms.Parsing.XFormsParser.CreateXformSelect(EPiServer.HtmlParsing.ElementFragment)">
+            <summary>
+            handle select1 depending on the elementfragment attribute. it will be dropdownlistfragment in case 
+            appearance is null and Radiobutton fragment in the rest.
+            </summary>
+            <param name="elementFragment"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EPiServer.XForms.DataTypes">
+            <summary>
+            Used to validate input to XForm input controls. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.DataTypes.Validate(System.String,System.String)">
+            <summary>
+            Validates a value against a give type.
+            </summary>
+            <param name="type">The type to validate against.</param>
+            <param name="value">The string to validate.</param>
+            <returns>True if the input is valid, false otherwise.</returns>
+            <remarks>A null value or String.Empty will always return true.
+            If the type is not registrered in the Types property the return value will always be true.</remarks>
+        </member>
+        <member name="M:EPiServer.XForms.DataTypes.ValidateDefaultTypedData(System.String)">
+            <summary>
+            Validates a string value against a regular expression created using InvalidDefaultInputRegex.
+            </summary>
+            <param name="value">The string to validate.</param>
+            <returns>True if the input is valid, false otherwise.</returns>
+            <remarks>A null value or String.Empty will always return true.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.DataTypes.Types">
+            <summary>
+            A Hashtable containing the available types for input fields. Every type corresponds 
+            to a regular expression that is used to validate input data.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.DataTypes.InvalidDefaultInputRegex">
+            <summary>
+            A string representing an regular expression that is used when validating input data that does not have a type specified.
+            </summary>
+            <remarks>
+            Any data that has no type specified will be validated against this expression.
+            If the expression results in a match the value will consider not valid.
+            Default value is <![CDATA["<>"]]>
+            </remarks>
+        </member>
+        <member name="T:EPiServer.XForms.Implementation.EMailConnection">
+            <summary>
+            This class supports the EPiServer infrastructure and is not intended to be used directly from your code.
+            Used to send e-mail for XForms when specified by an editor.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Implementation.HttpConnection">
+            <summary>
+            This class supports the EPiServer infrastructure and is not intended to be used directly from your code.
+            Used to re-post XForms to another URL when specified by an editor.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.TranslateEventArgs">
+            <summary>
+            Event arguments that is used to tranlate a text.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.TranslateEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.XForms.TranslateEventArgs"/> class.
+            </summary>
+            <param name="textToTranslate">The text to translate.</param>
+        </member>
+        <member name="M:EPiServer.XForms.TranslateEventArgs.GetTranslatedText">
+            <summary>
+            Gets the translated text. If no text has been translated the untranslated
+            text will be returned.
+            </summary>
+            <returns>The translated text. If no text has been translated the untranslated
+            text will be returned.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.TranslateEventArgs.TextToTranslate">
+            <summary>
+            Gets the translation search path, for instance "/xform/requiredfield/inlineerrormessage".
+            </summary>
+            <value>The translation search path.</value>
+        </member>
+        <member name="P:EPiServer.XForms.TranslateEventArgs.TranslatedText">
+            <summary>
+            Gets or sets the translated text.
+            </summary>
+            <value>The translated text.</value>
+        </member>
+        <member name="T:EPiServer.XForms.Util.SerializableXmlDocument">
+            <summary>
+            Summary description for SerializableXmlDocument.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormActionHelper.ParseActionValues(System.String)">
+            <summary>
+            Parses the XForm actions into an name value collection of actions
+            </summary>
+            <param name="actions">The actions on the XForm</param>
+            <returns>Collection of actions</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormActionHelper.MapActionToChanelOptions(System.String)">
+            <summary>
+            Map an action to corresponding ChannelOptions enumeration value
+            </summary>
+            <param name="action">An action on the XForm</param>
+            <returns>Enumeration value that corresponds to the action string</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormActionHelper.DoAction(EPiServer.XForms.XFormData,EPiServer.XForms.Util.XFormPostedData,System.Boolean)">
+            <summary>
+            Executes the action
+            </summary>
+            <param name="xFormData">Value holder of XForm data</param>
+            <param name="xFormPostedData">Posted data</param>
+            <param name="throwException">Boolean indicating if exception should be thrown on error</param>
+            <returns>True if action was successfull</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormActionHelper.HasAlreadyPosted(System.Guid,EPiServer.XForms.ChannelOptions,System.Web.HttpCookieCollection,System.Security.Principal.IPrincipal)">
+            <summary>
+            Indicates if the user already has posted data for the XForm
+            </summary>
+            <param name="formId">The id of the XForm</param>
+            <param name="channelOptions">The Channel option</param>
+            <param name="cookieCollection">Collection of cookies</param>
+            <param name="user">The user that is posting</param>
+            <returns>Trus if the user already has posted for the specifik XForm</returns>
+        </member>
+        <member name="T:EPiServer.XForms.Util.XFormConvert">
+            <summary>
+            Used to convert XHTML to an XForm.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.Parse(System.Xml.XmlDocument,System.Boolean)">
+            <summary>
+            Transform the content of an XmlDocument to a string representation of an XForm.
+            </summary>
+            <param name="xhtml">The XmlDocument to parse.</param>
+            <param name="autoCorrect">If set to true, form elements that have the same name, no name or names including invalid characters will be corrected. Otherwise an exception will be thrown for invalid names.</param>
+            <returns>A string representation of an XForm.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.Parse(System.Xml.XmlDocument)">
+            <summary>
+            Transform the content of an XmlDocument to a string representation of an XForm.
+            </summary>
+            <param name="xhtml">The XmlDocument to parse.</param>
+            <returns>A string representation of an XForm.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.Transform(System.String)">
+            <summary>
+            Transforms html to a <see cref="T:EPiServer.XForms.Util.SerializableXmlDocument"/> containing an XForm definition.
+            </summary>
+            <param name="html">The html to transform.</param>
+            <returns>A <see cref="T:EPiServer.XForms.Util.SerializableXmlDocument"/> containing an XForm definition.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.ValidateName(System.String)">
+            <summary>
+            Validates that the name is valid.
+            </summary>
+            <param name="name">The name of the field.</param>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.EnsureUniqueNames(System.String)">
+            <summary>
+            Ensures that the form does not contain controls with duplicate names.
+            </summary>
+            <param name="form">The string represenation of the form.</param>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.CreateInstanceSection(System.String)">
+            <summary>
+            Creates the instance section.
+            </summary>
+            <param name="html">The html representation of the form.</param>
+            <returns>A <see cref="T:EPiServer.XForms.Util.SerializableXmlDocument"/> containing the instance node for the form.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.CreateInstanceNodeForInputControls(System.Xml.XmlNode,System.Xml.XmlNode)">
+            <summary>
+            Creates the instance node for an input control.
+            </summary>
+            <param name="instanceNode">The instance node.</param>
+            <param name="node">The form element that we want to create an instance nodes for.</param>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.CreateInstanceNodeForTextarea(System.Xml.XmlNode,System.Xml.XmlNode)">
+            <summary>
+            Creates the instance node for a textarea control.
+            </summary>
+            <param name="instanceNode">The instance node.</param>
+            <param name="node">The form element that we want to create an instance nodes for.</param>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.CreateInstanceNodeForSelectControls(System.Xml.XmlNode,System.Xml.XmlNode)">
+            <summary>
+            Creates the instance node for a select control.
+            </summary>
+            <param name="instanceNode">The instance node.</param>
+            <param name="node">The form element that we want to create an instance nodes for.</param>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.AddInstanceValue(System.String,System.Xml.XmlNode)">
+            <summary>
+            Adds the default value to the instance node.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="instanceEntry">The instance entry.</param>
+            <remarks>If the instance entry already has a value the new value will be added.</remarks>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.EnsureInstanceEntryNode(System.Xml.XmlNode,System.String)">
+            <summary>
+            Creates the instance node if it does not already exist.
+            </summary>
+            <param name="instanceNode">The instance node.</param>
+            <param name="name">The name.</param>
+            <returns>The instance node for the given name.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormConvert.ExtractXsiType(System.Xml.XmlNode,System.Xml.XmlNode)">
+            <summary>
+            Extracts the xsi type for the control and sets it on the instance node.
+            </summary>
+            <param name="inputNode">The xml node for the input control.</param>
+            <param name="instanceEntry">The instance entry.</param>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormDataEventArgs.FormData">
+            <summary>
+            The actual form data that is being posted. 
+            </summary>
+            <remarks>This can be used to validate posted data or to add custom data.</remarks>
+            <example>
+            An example of how to set a custom value for form data.
+            <code>e.FormData.SetValue("mycustomvalue", "12345");</code>
+            </example>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormDataEventArgs.CancelSubmit">
+            <summary>
+            Set this value if you want to cancel the form posting. The submission is automatically 
+            cancelled if any ErrorMessages has been added to the Event Arguments but it is possible to 
+            cancel the post without giving an error message. This can be handy if you want to 
+            implement custom logic to how to store or send the form data. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormDataEventArgs.ErrorMessage">
+            <summary>
+            Used to set an custom error message if you validate data yourself in the event.
+            </summary>
+            <value>
+            A string containing either the last ErrorMessage or String.Empty if no 
+            ErrorMessage has been added. 
+            </value>
+            <remarks>
+            This will add a string to the ErrorMessages property. It is possible to add several 
+            Error Messages by simply setting this property more than once. 
+            </remarks>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormDataEventArgs.ErrorMessages">
+            <summary>
+            Returns an Array of Strings containing all ErrorMessages for the event arguments.
+            </summary>
+            <value>An Array of String objects. If no messages have been added an empty Array will be returned.</value>
+        </member>
+        <member name="T:EPiServer.XForms.Util.XFormParameters">
+            <summary>
+            Parameters used to customize post actions for XForm
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.Util.XFormPostedData">
+            <summary>
+            Posted MVC data in XForm
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.Util.XFormPostedData.SetSelectedSubmit(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Tries to find and set the selected submit from posted data
+            </summary>
+            <param name="parameters"></param>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormPostedData.XForm">
+            <summary>
+            The XForm definition
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormPostedData.Fragments">
+            <summary>
+            List of fragments, including html fragments
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormPostedData.XFormFragments">
+            <summary>
+            List of XForm fragments.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormPostedData.XFormParameter">
+            <summary>
+            Contains XFormBegin parameters
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.Util.XFormPostedData.SelectedSubmit">
+            <summary>
+            The selected submit fragment, which the user has selected
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Input">
+            <summary>
+            An input control that is equivalent to the html control <![CDATA[<input type="text">]]>. 
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.XFormControlBase">
+            <summary>
+            Base class for XForm input controls. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControlBase.AddParsedSubObject(System.Object)">
+            <summary>
+            Used internally when parsing the object.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControlBase.LoadPostData(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Used internally to control if a field has been updated.
+            </summary>
+            <param name="postDataKey"></param>
+            <param name="postCollection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControlBase.GetRenderName">
+            <summary>
+            Returns the name that will be used when rendering the control to html.
+            </summary>
+            <returns>Either the reference for the XForm field or an Unique ID.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControlBase.IsValidInput">
+            <summary>
+            Validates the data and returns if the data is valid or not. 
+            </summary>
+            <returns>
+            If the control has a type defined this will be used for validation, 
+            otherwise it will be validated against <see cref="P:EPiServer.XForms.DataTypes.InvalidDefaultInputRegex"/>
+            </returns>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControlBase.CreateIdName(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            CreateIDName creates a valid Id/name that must begin with a letter ([A-Za-z]) and may be 
+            followed by any number of letters, digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"), 
+            and periods (".").
+            </summary>
+            <param name="idName">Name or Id to validate</param>
+            <param name="replaceSpace">True if spaces should be replaced by _</param>
+            <param name="alternativeStart">True if all allowed charachters is accepted to start with</param>
+            <returns></returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.XFormContainer">
+            <summary>
+            Gets the XFormControl that the control is contained in if any.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.Reference">
+            <summary>
+            The reference name for the control. This is equivalent to the model node for the control.  
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.InnerLabel">
+            <summary>
+            A reference to the inner Label control. Used by control developers. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.Label">
+            <summary>
+            The label for the item.
+            </summary>
+            <remarks>Returns String.Empty when not set.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.Value">
+            <summary>
+            The value for the input. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.Required">
+            <summary>
+            If the control requires a value when submitting data. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControlBase.Type">
+            <summary>
+            The type of the input that will be used when validating posted values. If no type has been 
+            specified this will be validated against the default type <see cref="P:EPiServer.XForms.DataTypes.InvalidDefaultInputRegex"/>. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Input.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="m">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Input.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Label">
+            <summary>
+            A label for a xform input control. 
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Text">
+            <summary>
+            Summary description for Text.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Text.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="m">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Text.Value">
+            <summary>
+            The value for the item.
+            </summary>
+            <remarks>Returns String.Empty when not set.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Text.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.ListControlBuilder">
+            <summary>
+            Summary description for ListItemControlBuilder.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.ListItemControlBuilder">
+            <summary>
+            Summary description for ListItemControlBuilder.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.LoadFormEventArgs">
+            <summary>
+            Argument that contains the definition for a XForm.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.LoadFormEventArgs.#ctor(System.String,System.Boolean)">
+            <summary>
+            Creates a new instance of the LoadFormEventArgs class.
+            </summary>
+            <param name="formDefinition">The definition for the XForm.</param>
+            <param name="editMode">If the form is rendered in edit mode.</param>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.LoadFormEventArgs.FormDefinition">
+            <summary>
+            The definition for the form to be loaded.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.LoadFormEventArgs.EditMode">
+            <summary>
+            If the form is rendered in edit mode.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Model">
+            <summary>
+            Summary description for Model.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.SaveFormDataEventArgs">
+            <summary>
+            Event arguments using when storing XForms data
+            </summary>
+            <remarks>
+            <para>
+            Class that is passed on as an event argument for the following events for an XFormControl:
+            </para>
+            <list type="bullet">
+            <item>BeforeReadingPostedDataEvent</item>
+            <item>BeforeSubmitPostedDataEvent</item>
+            <item>AfterSubmitPostedDataEvent</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Secret">
+            <summary>
+            Class that will be used to render a password input. Not fully implemented. 
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Select">
+            <summary>
+            Summary description for Select1.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.SelectControl">
+            <summary>
+            Base class for Select and Select1. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Select.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="match">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Select.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.RenderType">
+            <summary>
+            Enumeration that is used by the Select1 Control to switch render state.  
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.WebControls.RenderType.NotSpecified">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.WebControls.RenderType.Full">
+            <summary>
+            <![CDATA[<input type="radio" />]]>
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.WebControls.RenderType.Minimal">
+            <summary>
+            <![CDATA[<select></select>]]>
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Select1">
+            <summary>
+            An input control that is equivalent to either a html select or radio 
+            buttons depending on the value of Appearence. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Select1.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="m">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Select1.Appearence">
+            <summary>
+            A property that is usd to determine how the control should be rendered. 
+            When set to RenderType.Minimal the control will be rendered as a html 
+            select and when set to RenderType.Full to html radio buttons. 
+            </summary>
+            <value>RenderType.Minimal is default value.</value>
+            <remarks>Will default to RenderType.Minimal.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Select1.RegexMatchStringRadio">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Select1.RegexMatchStringDropdown">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Select1.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+            <remarks>This is built from the values of RegexMatchStringRadio and RegexMatchStringDropdown.</remarks>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.LayoutType">
+            <summary>
+            Enumeration that is used by the Select and Select1 controls to define if check boxes and 
+            radio buttons should be placed in horizontal or vertical position. 
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.SelectItem">
+            <summary>
+            Summary description for SelectItem.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.SelectItem.Label">
+            <summary>
+            The label for the item.
+            </summary>
+            <remarks>Returns String.Empty when not set.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.SelectItem.Value">
+            <summary>
+            The value for the item.
+            </summary>
+            <remarks>Returns String.Empty when not set.</remarks>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.SelectItemCollection">
+            <summary>
+            Summary description for SelectItemColection.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.Add(EPiServer.XForms.WebControls.SelectItem)">
+            <summary>
+            Adds a SelectItem to the end of the collection.
+            </summary>
+            <param name="SelectItem">The SelectItem to be added to the end of the collection.</param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.Contains(EPiServer.XForms.WebControls.SelectItem)">
+            <summary>
+            Determines whether the collection contains a specific element.
+            </summary>
+            <param name="SelectItem">The SelectItem to locate in the CollectionBase.</param>
+            <returns>true if the collection contains the specified value; otherwise, false.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.Remove(EPiServer.XForms.WebControls.SelectItem)">
+            <summary>
+            Removes the first occurrence of a specific SelectItem from the collection.
+            </summary>
+            <param name="SelectItem">The SelectItem to remove from the collection.</param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.IndexOf(EPiServer.XForms.WebControls.SelectItem)">
+            <summary>
+            Searches for the specified SelectItem and returns the zero-based index of the first occurrence within the entire collection.
+            </summary>
+            <param name="SelectItem">The SelectItem to locate in the CollectionBase.</param>
+            <returns>The zero-based index of the first occurrence of value within the entire collection, if found; otherwise, -1.</returns>																					  
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.Insert(System.Int32,EPiServer.XForms.WebControls.SelectItem)">
+            <summary>
+            Inserts an element into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which value should be inserted.</param>
+            <param name="SelectItem">The SelectItem to insert.</param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.SelectItemCollection.CopyTo(EPiServer.XForms.WebControls.SelectItem[],System.Int32)">
+            <summary>
+            Copies the entire collection to a one-dimensional array, starting at the specified index of the target array.
+            </summary>
+            <param name="selectItems">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.SelectItemCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the SelectItem associated with the specified index.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.StaticValidator">
+            <summary>
+            Validator used to add error messages that is validated through server side code.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.StaticValidator.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.XForms.WebControls.StaticValidator"/> class.
+            </summary>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.StaticValidator.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.XForms.WebControls.StaticValidator"/> class.
+            </summary>
+            <param name="errorMessage">The error message.</param>
+            <param name="validationGroup">The validation group.</param>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Submit">
+            <summary>
+            Summary description for Submit.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Submit.RenderButton(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders a normal html submit button.
+            </summary>
+            <param name="writer"></param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Submit.RenderCustomSubmit(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders an anchor tag that works like an submit button containing custom content.
+            </summary>
+            <param name="writer"></param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.Submit.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="match">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.Submit.Click">
+            <summary>
+            An event that is triggered when a user click on the submit button.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.Value">
+            <summary>
+            This property is not used for the submit control and will always return String.Empty.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.Action">
+            <summary>
+            The action that should be triggered when the submit control triggers a form posting.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.CustomContent">
+            <summary>
+            If custom content is specified the control will render an anchor tag with postback behaviour.
+            The value of the CustomContent property will be rendered inside of the anchor tag.
+            </summary>
+            <remarks>For instance, the value could be an image:
+            &lt;img src='/images/submit.gif'  alt='Submit' /&gt;</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.ChannelOptions">
+            <summary>
+            The ChannelOptions that is used when calling XFormControl.SubmitForm.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.Receiver">
+            <summary>
+            The email address that and email is sent to.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.Sender">
+            <summary>
+            The email address that is used as the sender of an email.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.Subject">
+            <summary>
+            A custom subject for an email message. If this is not set the subject defined on the form is used.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.ActionSettings">
+            <summary>
+            A collection of name/values that are parsed from the value of the Action property.
+            </summary>
+            <remarks>The parsing is basically the same as the query string for a url.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.Submit.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.TextArea">
+            <summary>
+            An input control that is equivalent to the html control <![CDATA[<textarea></textarea>]]> 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.TextArea.ReplaceHTML(System.Text.RegularExpressions.Match)">
+            <summary>
+            Used when converting html to XForm controls.
+            </summary>
+            <param name="m">A Match from an regular expression evaluation.</param>
+            <returns>A string representing an XForm control.</returns>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.TextArea.RegexMatchString">
+            <summary>
+            A string representation of a regular expression that is used when converting html to xform controls.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.Value">
+            <summary>
+            Summary description for Value.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.XFormControl">
+            <summary>
+            The main class for a XForm.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControl.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.XForms.WebControls.XFormControl"/> class.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControl.DataBind">
+            <summary>
+            Creates the child controls from the XForm representation.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControl.SetupFormControls(System.Web.UI.ControlCollection)">
+            <summary>
+            Adds all parsed controls from the form definition to the Controls collection. Also adds validators for the form fields.
+            </summary>
+            <param name="controls">A collection of controls for the form.</param>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControl.ClearEventHandlers">
+            <summary>
+            Clears all events from the event handlers.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.WebControls.XFormControl.ExtractXFormControls">
+            <summary>
+            Extracts all the xform input controls from the form.
+            </summary>
+            <returns>An ArrayList containing all xform controls</returns>
+            <remarks>Submit controls are also returned. This method has to be called after the ControlsCreated event.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.FormDefinition">
+            <summary>
+            The definition for the form. 
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.BeforeReadingPostedData">
+            <summary>
+            EventHandler that is triggered before reading and validating posted data. 
+            If an event listener sets CancelSubmit=true an Static Validator with the 
+            ErrorMessage will be added to the page and the form does not continue reading 
+            and validating input values. 
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.BeforeLoadingForm">
+            <summary>
+            This event is triggered when loading the form before the form controls are parsed.
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.ControlsCreated">
+            <summary>
+            Occurs when the child controls has been created.
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.BeforeSubmitPostedData">
+            <summary>
+            EventHandler that is called after the values have been read and validated but 
+            before the form is submitted. This is the last chance to stop the form from 
+            being submitted.  
+            </summary>
+            <remarks>
+            This event will be triggered even if the posted data is not valid. If you want 
+            to add logic when posting data you might want to check if the page is valid (see <see cref="P:System.Web.UI.Page.IsValid"/>). 
+            </remarks>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.AfterSubmitPostedData">
+            <summary>
+            EventHandler that is triggered after the control has validated and sent it's data. 
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.WebControls.XFormControl.ControlSetup">
+            <summary>
+            Static event that is triggered every time a <see cref="T:EPiServer.XForms.WebControls.XFormControl"/> is created.
+            </summary>
+            <remarks>This event can be used to attach to other events for the control where you do
+            not have access to the actual control. This can for instance be the case when a form is
+            loaded through dynamic content.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.FormID">
+            <summary>
+            The id of the XForm. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.EditMode">
+            <summary>
+            Used to determine if controls should render themselves in edit mode. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.Data">
+            <summary>
+            A reference to the XFormData that the form is submitted to. 
+            </summary>
+            <remarks>
+            If not set FormDefinition.CreateFormData() will be called to create a new XFormData for 
+            the form. If this property has been set when the controls are rendered the values from 
+            the form data will be loaded. 
+            </remarks>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.ValidationGroup">
+            <summary>
+            Gets or sets the validation group.
+            </summary>
+            <value>The validation group. Default is String.Empty</value>
+        </member>
+        <member name="P:EPiServer.XForms.WebControls.XFormControl.EnableClientScript">
+            <summary>
+            Gets or sets a value indicating whether client validation scripts are enabled.
+            </summary>
+            <value><c>true</c> if client validation scripts are enabled; otherwise, <c>false</c>. Default is true.</value>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.XFormControlBaseBuilder">
+            <summary>
+            Summary description for ListItemControlBuilder.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.WebControls.XFormControlBuilder">
+            <summary>
+            Summary description for ListItemControlBuilder.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.XForm">
+            <summary>
+            Main class for the XForms functionality.
+            </summary>
+            <remarks>
+            This class holds the XForm and its metadata. It also provides the functionality to Load and 
+            save it to the datalayer. The form is stored as a serialized XML document on the form:
+            <para>
+            <code lang="xml">
+            <![CDATA[
+            <root>
+              <model> 
+                <instance>
+                  [instance values] 
+                </instance>
+              </model>
+              [Xform controls and HTML]
+            </root>]]>
+            </code>
+            </para>
+            </remarks>
+            <example>
+            The contents of the sample XForm "Vote"
+            <code source="../CodeSamples/XForms/XformSamples.xml" region="VoteSample" lang="xml" />
+            </example>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetStore">
+            <summary>
+            Returns the DynamicDataStore for the XForms definition store
+            </summary>
+            <returns>A <see cref="T:EPiServer.Data.Dynamic.DynamicDataStore"/> instance or null if the store does not exist</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateInstance">
+            <summary>
+            Creates an empty XForm.
+            </summary>
+            <returns>Empty XForm.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateInstanceInFolder(EPiServer.XForms.XFormFolder)">
+            <summary>
+            Creates an empty XForm and sets the Folder property to the folder argument. 
+            </summary>
+            <param name="folder">The folder that the XForm should be created in.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateInstance(System.Guid)">
+            <summary>
+            Loads a XForm from the data layer. 
+            </summary>
+            <param name="formId">Internal identifier of the XForm.</param>
+            <returns>Loaded XForm.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateInstance(System.Guid,System.Guid)">
+            <summary>
+            Loads an XForm from the data layer and fill it with loaded data. 
+            </summary>
+            <param name="formId">Internal identifier of the XForm to load.</param>
+            <param name="xFormDataId">Internal identifier of the XFormData to load.</param>
+            <returns>Loaded XForm.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetForms">
+            <summary>
+            Get all XForms
+            </summary>
+            <returns>A collection of XForm objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetForms(System.String,System.Int32,System.Int32,System.String,System.Data.SqlClient.SortOrder,System.Int32@)">
+            <summary>
+            Get Selected XForms
+            </summary>
+            <param name="createdBy">Get XForms created by user. String.Empty or null will not make an selection on 'createdby'</param>
+            <param name="skip">Skip x number of items</param>
+            <param name="take">Take x number of items</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <param name="count">Returns the total number of items</param>
+            <returns>List of XForms containing maximum 'take' number of items</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetForms(EPiServer.Data.Identity)">
+            <summary>
+            Get all XForms stored in the folder identified by <paramref name="folderId"/>
+            </summary>
+            <param name="folderId">The id of the folder to list XForms for</param>
+            <returns>A collection of XForm objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetForms(EPiServer.Data.Identity,System.String,System.Int32,System.Int32,System.String,System.Data.SqlClient.SortOrder,System.Int32@)">
+            <summary>
+            Get Selected XForms
+            </summary>
+            <param name="folderId">The id of the folder to list XForms for. Null will return all folders</param>
+            <param name="createdBy">Get XForms created by user. String.Empty or null will not make an selection on 'createdby'</param>
+            <param name="skip">Skip x number of items</param>
+            <param name="take">Take x number of items</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <param name="count">Returns the total number of items</param>
+            <returns>List of XForms containing maximum 'take' number of items</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetIndex(System.String,System.String,System.String,System.Data.SqlClient.SortOrder)">
+            <summary>
+            Get the database index of an XForm item
+            </summary>
+            <param name="xFormId">The Id of the XForm item</param>
+            <param name="createdBy">Which user (username) the xForms must be created by. Use String.Empty or NULL to receive all</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <returns>The database index of the specified XForm item</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetIndex(System.String,System.String,System.String,System.Data.SqlClient.SortOrder,EPiServer.Data.Identity)">
+            <summary>
+            Get the database index of an XForm item
+            </summary>
+            <param name="xFormId">The Id of the XForm item</param>
+            <param name="createdBy">Which user (username) the xForms must be created by. Use String.Empty or NULL to receive all</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <param name="folderId">Folder to search in. Use null to search for all folders</param>
+            <returns>The database index of the specified XForm item</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetFormsCount(EPiServer.Data.Identity)">
+            <summary>
+            Returns the number of XForms in the folder identified by <paramref name="folderId"/>
+            </summary>
+            <param name="folderId">The id of the folder to count the number of XForms in</param>
+            <returns>The number of XForms in the folder</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.Delete(System.Guid)">
+            <summary>
+            Delete the XForm identified by the <paramref name="formId"/>
+            </summary>
+            <param name="formId">The id of the XForm to delete</param>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.SetInstanceData(System.String,System.String)">
+            <summary>
+            Sets a value to an instance variable. This can be used to set a default value for an input field    .
+            </summary>
+            <param name="key">The name of the control.</param>
+            <param name="value">The value to set.</param>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateFormData">
+            <summary>
+            Creates a XFormData object from the Instance node in the XForm.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData">
+            <summary>
+            Get all data posted to the database for this form.
+            </summary>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.Int32,System.Int32)">
+            <summary>
+            Get data posted to the database for this form.
+            </summary>
+            <param name="skip">The number of posts to skip before reading</param>
+            <param name="take">The number of posts to read</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.DateTime,System.DateTime)">
+            <summary>
+            Get all data posted to the database for this form between the given dates.
+            </summary>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.DateTime,System.DateTime,System.Int32,System.Int32)">
+            <summary>
+            Get data posted to the database for this form between the given dates.
+            </summary>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <param name="skip">The number of posts to skip before reading</param>
+            <param name="take">The number of posts to read</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.Guid,System.DateTime,System.DateTime)">
+            <summary>
+            Get all data posted to the database for this form between the given dates for a certain page.
+            </summary>
+            <param name="pageGuid">Only return posted data for this page. The parameter is ignored if it equals <see cref="F:System.Guid.Empty"/>.</param>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.DateTime,System.DateTime,System.Guid)">
+            <summary>
+            Get all data posted to the database for this form between the given dates for a certain page.
+            </summary>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <param name="pageGuid">Only return posted data for this page. The parameter is ignored if it equals <see cref="F:System.Guid.Empty"/>.</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedData(System.DateTime,System.DateTime,System.Guid,System.Int32,System.Int32)">
+            <summary>
+            Get data posted to the database for this form between the given dates for a certain page.
+            </summary>        
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <param name="pageGuid">Only return posted data for this page. The parameter is ignored if it equals <see cref="F:System.Guid.Empty"/>.</param>
+            <param name="skip">The number of posts to skip before reading</param>
+            <param name="take">The number of posts to read</param>
+            <returns>An IList containing XFormData objects</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.DeleteAllPostedData">
+            <summary>
+            Deletes all posted data for the XForm.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedDataCount">
+            <summary>
+            Returns the number of posts for this form
+            </summary>
+            <returns>An integer</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedDataCount(System.DateTime,System.DateTime)">
+            <summary>
+            Returns the number of posts for this form between the given dates.
+            </summary>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <returns>An integer</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedDataCount(System.DateTime,System.DateTime,System.Guid)">
+            <summary>
+            Returns the number of posts for this form between the given dates for a certain page.
+            </summary>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <param name="pageGuid">Only return posted data for this page. The parameter is ignored if it equals <see cref="F:System.Guid.Empty"/>.</param>
+            <returns>An integer</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.GetPostedDataStatistics(System.String,System.DateTime,System.DateTime,System.Guid)">
+            <summary>
+            Gets the statistics for the posted data for a specific form field.
+            </summary>
+            <param name="fieldName">Name of the form field to get statistics for.</param>
+            <param name="beginDate">The start date for the search. This will be ignored if set to DateTime.MinValue</param>
+            <param name="endDate">The end date for the search. This will be ignored if set to DateTime.MinValue or DateTime.MaxValue</param>
+            <param name="pageGuid">Only return posted data for this page. The parameter is ignored if it equals <see cref="F:System.Guid.Empty"/>.</param>
+            <returns>An IDictionary with the form field option as the key and the number of votes for the given key as the value.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.Save">
+            <summary>
+            Saves the form.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.Delete">
+            <summary>
+            Deletes the form.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XForm.CreateHtmlFragments">
+            <summary>
+            Parses the HTML part of the XForm and returns a collection of HTML fragments
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.FormName">
+            <summary>
+            Gets or sets the public name of the XForm.
+            </summary>
+            <value>The public name of the XForm.</value>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.CreatedBy">
+            <summary>
+            The name of the user that created the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Created">
+            <summary>
+            The time that the form was created.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.ChangedBy">
+            <summary>
+            The name of the user that last changed the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Changed">
+            <summary>
+            The time the form was last changed.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.PageAfterPost">
+            <summary>
+            Set this value to indicate that the user should be redirected to the following page after the form has been successfully posted.
+            </summary>
+            <remarks>
+            This property is obsolete, use property PageGuidAfterPost instead.
+            </remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.PageGuidAfterPost">
+            <summary>
+            Set this value to indicate that the user should be redirected to the following page after the form has been successfully posted.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.AllowMultiplePost">
+            <summary>
+            Indicates if the same user can post the form several times.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.AllowAnonymousPost">
+            <summary>
+            Indicates if the form requires login before it is able to post data for the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.IsSent">
+            <summary>
+            Indicates if form data has been sent for the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Folder">
+            <summary>
+            The XFormFolder that the form should be saved in.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Document">
+            <summary>
+            The XForm is stored as a XML document with a syntax of a reduced set of the XForm standard. 
+            For more information about the XForm standard see <see href="http://www.w3.org/TR/2003/REC-xforms-20031014/"/>.
+            </summary>
+            <value>XForm as a serializable XML document.</value>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.DocumentForTransfer">
+            <summary>
+            Used for import/export.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Model">
+            <summary>
+            A pointer to the XForm model node. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.InstanceRoot">
+            <summary>
+            A pointer to the XForm instance node.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.PageId">
+            <summary>
+            The page id that the form belongs to.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.PageGuid">
+            <summary>
+            The guid of the page that the form is posted from.
+            </summary>
+            <remarks>This can be used when searching through form data.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.PostingUser">
+            <summary>
+            The name of the user that is posting the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.MailFrom">
+            <summary>
+            An e-mail address that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.MailTo">
+            <summary>
+            An e-mail address that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.MailSubject">
+            <summary>
+            A subject that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.CustomUrl">
+            <summary>
+            An url that is used when sending form data with ChannelOptions.CustomUrl.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Id">
+            <summary>
+            The unique identifier of the form as a Guid.
+            </summary>
+            <value>A Guid.</value>
+            <remarks>Although the return value is typed as an object the return value will always be a Guid.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.Name">
+            <summary>
+            Gets the Internal data layer name for the XForm. 
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XForm.IsNull">
+            <summary>
+            Not used and will always return false.
+            </summary>
+        </member>
+        <member name="E:EPiServer.XForms.XForm.TranslateEvent">
+            <summary>
+            Event that is triggered when a text should be translated.
+            </summary>
+            <remarks>This is normally handled by EPiServer.</remarks>
+        </member>
+        <member name="T:EPiServer.XForms.XFormConverter">
+            <summary>
+            Type converter class for <see cref="T:EPiServer.XForms.XForm"/> that handles convertion to and from strings.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
+            </summary>
+            <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"></see> that provides a format context.</param>
+            <param name="sourceType">A <see cref="T:System.Type"></see> that represents the type you want to convert from.</param>
+            <returns>
+            true if this converter can perform the conversion; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Returns whether this converter can convert the object to the specified type, using the specified context.
+            </summary>
+            <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"></see> that provides a format context.</param>
+            <param name="destinationType">A <see cref="T:System.Type"></see> that represents the type you want to convert to.</param>
+            <returns>
+            true if this converter can perform the conversion; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Converts the given object to the type of this converter, using the specified context and culture information.
+            </summary>
+            <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"></see> that provides a format context.</param>
+            <param name="culture">The <see cref="T:System.Globalization.CultureInfo"></see> to use as the current culture.</param>
+            <param name="value">The <see cref="T:System.Object"></see> to convert.</param>
+            <returns>
+            An <see cref="T:System.Object"></see> that represents the converted value.
+            </returns>
+            <exception cref="T:System.NotSupportedException">The conversion cannot be performed. </exception>
+        </member>
+        <member name="M:EPiServer.XForms.XFormConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+            Converts the given value object to the specified type, using the specified context and culture information.
+            </summary>
+            <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"></see> that provides a format context.</param>
+            <param name="culture">A <see cref="T:System.Globalization.CultureInfo"></see>. If null is passed, the current culture is assumed.</param>
+            <param name="value">The <see cref="T:System.Object"></see> to convert.</param>
+            <param name="destinationType">The <see cref="T:System.Type"></see> to convert the value parameter to.</param>
+            <returns>
+            An <see cref="T:System.Object"></see> that represents the converted value.
+            </returns>
+        </member>
+        <member name="T:EPiServer.XForms.ChannelOptions">
+            <summary>
+            Emumeration for how to send the XFormData. 
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.ChannelOptions.None">
+            <summary>
+            Nothing happens.
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.ChannelOptions.Database">
+            <summary>
+            Save to database.
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.ChannelOptions.Email">
+            <summary>
+            Send e-mail.
+            </summary>
+        </member>
+        <member name="F:EPiServer.XForms.ChannelOptions.CustomUrl">
+            <summary>
+            Post the data to a different Web page.
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.XFormData">
+            <summary>
+            Value holder for XForms data and metadata. 
+            </summary>
+            <remarks>
+            XForm data is stored in the following syntax in an XmlDocument:
+            <para>
+            <![CDATA[
+            <instance>
+              <Vote>Really great</Vote>
+            </instance>]]>
+            </para>
+            </remarks>
+            <example>
+            Example on how to save XFormData to the database
+            <code source="../CodeSamples/XForms/XFormDataSamples.cs" region="SaveToDB" />
+            </example>
+        </member>
+        <member name="F:EPiServer.XForms.XFormData.ChannelName">
+            <summary>
+            The unique name that is used when sending form data. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.CreateInstance(System.Guid)">
+            <summary>
+            Loads an XFormData object.
+            </summary>
+            <param name="formDataId">The id for the XFormData to load.</param>
+            <returns>The loaded XFormData object.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.CreateInstance(System.Guid,System.Guid)">
+            <summary>
+            Loads an XFormData object.
+            </summary>
+            <param name="formDataId">The id for the XFormData to load.</param>
+            <param name="formId">The id of the XForm the post belongs to</param>
+            <returns>The loaded XFormData object.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetStore(System.Guid)">
+            <summary>
+            Returns the <see cref="T:EPiServer.Data.Dynamic.DynamicDataStore"/> instance that the XFormData is stored
+            </summary>
+            <param name="formId">The id of the XForm the posts belong to</param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.CreateStore(System.Guid,System.Collections.Generic.IDictionary{System.String,System.Type},EPiServer.Data.Dynamic.StoreDefinitionParameters)">
+            <summary>
+            Returns the <see cref="T:EPiServer.Data.Dynamic.DynamicDataStore"/> instance that the XFormData is stored
+            </summary>
+            <param name="formId">The id of the XForm the posts belong to</param>
+            <param name="typeBag">The definition of the store</param>
+            <param name="parameters">The <see cref="T:EPiServer.Data.Dynamic.StoreDefinitionParameters"/> to use when mapping the store</param>
+            <returns>A <see cref="T:EPiServer.Data.Dynamic.DynamicDataStore"/> instance</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.SaveEventHandler(System.Object,EPiServer.BaseLibrary.Channel.ChannelEventArgs)">
+            <summary>
+            Handler method for the <see cref="E:EPiServer.BaseLibrary.Channel.IChannel.SendEvent"/>
+            This method is not intended to be called by user code
+            </summary>
+            <param name="sender">The sender of the event</param>
+            <param name="e">The channel event arguments</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.Save(System.Data.Common.DbTransaction)">
+            <summary>
+            Save the XFormData directly to the database.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.Save">
+            <summary>
+            Save the XFormData directly to the database.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.SetValue(System.String,System.String)">
+            <summary>
+            Set a value for a given key.
+            </summary>
+            <param name="key">The key of the node.</param>
+            <param name="value">The value to set.</param>
+            <remarks>If the node for the key does not exists it is added to the document.</remarks>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.SetInstanceDataAttribute(System.String,System.String,System.String,System.String)">
+            <summary>
+            Updates or sets the value for an attribute for an node under the instance node.
+            </summary>
+            <param name="dataKey">The node you want to update.</param>
+            <param name="attributePrefix">The prefix for the attribute.</param>
+            <param name="attributeKey">The name for the attribute.</param>
+            <param name="value">The value you want to set.</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetInstanceDataAttribute(System.String,System.String)">
+            <summary>
+            Returns the value for an attribute for an node under the instance node.
+            </summary>
+            <param name="dataKey">The node name.</param>
+            <param name="attributeKey">The attribute name.</param>
+            <returns>The value for the attribute. If the attribute does not exist String.Empty will be returned.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetValue(System.String)">
+            <summary>
+            Get the value for a given node.
+            </summary>
+            <param name="key">The name of the node.</param>
+            <returns>The value for the node.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetValues">
+            <summary>
+            Get all values for the XFormData object.
+            </summary>
+            <returns>A NameValueCollection containing the keys/values for the form data.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetFilteredValues(EPiServer.HtmlParsing.HtmlFilter)">
+            <summary>
+            Get all values for the XFormData object which have been filtered by the supplied filter.
+            </summary>
+            <param name="filter">A <see cref="T:EPiServer.HtmlParsing.HtmlFilter"/> to use to filter the values</param>
+            <returns>A NameValueCollection containing the keys/values for the form data.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.Send(System.Guid)">
+            <summary>
+            Sets the FormId property and sends the form.
+            </summary>
+            <param name="formId">The form to save the data for</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.Send">
+            <summary> 
+            Sends the form data to the channel(s) defined in ChannelOptions.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.Delete">
+            <summary>
+            Deletes the object from the data layer. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.SetPostedCookie(System.Guid,System.Web.UI.Page)">
+            <summary>
+            Creates a cookie that is added to the Page that indicates that the form has been posted.
+            </summary>
+            <param name="formId">The id for the form.</param>
+            <param name="page">The executing page used to set the cookie for.</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.HasAlreadyPosted(System.Web.UI.Page)">
+            <summary>
+            Check if the current user has already posted the form.
+            </summary>
+            <param name="page">The executing page.</param>
+            <returns>True if the user has posted the form, false otherwise.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormData.GetStoreName(System.Guid)">
+            <summary>
+            Gets the name of the store where postings from specified form is stored..
+            </summary>
+            <param name="formId">The form id.</param>
+            <returns></returns>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.StorageId">
+            <summary>
+            The storage Identity of the XFormData object
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.FormId">
+            <summary>
+            The id for the form that created the form data.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.PageGuid">
+            <summary>
+            The guid of the page that the form is posted from.
+            </summary>
+            <remarks>This can be used when searching through form data.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.PageId">
+            <summary>
+            The page id that the form is posted from.
+            </summary>
+            <remarks>This can be used when searching through form data.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.UserName">
+            <summary>
+            The name of the user that is posting the form.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.DatePosted">
+            <summary>
+            The date that the form data was posted.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.Data">
+            <summary>
+            The xml node containing the form data.
+            </summary>
+            <remarks>To insert any custom data use <see cref="P:EPiServer.XForms.XFormData.CustomData"/> property</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.ChannelOptions">
+            <summary>
+            Gets of sets the Channels that the form data should be sent to.
+            </summary>
+            <remarks>See <see cref="T:EPiServer.XForms.ChannelOptions"/> for a list of options.</remarks>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.MailFrom">
+            <summary>
+            An e-mail address that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.MailTo">
+            <summary>
+            An e-mail address that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.MailSubject">
+            <summary>
+            A subject that is used for sending e-mail.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.CustomUrl">
+            <summary>
+            A url that is used to send data to when sending form data with ChannelOptions.CustomUrl.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormData.Name">
+            <summary>
+            Gets the Internal data layer name for the XForm. 
+            </summary>
+        </member>
+        <member name="T:EPiServer.XForms.XFormFolder">
+            <summary>
+            The XFormFolder is a class to handle the structure of XForms<see cref="T:EPiServer.XForms.XForm"/> objects in the Dynamic Data Store. 
+            A XFormFolder has a path separated by / and has a structure like:
+            <para>
+            <![CDATA[
+            /
+            	XFormFolder/
+            		XFormFolder/
+            		XForm
+            		...
+            	XForm
+            ]]>
+            </para>
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.#ctor">
+            <summary>
+            Creates an XFormFolder object.
+            This constructor is for internal use only.
+            </summary>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.#ctor(System.String)">
+            <summary>
+            Creates an XFormFolder object.
+            </summary>
+            <param name="subPath">The path to assign to the folder</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.Create(System.String)">
+            <summary>
+            Create an XFormFolder in the database.
+            </summary>
+            <param name="subPath">The sub path of the folder</param>
+            <returns>The created XFormFolder.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.Create(System.Guid,System.String)">
+            <summary>
+            Create an XFormFolder in the database.
+            </summary>
+            <param name="subPath">The sub path of the folder</param>
+            <param name="id">The id to assign to the object</param>
+            <returns>The created XFormFolder.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.Move(System.Object,EPiServer.XForms.XFormFolder)">
+            <summary>
+            Moves a XForm to a XFormFolder
+            </summary>
+            <param name="id">Identity of the XForm.</param>
+            <param name="folder">An Xform folder to move the XForm to.</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.Delete(System.String)">
+            <summary>
+            Deletes an XFormFolder from the database.
+            </summary>
+            <param name="subPath">The path to the Xformfolder to remove.</param>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetForms">
+            <summary>
+            Get all the XForms in the database.
+            </summary>
+            <returns>All existing XForms.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetForms(System.String,System.Int32,System.Int32,System.String,System.Data.SqlClient.SortOrder,System.Int32@)">
+            <summary>
+            Get Selected XForms
+            </summary>
+            <param name="createdBy">Get XForms created by user. String.Empty or null will not make an selection on 'createdby'</param>
+            <param name="skip">Skip x number of items</param>
+            <param name="take">Take x number of items</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <param name="count">Returns the total number of items</param>
+            <returns>List of XForms containing maximum 'take' number of items</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetForms(System.String)">
+            <summary>
+            Get all XForm in a certain XFormFolder.
+            </summary>
+            <param name="subPath">Path to XFormFolder to list XForms in.</param>
+            <returns>A list of XForms in the requested path.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetForms(System.String,System.String,System.Int32,System.Int32,System.String,System.Data.SqlClient.SortOrder,System.Int32@)">
+            <summary>
+            Get Selected XForms
+            </summary>
+            <param name="subPath">Path to XFormFolder to list XForms in.</param>
+            <param name="createdBy">Get XForms created by user. String.Empty or null will not make an selection on 'createdby'</param>
+            <param name="skip">Skip x number of items</param>
+            <param name="take">Take x number of items</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <param name="count">Returns the total number of items</param>
+            <returns>List of XForms containing maximum 'take' number of items</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetIndex(System.String,System.String,System.String,System.Data.SqlClient.SortOrder)">
+            <summary>
+            Get the database index of an XForm item
+            </summary>
+            <param name="xFormId">The Id of the XForm item</param>
+            <param name="createdBy">Which user (username) the xForms must be created by. Use String.Empty or NULL to receive all</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <returns>The database index of the specified XForm item</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetIndex(System.String,System.String,System.String,System.Data.SqlClient.SortOrder,System.String)">
+            <summary>
+            Get the database index of an XForm item
+            </summary>
+            <param name="subPath">Path to XFormFolder to list XForms in</param>
+            <param name="createdBy">Which user (username) the xForms must be created by. Use String.Empty or NULL to receive all</param>
+            <param name="xFormId">The Id of the XForm item</param>
+            <param name="orderBy">Order by selected column</param>
+            <param name="sortOrder">Which order to sort</param>
+            <returns>The database index of the specified XForm item</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetFolders">
+            <summary>
+            Get all folders on the root level (/).
+            </summary>
+            <returns>A list of XFormFolders.</returns>
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.GetFolders(System.String)">
+            <summary>
+            Get all folders for a specific path.
+            </summary>
+            <param name="subPath">Path to list XFormFolders for.</param>
+            <returns>A list of XFormFolders.</returns>       
+        </member>
+        <member name="M:EPiServer.XForms.XFormFolder.Rename(System.String)">
+            <summary>
+            Renames the pathname to a new pathname
+            </summary>
+            <param name="newSubPath">The new path of the XFormFolder.</param>
+            <exception cref="T:EPiServer.XForms.XFormException">If the path already exists.</exception>
+        </member>
+        <member name="P:EPiServer.XForms.XFormFolder.Root">
+            <summary>
+            The root XFormFolder
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormFolder.SubPath">
+            <summary>
+            Get the path of the XFormFolder.
+            </summary>
+        </member>
+        <member name="P:EPiServer.XForms.XFormFolder.Name">
+            <summary>
+            Get the name of the XFormFolder.
+            </summary>
+            <example>An XFormFolder with the path /t1/t2 has the name t2.</example>
+        </member>
+        <member name="T:EPiServer.XForms.XFormException">
+            <summary>
+            Summary description for XFormTranslatedException.
+            </summary>
+        </member>
+    </members>
+</doc>

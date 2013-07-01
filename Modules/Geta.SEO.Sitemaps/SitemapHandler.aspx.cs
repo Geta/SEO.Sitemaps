@@ -13,7 +13,6 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         private readonly ISitemapRepository sitemapRepository = new SitemapRepository();
 
-
         protected override void OnLoad(System.EventArgs e)
         {
             base.OnLoad(e);
@@ -33,6 +32,5 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
             HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
-       
     }
 }

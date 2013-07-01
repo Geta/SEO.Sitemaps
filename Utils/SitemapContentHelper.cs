@@ -57,12 +57,12 @@ namespace Geta.SEO.Sitemaps.Utils
                                                             ISet<string> urlSet)
         {
             var rootPage = sitemapData.RootPageId == 0
-                               ? PageReference.RootPage
+                               ? ContentReference.RootPage
                                : new PageReference(sitemapData.RootPageId);
 
             var descendants = DataFactory.Instance.GetDescendents(rootPage);
 
-            if (rootPage != PageReference.RootPage)
+            if (rootPage != ContentReference.RootPage)
             {
                 descendants.Add(rootPage);
             }

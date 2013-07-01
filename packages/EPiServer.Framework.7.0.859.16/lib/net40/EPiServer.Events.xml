@@ -1,0 +1,564 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EPiServer.Events</name>
+    </assembly>
+    <members>
+        <member name="M:EPiServer.Events.EventsInitialization.InitializeEvents(System.Boolean)">
+            <summary>
+            Ensures that the EPiServer.RemoteEvents system is initialized (even when there are no client/service-endpoints registered in web.config)
+            </summary>
+            <param name="forcePublisher">When true, ensures that the site is registered as Publisher even if there are no client-endpoints registered in web.config</param>
+        </member>
+        <member name="T:EPiServer.Events.EventsServiceKnownTypeAttribute">
+            <summary>
+            Attribute to indicate that this type should be treated as a known type by the EPiServer Events service
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ServiceModel.IEventReplication">
+            <summary>
+            This is a WCF service contract for replication of events in EPiServer Events System
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ServiceModel.IEventReplication.RaiseEvent(System.Guid,System.String,System.Int32,System.Byte[],System.Guid,System.Object)">
+            <summary>
+            Raise the event to all subscribers.
+            </summary>
+            <param name="raiserId">The Id of the raiser</param>
+            <param name="siteId">The Id of the site</param>
+            <param name="sequenceNumber">The sequence number for this event</param>
+            <param name="verificationData">A data block which allows the event to be verified by the receiver</param>
+            <param name="eventId">The Id of the event being fired</param>
+            <param name="param">The parameter associated with the event</param>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationProvider">
+            <summary>
+            Base class for event replication providers. 
+            An event replication provider is a class that can provide an object implementing the IEventReplication interface.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationProvider.NewReplicator">
+            <summary>
+            Gets the provider
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationWCFProvider">
+            <summary>
+            The EventReplicationWCFProvider class reads all EndPoint Client and create 
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplicationWCFProvider"/> class.
+            </summary>
+            <param name="eventReplicationEndPointName">Name of the event replication end point.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.#ctor(System.String,System.Net.NetworkCredential)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplicationWCFProvider"/> class.
+            </summary>
+            <param name="eventReplicationEndPointName">Name of the event replication end point.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.NewReplicator">
+            <summary>
+            Gets the provider
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationWCFProviders">
+            <summary>
+            The EventReplicationWCFProviders class reads all Endpoint in webconfig and create an EventReplicationProvider class for each.
+            Befor creating the EventReplicationProvider it sends an Credential event if some one will put username and password for the proxy.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.InitializeEventReplicationProviders">
+            <summary>
+            Initializes the event replication providers.
+            Iterate all Endpoints and try to create EventReplication WCF provider
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.UnInitializeEventReplicationProviders">
+            <summary>
+            Clear the EndPoint and Event Replication Providers.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.AddEventReplicationProvider(System.String,EPiServer.Events.Remote.EventReplicationProvider)">
+            <summary>
+            Adds the EventReplication WCF provider.
+            </summary>
+            <param name="endPointName">End name of the point.</param>
+            <param name="eventRepl">The event repl.</param>
+            This class uses mostly for Unit Test
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.AddEventReplicationProvider(System.String)">
+            <summary>
+            Adds the repl WCF provider.
+            </summary>
+            <param name="endPointName">End name of the point.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.GetEndPoints">
+            <summary>
+            Gets the end points.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.RaiseEvent(System.Guid,System.String,System.Int32,System.Byte[],System.Guid,System.Object)">
+            <summary>
+            Raises the event.
+            </summary>
+            <param name="raiserId">The raiser id.</param>
+            <param name="siteId">The site id.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <param name="verificationData">The verification data.</param>
+            <param name="eventId">The event id.</param>
+            <param name="param">The param.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.TryRaiseEvent(EPiServer.Events.Remote.EventReplicationProvider,System.Guid,System.String,System.Int32,System.Byte[],System.Guid,System.Object)">
+            <summary>
+            Tries the raise event. Return false if occurs CommunicationException when try to raise event by proxy.  
+            </summary>
+            <param name="eventReplProvider">The event repl provider.</param>
+            <param name="raiserId">The raiser id.</param>
+            <param name="siteId">The site id.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <param name="verificationData">The verification data.</param>
+            <param name="eventId">The event id.</param>
+            <param name="param">The param.</param>
+            <returns></returns>
+        </member>
+        <member name="P:EPiServer.Events.Remote.EventReplicationWCFProviders.Instance">
+            <summary>
+            Gets the instance.
+            </summary>
+            <value>The instance.</value>
+        </member>
+        <member name="E:EPiServer.Events.Remote.EventReplicationWCFProviders.CredentialsEvent">
+            <summary>
+            Occurs when [credentials event].
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.CredentialsEventArg">
+            <summary>
+            Ths class can be used of modification UserName/password before to create proxy / channel
+            <seealso cref="P:EPiServer.Events.Remote.EventReplicationWCFProviders.CredentialsEvent"/>
+            This is useful when you will programtically to set username and password for the binding, 
+            one senario is when the certificate uses in respective to http binding
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.CredentialsEventArg.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="P:EPiServer.Events.Remote.CredentialsEventArg.Credentials"/> class.
+            </summary>
+            <param name="endpoint">The endpoint.</param>
+        </member>
+        <member name="P:EPiServer.Events.Remote.CredentialsEventArg.Endpoint">
+            <summary>
+            Gets or sets the endpoint.
+            </summary>
+            <value>The endpoint.</value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.CredentialsEventArg.Credentials">
+            <summary>
+            Gets or sets the credentials.
+            </summary>
+            <value>The credentials.</value>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventSequence">
+            <summary>
+            This class is not for public use.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventSequenceList">
+            <summary>
+            This class is not for public use.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventTypeInformation">
+            <summary>
+            This class is not for public use.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.RemoteEventsManager">
+            <summary>
+            The RemoteEventsManager class is to send and receive remote events
+            The Event class should be used by user code to raise and subscribe to events.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.RegisterSite(System.String,System.Byte[],EPiServer.Events.Clients.RegistrationType)">
+            <summary>
+            Registers the site with the RemoteEventsManager.
+            Only one site per application domain can be registered with the RegistrationType.EventPublisher value. It is this site's identity that is used
+            when an instance of an Event uses this class to raise a remote event.
+            An exception is thrown if a site is already registered as an event raiser for this application domain.
+            </summary>
+            <param name="siteId">The site id.</param>
+            <param name="siteSecret">The site secret.</param>
+            <param name="regType">The reg type.</param>
+            <returns>A unique id representing the registration.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.DeRegisterSite(System.Guid)">
+            <summary>
+            Deregisters the site with the RemoteEventsManager.
+            </summary>
+            <param name="uniqueId">The unique id representing the remote site as returned by <see cref="M:EPiServer.Events.Remote.RemoteEventsManager.RegisterSite(System.String,System.Byte[],EPiServer.Events.Clients.RegistrationType)"/>.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.Reset">
+            <summary>
+            Removes all registered events and sites that were previously registered and sets the EventReplicationProvider to null.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.GetSentCount(System.Guid)">
+            <summary>
+            Returns the number of event messages sent for the event identified by <paramref name="eventId"/>
+            </summary>
+            <param name="eventId">The id of the event</param>
+            <returns>A <see cref="T:System.Int64"/>value</returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.GetReceivedCount(System.Guid)">
+            <summary>
+            Returns the number of event messages received for the event identified by <paramref name="eventId"/>
+            </summary>
+            <param name="eventId">The id of the event</param>
+            <returns>A <see cref="T:System.Int64"/>value</returns>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the RemoteEventsManager is enabled or not
+            </summary>
+            <value><c>true</c> if RemoteEventsManager is enabled otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.IsEventClientConfigured">
+            <summary>
+            Gets the is event client configured.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.EventMissingAfterMilliseconds">
+            <summary>
+            Gets or sets the amount of time in milliseconds that need to elapse for an event to be considered missing.
+            A missing event can only be detected when an event comes out of sequence (i.e. the sequence number
+            is greater that the last plus one)
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.EventReplicationProviders">
+            <summary>
+            Get and sets the provider for event replication
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.HasEventRaiserSite">
+            <summary>
+            Gets a value indicating whether this instance has event raiser site.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has event raiser site; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.SiteCount">
+            <summary>
+            Gets the number of sites registered with the RemoteEventManager
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.SyncRoot">
+            <summary>
+            Gets the sync root.
+            The sync root can be used by client code to synchronise thread access to the public members of the class
+            </summary>
+            <value>The sync root.</value>
+        </member>
+        <member name="T:EPiServer.Events.Clients.Event">
+            <summary>
+            The Event class is used to raise and receive events in EPiServer
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.IEventHandler">
+            <summary>
+            Defines the interface that classes should implement to receive events from the event service via the EventServiceClient.
+            The Event class should be used to by user code receive events under normal circumstances. Only implement a class based on
+            this interface and use it directly with the EventServiceClient for specialized behaviour.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.#cctor">
+            <summary>
+            Initializes the <see cref="T:EPiServer.Events.Clients.Event"/> class.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Get(System.Guid)">
+            <summary>
+            Gets the specified event.
+            </summary>
+            <param name="eventId">An event id of an Event object</param>
+            <returns>The Event object for the eventId specified</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.GetAll">
+            <summary>
+            Returns all of the <see cref="T:EPiServer.Events.Clients.Event"/> instances registered
+            </summary>
+            <returns>A collection of event objects</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Raise(System.Guid,System.Object)">
+            <summary>
+            Raise this event.
+            </summary>
+            <param name="raiserId"></param>
+            <param name="param"></param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Raise(System.Guid,System.Object,EPiServer.Events.Clients.EventRaiseOption)">
+            <summary>
+            Raise this event using the raise options specified.
+            </summary>
+            <param name="raiserId"></param>
+            <param name="param"></param>
+            <param name="raiseOption"></param>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.Id">
+            <summary>
+            The Id of the event
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.RaisedCount">
+            <summary>
+            The number of times this event has been raised
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.MissedCount">
+            <summary>
+            The number of times a raise of this event remotely has been missed
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.EventsEnabled">
+            <summary>
+            True if local event processing is enabled, false otherwise
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.RemoteSendBlocked">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:EPiServer.Events.Clients.Event"/> is blocked for remote events. 
+            That is no remote events will be raised to subscribers.
+            </summary>
+            <value><c>true</c> if blocked; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:EPiServer.Events.Clients.RegistrationType">
+            <summary>
+            The permitted options when registering an event site with the RemoteEvents class
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.EventSubscriber">
+            <summary>
+            Register a site to receive events from
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.EventPublisher">
+            <summary>
+            Register a site to publish event from
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.EventRaiseOption">
+            <summary>
+            Valid options when raising an event
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.EventRaiseOption.RaiseBroadcast">
+            <summary>
+            Raise the event on the same site, with other subscribed sites on the same server and broadcast to other servers
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.EventRaiseOption.RaiseSite">
+            <summary>
+            Raise the event on the same site only
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Proxies.EventReplicationProxy">
+            <summary>
+            This class is not for public use.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ServiceModel.EventReplicationKnownTypesHelper">
+            <summary>
+            Helper class for defining ServiceKnownTypes for the IEventReplication service, 
+            see the MSDN documentation for ServiceKnownTypeAttribute 
+            (http://msdn.microsoft.com/en-us/library/ms554667.aspx) for usage information
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ServiceModel.EventReplicationKnownTypesHelper.GetKnownTypes(System.Reflection.ICustomAttributeProvider)">
+            <summary>
+            Gets the known types for the IEventReplication service
+            </summary>
+            <param name="provider">The custom attribute provider</param>
+            <returns>The known types for the IEventReplication service</returns>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.AsyncResult">
+            <summary>
+            A generic base class for IAsyncResult implementations
+            that wraps a ManualResetEvent.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.InputQueue`1">
+            <summary>
+            Handles asynchronous interactions between producers and consumers. 
+            Producers can dispatch available data to the input queue, 
+            where it will be dispatched to a waiting consumer or stored until a
+            consumer becomes available. Consumers can synchronously or asynchronously
+            request data from the queue, which will be returned when data becomes
+            available.
+            </summary>
+            <typeparam name="T">The concrete type of the consumer objects that are waiting for data.</typeparam>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBinding">
+            <summary>
+            Binding for Udp. This is our "sample profile" for Udp, which uses Text+Soap 1.2 
+            and allows for variation in Reliability capabilities. If ReliableSessionEnabled is set
+            then we will layer RM+CompositeDuplex on top of Udp. Otherwise we will just
+            have Udp on our stack.  
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpBinding.CreateBindingElements">
+            <summary>
+            Create the set of binding elements that make up this binding. 
+            NOTE: order of binding elements is important.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBindingCollectionElement">
+            <summary>
+            Binding Section for Udp. Implements configuration for SampleProfileUdpBinding.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBindingElementImporter">
+            <summary>
+            Policy import/export for Udp
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpChannelFactory">
+            <summary>
+            IChannelFactory implementation for Udp.
+            
+            Supports IOutputChannel only, as Udp is fundamentally
+            a datagram protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelFactory.OnCreateChannel(System.ServiceModel.EndpointAddress,System.Uri)">
+            <summary>
+            Create a new Udp Channel. Supports IOutputChannel.
+            </summary>
+            <param name="remoteAddress">The address of the remote endpoint</param>
+            <param name="via"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpConstants">
+            <summary>
+            Collection of constants used by the Udp Channel classes
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelHelpers.ConvertTransferException(System.Net.Sockets.SocketException)">
+            <summary>
+            The Channel layer normalizes exceptions thrown by the underlying networking implementations
+            into subclasses of CommunicationException, so that Channels can be used polymorphically from
+            an exception handling perspective.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpChannelListener">
+            <summary>
+            IListenerFactory implementation for Udp.
+            
+            Supports IInputChannel only, as Udp is fundamentally
+            a datagram protocol. Uses a listening UDP socket for each
+            Factory instance, then demuxes to the appropriate IInputListener
+            based on the registered filters. More advanced implementations could factor
+            out the listening socket and demux from this listening object
+            to separate factories based on a framing Via.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnAbort">
+            <summary>
+            Shutdown ungracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnClose(System.TimeSpan)">
+            <summary>
+            Shutdown gracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpening">
+            <summary>
+            Initialize any objects we're going to need for the opened factory
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpen(System.TimeSpan)">
+            <summary>
+            Open the listener factory for use. Ensures our UDP socket is bound
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpened">
+            <summary>
+            Open has completed, start an asynchronous receive on our socket.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.Dispatch(System.ServiceModel.Channels.Message)">
+            <summary>
+            Matches an incoming message to its waiting listener,
+            using the FilterTable to dispatch the message to the correc
+            listener. If no listener is waiting for the message, it is silently
+            discarded.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.InitializeUniqueUri(System.String)">
+            <summary>
+            Used to get a unique uri (by CompositeDuplexChannelFactory for example).
+            We get a unique TCP port by binding to "port 0"
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpOutputChannel">
+            <summary>
+            IOutputChannel implementation for Udp.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnOpen(System.TimeSpan)">
+            <summary>
+            Open the channel for use. We don't have any blocking work to perform so this is a no-op
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnAbort">
+            <summary>
+            Shutdown ungracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnClose(System.TimeSpan)">
+            <summary>
+            Shutdown gracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.EncodeMessage(System.ServiceModel.Channels.Message)">
+            <summary>
+            Address the Message and serialize it into a byte array.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpOutputChannel.SendAsyncResult">
+            <summary>
+            Implementation of async send for Udp. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpTransportBindingElement">
+            <summary>
+            Udp Binding Element.  
+            Used to configure and construct Udp ChannelFactories and ChannelListeners.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpTransportBindingElement.CanBuildChannelFactory``1(System.ServiceModel.Channels.BindingContext)">
+            <summary>
+            Used by higher layers to determine what types of channel factories this
+            binding element supports. Which in this case is just IOutputChannel.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpTransportBindingElement.CanBuildChannelListener``1(System.ServiceModel.Channels.BindingContext)">
+            <summary>
+            Used by higher layers to determine what types of channel listeners this
+            binding element supports. Which in this case is just IInputChannel.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpTransportElement">
+            <summary>
+            Configuration section for Udp. 
+            </summary>
+        </member>
+    </members>
+</doc>

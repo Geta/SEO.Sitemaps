@@ -22,7 +22,7 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
-            if (!page.IsVisibleOnSite)
+            if (!page.IsVisibleOnSite())
             {
                 return true;
             }
@@ -37,7 +37,12 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
-            if (page.PageLink == PageReference.WasteBasket)
+            if (page.PageLink == ContentReference.WasteBasket)
+            {
+                return true;
+            }
+
+            if (page.IsDeleted)
             {
                 return true;
             }

@@ -5,7 +5,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using EPiServer;
 using EPiServer.Data;
-using EPiServer.Licensing;
 using EPiServer.PlugIn;
 using EPiServer.Security;
 using EPiServer.UI;

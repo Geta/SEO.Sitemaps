@@ -1,24 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>Geta.SEO.Sitemaps</id>
-        <version>1.0.31</version>
-        <title />
-        <authors>Geta AS</authors>
-        <owners />
+      <id>$id$</id>
+      <version>$version$</version>
+      <authors>$author$</authors>
+      <owners>$author$</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>XML sitemap provider for EPiServer CMS 7</description>
-        <copyright>Copyright © Geta AS 2012</copyright>
-        <tags>Sitemap SEO EPiServer</tags>
-        <dependencies>
-            <dependency id="EPiServer.CMS.Core" version="7.0.586.1" />
-            <dependency id="EPiServer.Framework" version="7.0.859.1" />
-            <dependency id="log4net" version="1.2.10" />
-        </dependencies>
+        <description>$description$</description>
+        <copyright>$copyright$</copyright>
+        <tags>Sitemap, SEO, EPiServer7</tags>
+      <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
     </metadata>
   <files>
         <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
-        <file src="Modules\Geta.SEO.Sitemaps\SitemapHandler.aspx" target="content\modules\Geta.SEO.Sitemaps\SitemapHandler.aspx" />
-        <file src="bin\Release\Geta.SEO.Sitemaps.dll" target="lib\net40\Geta.SEO.Sitemaps.dll" />
     </files>
 </package>
