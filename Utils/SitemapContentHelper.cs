@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using EPiServer;
 using EPiServer.Configuration;
@@ -52,13 +53,11 @@ namespace Geta.SEO.Sitemaps.Utils
             return xmlGenerator;
         }
 
-        private static IList<XElement> GetSitemapXmlElements(SitemapData sitemapData, 
-                                                            ISitemapXmlGenerator sitemapGenerator, 
-                                                            ISet<string> urlSet)
+        private static IList<XElement> GetSitemapXmlElements(SitemapData sitemapData,  ISitemapXmlGenerator sitemapGenerator, ISet<string> urlSet)
         {
-            var rootPage = sitemapData.RootPageId == 0
-                               ? ContentReference.RootPage
-                               : new PageReference(sitemapData.RootPageId);
+            Settings settings = Settings.MapUrlToSettings(new Uri(sitemapData.SiteUrl));
+
+            PageReference rootPage = sitemapData.RootPageId < 0 ? new PageReference(settings.PageStartId) : new PageReference(sitemapData.RootPageId);
 
             var descendants = DataFactory.Instance.GetDescendents(rootPage);
 

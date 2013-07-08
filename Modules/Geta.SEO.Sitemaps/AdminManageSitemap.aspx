@@ -172,7 +172,7 @@
                     <asp:TextBox runat="server" ID="txtDirectoriesToAvoid" />
                 </td>
                 <td>
-                    <asp:TextBox runat="server" ID="txtRootPageId" Text="0" />
+                    <asp:TextBox runat="server" ID="txtRootPageId" Text="-1" />
                 </td>
                 <td>
                     <asp:CheckBox runat="server" ID="cbIncludeDebugInfo" />

@@ -147,13 +147,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modules\Geta.SEO.Sitemaps\SitemapHandler.aspx.cs">
-      <DependentUpon>SitemapHandler.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Modules\Geta.SEO.Sitemaps\SitemapHandler.aspx.designer.cs">
-      <DependentUpon>SitemapHandler.aspx.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Controllers\GetaSitemapController.cs" />
     <Compile Include="SitemapCreateJob.cs" />
     <Compile Include="Entities\SitemapFormat.cs" />
     <Compile Include="SpecializedProperties\PropertySEOSitemaps.cs" />
@@ -194,11 +188,6 @@
     <EmbeddedResource Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Modules\Geta.SEO.Sitemaps\SitemapHandler.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
