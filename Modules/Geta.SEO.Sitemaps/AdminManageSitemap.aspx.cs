@@ -152,8 +152,10 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             {
                 return ddl.SelectedItem.Text;
             }
-                 
-            return null;    
+
+            var label = containerControl.FindControl("lblHostUrl") as Label;
+
+            return label != null ? label.Text : null;
         }
 
         private static int TryParse(string strValue)
