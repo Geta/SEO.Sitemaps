@@ -59,7 +59,7 @@
         </div>
         <div>
             <span class="nb-text">Root page ID:</span>
-            Sitemap will contain entries for descendant pages of the specified page (0 means root page).
+            Sitemap will contain entries for descendant pages of the specified page (-1 means root page).
         </div>
         <div>
             <span class="nb-text">Debug info:</span>
