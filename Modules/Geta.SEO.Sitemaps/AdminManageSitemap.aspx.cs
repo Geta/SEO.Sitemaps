@@ -42,6 +42,8 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         {
             base.OnInit(e);
 
+            if (!PrincipalInfo.HasAdminAccess) AccessDenied();
+
             if (!IsPostBack)
             {
                 BindList();
