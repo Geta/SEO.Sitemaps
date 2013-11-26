@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using EPiServer.BaseLibrary.Scheduling;
+using EPiServer.Framework.Initialization;
 using EPiServer.PlugIn;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Services;
@@ -33,9 +34,9 @@ namespace Geta.SEO.Sitemaps
             foreach (var sitemapConfig in sitemapConfigs)
             {
                 GenerateSitemaps(sitemapConfig, builder);
-            }   
+            }
 
-            return "Job successfull. Generated sitemaps:" + builder;
+			return string.Format("Job successfully executed on site \"{0}\".<br/>Generated sitemaps: {1}", SiteMappingConfiguration.Instance.SiteId, builder);
         }
 
         private void GenerateSitemaps(SitemapData sitemapConfig, StringBuilder builder)

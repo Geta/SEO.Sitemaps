@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using EPiServer;
 using EPiServer.Configuration;
 using EPiServer.Core;
+using EPiServer.Framework.Initialization;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.XML;
 
@@ -56,7 +57,6 @@ namespace Geta.SEO.Sitemaps.Utils
         private static IList<XElement> GetSitemapXmlElements(SitemapData sitemapData,  ISitemapXmlGenerator sitemapGenerator, ISet<string> urlSet)
         {
             Settings settings = Settings.MapUrlToSettings(new Uri(sitemapData.SiteUrl));
-
             PageReference rootPage = sitemapData.RootPageId < 0 ? new PageReference(settings.PageStartId) : new PageReference(sitemapData.RootPageId);
 
             var descendants = DataFactory.Instance.GetDescendents(rootPage);
@@ -75,10 +75,9 @@ namespace Geta.SEO.Sitemaps.Utils
                                                         ISitemapXmlGenerator sitemapGenerator)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
-
-            var baseUrl = string.IsNullOrEmpty(sitemapData.SiteUrl)
-                             ? Settings.Instance.SiteUrl.ToString()
-                             : sitemapData.SiteUrl;
+            Uri baseUri = string.IsNullOrEmpty(sitemapData.SiteUrl)
+				? Settings.Instance.SiteUrl
+				: new Uri(sitemapData.SiteUrl);
 
             foreach (PageReference pageReference in pages)
             {
@@ -92,7 +91,7 @@ namespace Geta.SEO.Sitemaps.Utils
                         return sitemapXmlElements;
                     }
 
-                    AddFilteredPageElement(page, baseUrl, urlSet, sitemapData, sitemapGenerator, sitemapXmlElements);
+                    AddFilteredPageElement(page, baseUri, urlSet, sitemapData, sitemapGenerator, sitemapXmlElements);
                 }
             }
 
@@ -100,7 +99,7 @@ namespace Geta.SEO.Sitemaps.Utils
         }
 
         private static void AddFilteredPageElement(PageData page,
-                                                string baseUrl,
+                                                Uri baseUri,
                                                 ISet<string> urlSet,
                                                 SitemapData sitemapData,
                                                 ISitemapXmlGenerator sitemapGenerator,
@@ -114,7 +113,15 @@ namespace Geta.SEO.Sitemaps.Utils
 
             // get page url
             string contentUrl = UrlHelper.GetContentUrl(page);
-            string fullPageUrl = UrlHelper.CombineUrl(baseUrl, contentUrl);
+	        string pageLanguage = page.LanguageBranch.ToLower();
+	        string defaultLanguage = SiteMappingConfiguration.Instance.LanguageForHost(baseUri.Host);
+
+			if (pageLanguage.Equals(defaultLanguage))
+			{
+				contentUrl = contentUrl.Replace(string.Format("/{0}/", defaultLanguage), "/");
+			}
+
+            string fullPageUrl = UrlHelper.CombineUrl(baseUri.ToString(), contentUrl);
 
             // filter url
             if (urlSet.Contains(fullPageUrl) || UrlFilter.IsUrlFiltered(contentUrl, sitemapData))

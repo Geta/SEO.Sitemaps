@@ -2,7 +2,9 @@
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Globalization;
+using EPiServer.ServiceLocation;
 using EPiServer.Web;
+using EPiServer.Web.Routing;
 
 namespace Geta.SEO.Sitemaps.Utils
 {
@@ -27,14 +29,13 @@ namespace Geta.SEO.Sitemaps.Utils
         {
             ContentLanguage.Instance.SetCulture(page.LanguageBranch);
 
-            var urlBuilder = new UrlBuilder(page.LinkURL);
-
-            if (UrlRewriteProvider.IsFurlEnabled)
+			if (UrlRewriteProvider.IsFurlEnabled)
             {
-                Global.UrlRewriteProvider.ConvertToExternal(urlBuilder, page.PageLink, Encoding.UTF8);
+				var urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
+	            return urlResolver.GetVirtualPath(page.ContentLink);
             }
 
-            return urlBuilder.Uri.ToString();
+	        return page.LinkURL;
         }
 
         public static string CombineUrl(string baseUrl, string pageUrl)
