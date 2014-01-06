@@ -1,42 +1,50 @@
 <%@ Page Language="C#" AutoEventWireup="False" CodeBehind="AdminManageSitemap.aspx.cs" EnableViewState="true" Inherits="Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps.AdminManageSitemap" %>
+
+<%@ Register TagPrefix="EPiServerUI" Namespace="EPiServer.UI.WebControls" Assembly="EPiServer.UI" %>
+
 <%@ Import Namespace="Geta.SEO.Sitemaps.Entities" %>
 
-<asp:content ContentPlaceHolderID="MainRegion" runat="server">
+<asp:content contentplaceholderid="FullRegion" runat="server">
+    <div class="epi-contentContainer epi-padding">
+    <div class="epi-contentArea">
+        <EPiServerUI:SystemPrefix id="SystemPrefixControl" runat="server" />
+        <asp:ValidationSummary ID="ValidationSummary" runat="server" CssClass="EP-validationSummary" ForeColor="Black" />
+    </div>
     <style type="text/css">
         a.add-button {
             color: black;
         }
-        
+
         table.sitemaps th {
             padding: 4px;
         }
-        
+
         table.sitemaps td {
             padding: 7px;
         }
-        
-        table.sitemaps td input[type=text] {
-            width: 100%;
-        }
-        
-        table.sitemaps td.sitemap-name input[type=text] {
-            width: 50%;
-        }
-        
+
+            table.sitemaps td input[type=text] {
+                width: 100%;
+            }
+
+            table.sitemaps td.sitemap-name input[type=text] {
+                width: 50%;
+            }
+
         div.help {
             padding-top: 20px;
             padding-bottom: 10px;
         }
-        
+
         div.toolbar {
             padding-bottom: 10px;
             height: 30px;
         }
-        
+
         div.bottom-text {
             padding-top: 15px;
         }
-        
+
         span.nb-text {
             font-weight: bold;
         }
@@ -74,9 +82,9 @@
     <div class="toolbar">
         <asp:PlaceHolder runat="server" ID="phNewButton">
             <span class="epi-cmsButton">
-                <asp:LinkButton ID="btnNew" runat="server" Text="New sitemap" OnClick="btnNew_Click" 
+                <asp:Button ID="btnNew" runat="server" Text="New sitemap" OnClick="btnNew_Click" 
                                 CssClass="add-button epi-cmsButton-text epi-cmsButton-tools">
-                </asp:LinkButton>
+                </asp:Button>
             </span>
         </asp:PlaceHolder>
     </div>
@@ -163,7 +171,7 @@
                     <asp:Label runat="server" ID="lblHostUrl" Visible="False" />
                     <asp:DropDownList runat="server" ID="ddlHostUrls" Visible="False" />
 
-                    <asp:TextBox runat="server" ID="txtHost" /><%= SitemapHostPostfix %>
+                    <asp:TextBox runat="server" ID="txtHost" /><%# SitemapHostPostfix %>
                 </td>
                 <td>
                     <asp:TextBox runat="server" ID="txtDirectoriesToInclude" />
@@ -192,4 +200,5 @@
             </tr>
         </InsertItemTemplate>
     </asp:ListView>
+</div>
 </asp:content>

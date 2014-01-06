@@ -7,8 +7,8 @@ using EPiServer;
 using EPiServer.Data;
 using EPiServer.PlugIn;
 using EPiServer.Security;
-using EPiServer.UI;
-using EPiServer.UI.Admin.SiteMgmt;
+using EPiServer.ServiceLocation;
+using EPiServer.Web;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Services;
 
@@ -19,7 +19,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         Description = "Manage the sitemap module settings and content",
         Url = "~/Modules/Geta.SEO.Sitemaps/AdminManageSitemap.aspx", 
         RequiredAccess = AccessLevel.Administer)]
-    public partial class AdminManageSitemap : SystemPageBase
+    public partial class AdminManageSitemap : SimplePage
     {
         private readonly ISitemapRepository sitemapRepository;
 
@@ -35,19 +35,23 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             base.OnPreInit(e);
 
             MasterPageFile = ResolveUrlFromUI("MasterPages/EPiServerUI.master");
-            SystemMessageContainer.Heading = "Search engine sitemap settings";
         }
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
-            if (!PrincipalInfo.HasAdminAccess) AccessDenied();
+            if (!PrincipalInfo.HasAdminAccess)
+            {
+                AccessDenied();
+            }
 
             if (!IsPostBack)
             {
                 BindList();
             }
+
+            SystemPrefixControl.Heading = "Search engine sitemap settings";
         }
 
         private void BindList()
@@ -247,7 +251,9 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         protected IList<string> GetSiteHosts()
         {
-            var hosts = SiteInformationHandler.GetSitesInformation(false);
+            var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
+
+            IList<SiteDefinition> hosts = siteDefinitionRepository.List().ToList();
 
             var siteUrls = new List<string>(hosts.Count);
 
@@ -267,7 +273,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             }
 
             //get current site url
-            return SiteInformationHandler.GetCurrentSiteInformation().SiteUrl.ToString();
+            return SiteDefinition.Current.SiteUrl.ToString();
         }
 
         protected void lvwSitemapData_ItemInserting(object sender, ListViewInsertEventArgs e)

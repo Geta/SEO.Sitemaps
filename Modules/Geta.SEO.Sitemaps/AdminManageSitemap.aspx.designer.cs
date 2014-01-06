@@ -13,6 +13,24 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps {
     public partial class AdminManageSitemap {
         
         /// <summary>
+        /// SystemPrefixControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::EPiServer.UI.WebControls.SystemPrefix SystemPrefixControl;
+        
+        /// <summary>
+        /// ValidationSummary control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary;
+        
+        /// <summary>
         /// phNewButton control.
         /// </summary>
         /// <remarks>
@@ -28,7 +46,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnNew;
+        protected global::System.Web.UI.WebControls.Button btnNew;
         
         /// <summary>
         /// lvwSitemapData control.
