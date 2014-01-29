@@ -10,7 +10,7 @@ using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using Geta.SEO.Sitemaps.Entities;
-using Geta.SEO.Sitemaps.Services;
+using Geta.SEO.Sitemaps.Repositories;
 
 namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 {

@@ -182,21 +182,17 @@
     <Compile Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx.designer.cs">
       <DependentUpon>AdminManageSitemap.aspx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\ISitemapRepository.cs" />
-    <Compile Include="Services\ISitemapService.cs" />
-    <Compile Include="Services\SitemapRepository.cs" />
+    <Compile Include="Repositories\ISitemapRepository.cs" />
+    <Compile Include="Repositories\SitemapRepository.cs" />
     <Compile Include="Entities\SitemapData.cs" />
-    <Compile Include="Services\SitemapService.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SitemapUrlRoutingInit.cs" />
     <Compile Include="Utils\PageFilter.cs" />
-    <Compile Include="Utils\SitemapContentHelper.cs" />
+    <Compile Include="Utils\SitemapXmlGeneratorFactory.cs" />
     <Compile Include="Utils\UrlFilter.cs" />
-    <Compile Include="Utils\UrlHelper.cs" />
     <Compile Include="XML\ISitemapXmlGenerator.cs" />
     <Compile Include="XML\MobileSitemapXmlGenerator.cs" />
+    <Compile Include="XML\SitemapXmlGenerator.cs" />
     <Compile Include="XML\StandardSitemapXmlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

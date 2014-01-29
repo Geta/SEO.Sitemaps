@@ -5,7 +5,7 @@ namespace Geta.SEO.Sitemaps.Utils
 {
     public class PageFilter
     {
-        public static bool FilterPage(PageData page)
+        public static bool ShouldExcludePage(PageData page)
         {
             if (page == null)
             {
@@ -43,6 +43,11 @@ namespace Geta.SEO.Sitemaps.Utils
             }
 
             if (page.IsDeleted)
+            {
+                return true;
+            }
+
+            if (!page.HasTemplate())
             {
                 return true;
             }

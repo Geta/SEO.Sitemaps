@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Web.Mvc;
 using Geta.SEO.Sitemaps.Entities;
-using Geta.SEO.Sitemaps.Services;
+using Geta.SEO.Sitemaps.Repositories;
 using log4net;
 
 namespace Geta.SEO.Sitemaps.Controllers

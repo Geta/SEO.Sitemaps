@@ -1,56 +1,57 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using EPiServer.BaseLibrary.Scheduling;
-using EPiServer.Framework.Initialization;
 using EPiServer.PlugIn;
 using Geta.SEO.Sitemaps.Entities;
-using Geta.SEO.Sitemaps.Services;
+using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps
 {
     [ScheduledPlugIn(DisplayName = "Generate search engine sitemaps")]
     public class SitemapCreateJob : JobBase
     {
-        private readonly ISitemapService sitemapService;
-
+        private readonly ISitemapRepository _sitemapRepository;
+        private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
         public SitemapCreateJob()
         {
-            sitemapService = new SitemapService();
+            this._sitemapRepository = new SitemapRepository();
+            this._sitemapXmlGeneratorFactory = new SitemapXmlGeneratorFactory(this._sitemapRepository);
         }
 
         public override string Execute()
         {
-            var builder = new StringBuilder();
+            var message = new StringBuilder();
 
-            IList<SitemapData> sitemapConfigs = sitemapService.GetAllSitemapData();
+            IList<SitemapData> sitemapConfigs = _sitemapRepository.GetAllSitemapData();
 
             // if no configuration present create one with default values
             if (sitemapConfigs.Count == 0)
             {
-                sitemapService.Save(CreateDefaultConfig());
+                _sitemapRepository.Save(CreateDefaultConfig());
             }
 
             // create xml sitemap for each configuration
             foreach (var sitemapConfig in sitemapConfigs)
             {
-                GenerateSitemaps(sitemapConfig, builder);
+                this.GenerateSitemaps(sitemapConfig, message);
             }
 
-			return string.Format("Job successfully executed on site \"{0}\".<br/>Generated sitemaps: {1}", SiteMappingConfiguration.Instance.SiteId, builder);
+            return string.Format("Job successfully executed.<br/>Generated sitemaps: {0}", message);
         }
 
-        private void GenerateSitemaps(SitemapData sitemapConfig, StringBuilder builder)
+        private void GenerateSitemaps(SitemapData sitemapConfig, StringBuilder message)
         {
             int entryCount;
-            var success = sitemapService.Generate(sitemapConfig, out entryCount);
+            bool success = _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapConfig).Generate(sitemapConfig, out entryCount);
 
             if (success)
             {
-                builder.Append(string.Format("<br/>\"{0}\": {1} entries", sitemapConfig.Host, entryCount));
+                message.Append(string.Format("<br/>\"{0}\": {1} entries", sitemapConfig.Host, entryCount));
             }
             else
             {
-                builder.Append("<br/>Error creating sitemap for \"" + sitemapConfig.Host + "\"");
+                message.Append("<br/>Error creating sitemap for \"" + sitemapConfig.Host + "\"");
             }
         }
 

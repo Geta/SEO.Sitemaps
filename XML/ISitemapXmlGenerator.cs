@@ -1,12 +1,10 @@
-﻿using System.Xml.Linq;
-using EPiServer.Core;
+﻿using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.XML
 {
     public interface ISitemapXmlGenerator
     {
         bool IsDebugMode { get; set; }
-        XElement GenerateSiteElement(PageData pageData, string url);
-        XElement GenerateRootElement();
+        bool Generate(SitemapData sitemapData, out int entryCount);
     }
 }

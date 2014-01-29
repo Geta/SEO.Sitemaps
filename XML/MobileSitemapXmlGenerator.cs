@@ -1,16 +1,21 @@
 ﻿using System.Xml.Linq;
 using EPiServer.Core;
+using Geta.SEO.Sitemaps.Repositories;
 
 namespace Geta.SEO.Sitemaps.XML
 {
     public class MobileSitemapXmlGenerator : StandardSitemapXmlGenerator
     {
+        public MobileSitemapXmlGenerator(ISitemapRepository sitemapRepository) : base(sitemapRepository)
+        {
+        }
+
         protected XNamespace MobileNamespace
         {
             get { return @"http://www.google.com/schemas/sitemap-mobile/1.0"; }
         }
 
-        public override XElement GenerateSiteElement(PageData pageData, string url)
+        protected override XElement GenerateSiteElement(PageData pageData, string url)
         {
             var element = base.GenerateSiteElement(pageData, url);
 
@@ -20,7 +25,7 @@ namespace Geta.SEO.Sitemaps.XML
             return element;
         }
 
-        public override XElement GenerateRootElement()
+        protected override XElement GenerateRootElement()
         {
             var element = base.GenerateRootElement();
 

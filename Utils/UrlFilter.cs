@@ -3,6 +3,10 @@ using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.Utils
 {
+    /// <summary>
+    /// Administrators are able to specify specific paths to exclude (blacklist) or include (whitelist) in sitemaps.
+    /// This class is used to check this.
+    /// </summary>
     public class UrlFilter
     {
         public static bool IsUrlFiltered(string url, SitemapData sitemapConfig)

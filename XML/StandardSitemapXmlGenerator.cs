@@ -2,13 +2,18 @@
 using System.Globalization;
 using System.Xml.Linq;
 using EPiServer.Core;
+using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.SpecializedProperties;
 
 namespace Geta.SEO.Sitemaps.XML
 {
-    public class StandardSitemapXmlGenerator : ISitemapXmlGenerator
+    public class StandardSitemapXmlGenerator : SitemapXmlGenerator, ISitemapXmlGenerator
     {
         protected const string DateTimeFormat = "yyyy-MM-ddTHH:mm:sszzz";
+
+        public StandardSitemapXmlGenerator(ISitemapRepository sitemapRepository) : base(sitemapRepository)
+        {
+        }
 
         protected XNamespace SitemapXmlNamespace
         {
@@ -17,7 +22,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         public bool IsDebugMode { get; set; }
 
-        public virtual XElement GenerateSiteElement(PageData pageData, string url)
+        protected override XElement GenerateSiteElement(PageData pageData, string url)
         {
             var property = pageData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
 
@@ -46,7 +51,7 @@ namespace Geta.SEO.Sitemaps.XML
             return Math.Max(1.0 - (depth / 10.0), 0.5).ToString(CultureInfo.InvariantCulture);
         }
 
-        public virtual XElement GenerateRootElement()
+        protected override XElement GenerateRootElement()
         {
             return new XElement(SitemapXmlNamespace + "urlset");
         }
