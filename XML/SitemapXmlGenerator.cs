@@ -154,7 +154,15 @@ namespace Geta.SEO.Sitemaps.XML
 
             var urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
 
-            var fullPageUrl = new Uri(urlResolver.GetUrl(page.ContentLink));
+            string url = urlResolver.GetUrl(page.ContentLink);
+
+            // if the URL is relative we add the base site URL (protocol and hostname)
+            if (!IsAbsoluteUrl(url))
+            {
+                url = UriSupport.Combine(this._sitemapData.SiteUrl, url);
+            }
+
+            var fullPageUrl = new Uri(url);
 
             if (this._urlSet.Contains(fullPageUrl.ToString()) || UrlFilter.IsUrlFiltered(fullPageUrl.AbsolutePath, this._sitemapData))
             {
@@ -165,6 +173,12 @@ namespace Geta.SEO.Sitemaps.XML
 
             xmlElements.Add(pageElement);
             this._urlSet.Add(fullPageUrl.ToString());
+        }
+
+        private bool IsAbsoluteUrl(string url)
+        {
+            Uri result;
+            return Uri.TryCreate(url, UriKind.Absolute, out result);
         }
     }
 }
