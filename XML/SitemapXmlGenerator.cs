@@ -28,6 +28,7 @@ namespace Geta.SEO.Sitemaps.XML
         private SitemapData _sitemapData;
         private readonly ISet<string> _urlSet;
         private SiteDefinition _settings;
+        private string _hostLanguageBranch;
 
         public SitemapXmlGenerator(ISitemapRepository sitemapRepository)
         {
@@ -51,13 +52,9 @@ namespace Geta.SEO.Sitemaps.XML
             try
             {
                 this._sitemapData = sitemapData;
-
-                var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
-
-
-                this._settings = siteDefinitionRepository.List().FirstOrDefault(site => site.SiteUrl == new Uri(this._sitemapData.SiteUrl));
-
-
+                var sitemapSiteUri = new Uri(this._sitemapData.SiteUrl);
+                this._settings = GetSiteDefinitionFromSiteUrl(sitemapSiteUri);
+                this._hostLanguageBranch = GetHostLanguageBranch();
                 XElement sitemap = this.CreateSitemapXmlContents(out entryCount);
 
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
@@ -123,26 +120,74 @@ namespace Geta.SEO.Sitemaps.XML
         private IEnumerable<XElement> GenerateXmlElements(IEnumerable<ContentReference> pages)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
-
             var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
 
-            foreach (ContentReference contentReference in pages)
+            if (this._hostLanguageBranch == null)
             {
-                var languagePages = contentRepository.GetLanguageBranches<PageData>(contentReference);
-
-                foreach (PageData page in languagePages)
+                foreach (ContentReference contentReference in pages)
                 {
-                    if (this._urlSet.Count >= MaxSitemapEntryCount)
-                    {
-                        this._sitemapData.ExceedsMaximumEntryCount = true;
-                        return sitemapXmlElements;
-                    }
+                    var languagePages = contentRepository.GetLanguageBranches<PageData>(contentReference);
 
-                    AddFilteredPageElement(page, sitemapXmlElements);
+                    foreach (PageData page in languagePages)
+                    {
+                        if (this._urlSet.Count >= MaxSitemapEntryCount)
+                        {
+                            this._sitemapData.ExceedsMaximumEntryCount = true;
+                            return sitemapXmlElements;
+                        }
+
+                        AddFilteredPageElement(page, sitemapXmlElements);
+                    }
+                }
+            }
+            else
+            {
+                var languageSelector = new LanguageSelector(this._hostLanguageBranch);
+
+                foreach (ContentReference contentReference in pages)
+                {
+                    PageData page;
+
+                    if (contentRepository.TryGet(contentReference, languageSelector, out page))
+                    {
+                        if (this._urlSet.Count >= MaxSitemapEntryCount)
+                        {
+                            this._sitemapData.ExceedsMaximumEntryCount = true;
+                            return sitemapXmlElements;
+                        }
+
+                        AddFilteredPageElement(page, sitemapXmlElements);
+                    }
                 }
             }
 
             return sitemapXmlElements;
+        }
+
+        private string GetHostLanguageBranch()
+        {
+            var hostDefinition = GetHostDefinition();
+
+            return hostDefinition != null && hostDefinition.Language != null
+                ? hostDefinition.Language.ToString()
+                : null;
+        }
+
+        private SiteDefinition GetSiteDefinitionFromSiteUrl(Uri sitemapSiteUri)
+        {
+            var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
+            return siteDefinitionRepository
+                .List()
+                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host)));
+        }
+
+        private HostDefinition GetHostDefinition()
+        {
+            var siteUrl = new Uri(this._sitemapData.SiteUrl);
+            string sitemapHost = siteUrl.Host;
+
+            return this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
+                   this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
         }
 
         private void AddFilteredPageElement(PageData page, IList<XElement> xmlElements)
@@ -154,7 +199,12 @@ namespace Geta.SEO.Sitemaps.XML
 
             var urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
 
-            string url = urlResolver.GetUrl(page.ContentLink);
+            string url = urlResolver.GetUrl(page.ContentLink, page.LanguageBranch);
+
+            if (this._hostLanguageBranch != null)
+            {
+                url = url.Replace(string.Format("/{0}/", this._hostLanguageBranch), "/");
+            }
 
             // if the URL is relative we add the base site URL (protocol and hostname)
             if (!IsAbsoluteUrl(url))

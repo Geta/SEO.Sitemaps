@@ -260,6 +260,16 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             foreach (var siteInformation in hosts)
             {
                 siteUrls.Add(siteInformation.SiteUrl.ToString());
+
+                foreach (var host in siteInformation.Hosts)
+                {
+                    if (host.Name == "*"  || host.Name.Equals(siteInformation.SiteUrl.Host, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    siteUrls.Add(string.Format("{0}://{1}/", siteInformation.SiteUrl.Scheme, host.Name));
+                }
             }
 
             return siteUrls;

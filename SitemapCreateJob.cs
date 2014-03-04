@@ -47,7 +47,7 @@ namespace Geta.SEO.Sitemaps
 
             if (success)
             {
-                message.Append(string.Format("<br/>\"{0}\": {1} entries", sitemapConfig.Host, entryCount));
+                message.Append(string.Format("<br/>\"{0}{1}\": {2} entries", sitemapConfig.SiteUrl, sitemapConfig.Host, entryCount));
             }
             else
             {
