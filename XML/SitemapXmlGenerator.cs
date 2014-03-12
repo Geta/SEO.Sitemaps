@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
+using System.Web.Caching;
 using System.Xml;
 using System.Xml.Linq;
 using EPiServer;
@@ -22,6 +24,9 @@ namespace Geta.SEO.Sitemaps.XML
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
 
         private readonly ISitemapRepository _sitemapRepository;
+        private readonly IContentRepository _contentRepository;
+        private readonly UrlResolver _urlResolver;
+        private readonly SiteDefinitionRepository _siteDefinitionRepository;
 
         private const int MaxSitemapEntryCount = 50000;
 
@@ -30,10 +35,12 @@ namespace Geta.SEO.Sitemaps.XML
         private SiteDefinition _settings;
         private string _hostLanguageBranch;
 
-        public SitemapXmlGenerator(ISitemapRepository sitemapRepository)
+        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository)
         {
             this._sitemapRepository = sitemapRepository;
-
+            this._contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
+            this._urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
+            this._siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
             this._urlSet = new HashSet<string>();
         }
 
@@ -53,9 +60,9 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 this._sitemapData = sitemapData;
                 var sitemapSiteUri = new Uri(this._sitemapData.SiteUrl);
-                this._settings = GetSiteDefinitionFromSiteUrl(sitemapSiteUri);
+                this._settings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
                 this._hostLanguageBranch = GetHostLanguageBranch();
-                XElement sitemap = this.CreateSitemapXmlContents(out entryCount);
+                XElement sitemap = CreateSitemapXmlContents(out entryCount);
 
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
                 doc.Add(sitemap);
@@ -87,7 +94,7 @@ namespace Geta.SEO.Sitemaps.XML
         /// <returns>XElement that contains sitemap entries according to the configuration</returns>
         private XElement CreateSitemapXmlContents(out int entryCount)
         {
-            XElement sitemapElement = this.GenerateRootElement();
+            XElement sitemapElement = GenerateRootElement();
 
             sitemapElement.Add(GetSitemapXmlElements());
 
@@ -105,9 +112,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             var rootPage = this._sitemapData.RootPageId < 0 ? this._settings.StartPage : new ContentReference(this._sitemapData.RootPageId);
 
-            var contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
-
-            IList<ContentReference> descendants = contentLoader.GetDescendents(rootPage).ToList();
+            IList<ContentReference> descendants = this._contentRepository.GetDescendents(rootPage).ToList();
 
             if (rootPage != ContentReference.RootPage)
             {
@@ -120,48 +125,36 @@ namespace Geta.SEO.Sitemaps.XML
         private IEnumerable<XElement> GenerateXmlElements(IEnumerable<ContentReference> pages)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
-            var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
 
-            if (this._hostLanguageBranch == null)
+            foreach (ContentReference contentReference in pages)
             {
-                foreach (ContentReference contentReference in pages)
+                var languagePages = this._contentRepository.GetLanguageBranches<IContentData>(contentReference).OfType<PageData>();
+
+                foreach (PageData page in languagePages)
                 {
-                    var languagePages = contentRepository.GetLanguageBranches<PageData>(contentReference);
-
-                    foreach (PageData page in languagePages)
+                    if (ExcludePageLanguageFromSitemap(page))
                     {
-                        if (this._urlSet.Count >= MaxSitemapEntryCount)
-                        {
-                            this._sitemapData.ExceedsMaximumEntryCount = true;
-                            return sitemapXmlElements;
-                        }
-
-                        AddFilteredPageElement(page, sitemapXmlElements);
+                        continue;
                     }
-                }
-            }
-            else
-            {
-                var languageSelector = new LanguageSelector(this._hostLanguageBranch);
 
-                foreach (ContentReference contentReference in pages)
-                {
-                    PageData page;
-
-                    if (contentRepository.TryGet(contentReference, languageSelector, out page))
+                    if (this._urlSet.Count >= MaxSitemapEntryCount)
                     {
-                        if (this._urlSet.Count >= MaxSitemapEntryCount)
-                        {
-                            this._sitemapData.ExceedsMaximumEntryCount = true;
-                            return sitemapXmlElements;
-                        }
-
-                        AddFilteredPageElement(page, sitemapXmlElements);
+                        this._sitemapData.ExceedsMaximumEntryCount = true;
+                        return sitemapXmlElements;
                     }
+
+                    AddFilteredPageElement(page, sitemapXmlElements);
                 }
             }
 
             return sitemapXmlElements;
+        }
+
+        private SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
+        {
+            return this._siteDefinitionRepository
+                .List()
+                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private string GetHostLanguageBranch()
@@ -173,12 +166,23 @@ namespace Geta.SEO.Sitemaps.XML
                 : null;
         }
 
-        private SiteDefinition GetSiteDefinitionFromSiteUrl(Uri sitemapSiteUri)
+        private bool HostDefinitionExistsForLanguage(string languageBranch)
         {
-            var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
-            return siteDefinitionRepository
-                .List()
-                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host)));
+            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", this._sitemapData.SiteUrl, languageBranch);
+            object cachedObject = HttpRuntime.Cache.Get(cacheKey);
+
+            if (cachedObject == null)
+            {
+                cachedObject =
+                    this._settings.Hosts.Any(
+                        x =>
+                        x.Language != null &&
+                        x.Language.ToString().Equals(languageBranch, StringComparison.InvariantCultureIgnoreCase));
+
+                HttpRuntime.Cache.Insert(cacheKey, cachedObject, null, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+            }
+
+            return (bool)cachedObject;
         }
 
         private HostDefinition GetHostDefinition()
@@ -190,6 +194,18 @@ namespace Geta.SEO.Sitemaps.XML
                    this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
         }
 
+        /// <summary>
+        /// Check if the page languagebranch should be excluded from the current sitemap.
+        /// </summary>
+        /// <param name="page">PageData</param>
+        /// <returns>True if the current sitemap host is mapped to a specific language and the page languagebranch doesn't match this language AND if a HostDefinition mapped to the page.LanguageBranch exists, otherwise false.</returns>
+        private bool ExcludePageLanguageFromSitemap(PageData page)
+        {
+            return this._hostLanguageBranch != null &&
+                   !this._hostLanguageBranch.Equals(page.LanguageBranch, StringComparison.InvariantCultureIgnoreCase) &&
+                   HostDefinitionExistsForLanguage(page.LanguageBranch);
+        }
+
         private void AddFilteredPageElement(PageData page, IList<XElement> xmlElements)
         {
             if (PageFilter.ShouldExcludePage(page))
@@ -197,19 +213,25 @@ namespace Geta.SEO.Sitemaps.XML
                 return;
             }
 
-            var urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
+            string url = this._urlResolver.GetUrl(page.ContentLink, page.LanguageBranch);
 
-            string url = urlResolver.GetUrl(page.ContentLink, page.LanguageBranch);
-
-            if (this._hostLanguageBranch != null)
+            // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
+            if (this._hostLanguageBranch != null && page.LanguageBranch.Equals(this._hostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
             {
                 url = url.Replace(string.Format("/{0}/", this._hostLanguageBranch), "/");
             }
 
+            Uri absoluteUri;
+
             // if the URL is relative we add the base site URL (protocol and hostname)
-            if (!IsAbsoluteUrl(url))
+            if (!IsAbsoluteUrl(url, out absoluteUri))
             {
                 url = UriSupport.Combine(this._sitemapData.SiteUrl, url);
+            }
+            // Force the SiteUrl
+            else
+            {
+                url = UriSupport.Combine(this._sitemapData.SiteUrl, absoluteUri.AbsolutePath);
             }
 
             var fullPageUrl = new Uri(url);
@@ -225,10 +247,9 @@ namespace Geta.SEO.Sitemaps.XML
             this._urlSet.Add(fullPageUrl.ToString());
         }
 
-        private bool IsAbsoluteUrl(string url)
+        private bool IsAbsoluteUrl(string url, out Uri absoluteUri)
         {
-            Uri result;
-            return Uri.TryCreate(url, UriKind.Absolute, out result);
+            return Uri.TryCreate(url, UriKind.Absolute, out absoluteUri);
         }
     }
 }
