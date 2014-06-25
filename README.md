@@ -30,22 +30,22 @@ Add a new sitemap definition and fill values for sitemap host and other fields:
 * Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry   
 * Format - currently standard or mobile (to specify [mobile content] (http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
 
-![Add a sitemap](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapAdd.png)
+![Add a sitemap](/Screenshots/SitemapAdd.png?raw=true)
 
 In case of multiple sites you choose for which site to host this sitemap:   
-![Add a sitemap multiple site](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapAddMultiSite.png)
+![Add a sitemap multiple site](/Screenshots/SitemapAddMultiSite.png?raw=true)
 
 Each sitemap configuration must have a unique host name:
-![Configure sitemaps](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapConfigure.png)
+![Configure sitemaps](/Screenshots/SitemapConfigure.png?raw=true)
 
 When configuration done go to the scheduled task "Generate search engine sitemaps" and run/schedule it to run in the necessary frequency. After the scheduled job has been run successfully you can view the sitemap(-s) by either opening the configured sitemap host or clicking "View" next to the sitemap configuration.
 
 ### Dynamic property for specific pages
 You can specify page specific sitemap properties (like change frequency, priority or inclulde/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
-![Create dynamic property](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapDynamicPropertyDefine.png)
+![Create dynamic property](/Screenshots/SitemapDynamicPropertyDefine.png?raw=true)
 
 and specify values for the dynamic property:
-![Set value for the dynamic property](//raw.github.com/Geta/SEO.Sitemaps/master/Screenshots/SitemapDynamicPropertyOnPage.PNG)
+![Set value for the dynamic property](/Screenshots/SitemapDynamicPropertyOnPage.PNG?raw=true)
 
 ## Limitations
 * Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).
