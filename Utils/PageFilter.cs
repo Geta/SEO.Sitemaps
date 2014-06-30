@@ -22,7 +22,7 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
-            if (!page.IsVisibleOnSite())
+            if (!IsVisibleOnSite(page))
             {
                 return true;
             }
@@ -53,6 +53,11 @@ namespace Geta.SEO.Sitemaps.Utils
             }
 
             return false;
+        }
+
+        private static bool IsVisibleOnSite(PageData page)
+        {
+            return page.HasTemplate() && !page.IsPendingPublish && !string.IsNullOrEmpty(page.StaticLinkURL);
         }
 
         private static bool IsLink(PageData page)
