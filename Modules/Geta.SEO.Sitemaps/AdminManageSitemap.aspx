@@ -75,7 +75,7 @@
         </div>
         <div>
             <span class="nb-text">Format:</span>
-            Standard/Mobile
+            Standard/Mobile/Commerce
         </div>
     </div>
     
@@ -158,6 +158,9 @@
                     <div>
                         <asp:RadioButton runat="server" ID="rbMobile" GroupName="grSitemapFormat" Text="Mobile" Checked='<%# ((SitemapFormat) Eval("SitemapFormat")) == SitemapFormat.Mobile %>' />
                     </div>
+                    <div>
+                        <asp:RadioButton runat="server" ID="rbCommerce" GroupName="grSitemapFormat" Text="Commerce" Checked='<%# ((SitemapFormat) Eval("SitemapFormat")) == SitemapFormat.Commerce %>' />
+                    </div>
                 </td>
                 <td>
                     <asp:LinkButton ID="btnUpdate" CommandName="Update" CommandArgument='<%# Eval("Id") %>' runat="server" Text="Update"></asp:LinkButton>
@@ -168,34 +171,37 @@
         <InsertItemTemplate>
             <tr>
                 <td class="sitemap-name">
-                    <asp:Label runat="server" ID="lblHostUrl" Visible="False" />
-                    <asp:DropDownList runat="server" ID="ddlHostUrls" Visible="False" />
+                    <asp:Label runat="server" ID="Label1" Visible="False" />
+                    <asp:DropDownList runat="server" ID="DropDownList1" Visible="False" />
 
-                    <asp:TextBox runat="server" ID="txtHost" /><%# SitemapHostPostfix %>
+                    <asp:TextBox runat="server" ID="TextBox1" /><%# SitemapHostPostfix %>
                 </td>
                 <td>
-                    <asp:TextBox runat="server" ID="txtDirectoriesToInclude" />
+                    <asp:TextBox runat="server" ID="TextBox2" />
                 </td>
                 <td>
-                    <asp:TextBox runat="server" ID="txtDirectoriesToAvoid" />
+                    <asp:TextBox runat="server" ID="TextBox3" />
                 </td>
                 <td>
-                    <asp:TextBox runat="server" ID="txtRootPageId" Text="-1" />
+                    <asp:TextBox runat="server" ID="TextBox4" Text="-1" />
                 </td>
                 <td>
-                    <asp:CheckBox runat="server" ID="cbIncludeDebugInfo" />
+                    <asp:CheckBox runat="server" ID="CheckBox1" />
                 </td>
                 <td>
                     <div>
-                        <asp:RadioButton runat="server" ID="rbStandard" GroupName="grSitemapFormat" Text="Standard" />
+                        <asp:RadioButton runat="server" ID="RadioButton1" GroupName="grSitemapFormat" Text="Standard" />
                     </div>
                     <div>
-                        <asp:RadioButton runat="server" ID="rbMobile" GroupName="grSitemapFormat" Text="Mobile" />
+                        <asp:RadioButton runat="server" ID="RadioButton2" GroupName="grSitemapFormat" Text="Mobile" />
+                    </div>
+                    <div>
+                        <asp:RadioButton runat="server" ID="RadioButton3" GroupName="grSitemapFormat" Text="Commerce" />
                     </div>
                 </td>
                 <td>
                     <asp:LinkButton ID="btnInsert" CommandName="Insert" runat="server" Text="Save"></asp:LinkButton>
-                    <asp:LinkButton ID="btnCancel" CommandName="Cancel" runat="server" Text="Cancel"></asp:LinkButton>
+                    <asp:LinkButton ID="LinkButton1" CommandName="Cancel" runat="server" Text="Cancel"></asp:LinkButton>
                 </td>
             </tr>
         </InsertItemTemplate>

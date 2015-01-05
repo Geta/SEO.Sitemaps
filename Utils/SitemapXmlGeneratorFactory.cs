@@ -1,4 +1,5 @@
-﻿using Geta.SEO.Sitemaps.Entities;
+﻿using EPiServer.ServiceLocation;
+using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.XML;
 
@@ -20,11 +21,13 @@ namespace Geta.SEO.Sitemaps.Utils
             switch (sitemapData.SitemapFormat)
             {
                 case SitemapFormat.Mobile:
-                    xmlGenerator = new MobileSitemapXmlGenerator(_sitemapRepository);
+                    xmlGenerator = ServiceLocator.Current.GetInstance<MobileSitemapXmlGenerator>();
                     break;
-
+                case SitemapFormat.Commerce:
+                    xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceSitemapXmlGenerator>();
+                    break;
                 default:
-                    xmlGenerator = new StandardSitemapXmlGenerator(_sitemapRepository);
+                    xmlGenerator = ServiceLocator.Current.GetInstance<StandardSitemapXmlGenerator>();
                     break;
             }
 

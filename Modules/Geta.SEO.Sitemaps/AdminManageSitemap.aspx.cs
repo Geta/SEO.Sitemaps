@@ -57,7 +57,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         private void BindList()
         {
             lvwSitemapData.DataSource = sitemapRepository.GetAllSitemapData();
-            lvwSitemapData.DataBind();   
+            lvwSitemapData.DataBind();
         }
 
         protected void btnNew_Click(object sender, EventArgs e)
@@ -134,15 +134,15 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         private void InsertSitemapData(ListViewItem insertItem)
         {
             var sitemapData = new SitemapData
-                {
-                    SiteUrl = GetSelectedSiteUrl(insertItem),
-                    Host = ((TextBox) insertItem.FindControl("txtHost")).Text + SitemapHostPostfix,
-                    PathsToAvoid = GetDirectoryList(insertItem, "txtDirectoriesToAvoid"),
-                    PathsToInclude = GetDirectoryList(insertItem, "txtDirectoriesToInclude"),
-                    IncludeDebugInfo = ((CheckBox) insertItem.FindControl("cbIncludeDebugInfo")).Checked,
-                    SitemapFormat = IsMobileSitemapFormatChecked(insertItem) ? SitemapFormat.Mobile : SitemapFormat.Standard,
-                    RootPageId = TryParse(((TextBox) insertItem.FindControl("txtRootPageId")).Text)
-                };
+            {
+                SiteUrl = GetSelectedSiteUrl(insertItem),
+                Host = ((TextBox)insertItem.FindControl("txtHost")).Text + SitemapHostPostfix,
+                PathsToAvoid = GetDirectoryList(insertItem, "txtDirectoriesToAvoid"),
+                PathsToInclude = GetDirectoryList(insertItem, "txtDirectoriesToInclude"),
+                IncludeDebugInfo = ((CheckBox)insertItem.FindControl("cbIncludeDebugInfo")).Checked,
+                SitemapFormat = GetSitemapFormat(insertItem),
+                RootPageId = TryParse(((TextBox)insertItem.FindControl("txtRootPageId")).Text)
+            };
 
             sitemapRepository.Save(sitemapData);
 
@@ -174,7 +174,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         private IList<string> GetDirectoryList(Control containerControl, string fieldName)
         {
-            string strValue = ((TextBox) containerControl.FindControl(fieldName)).Text.Trim();
+            string strValue = ((TextBox)containerControl.FindControl(fieldName)).Text.Trim();
 
             if (string.IsNullOrEmpty(strValue))
             {
@@ -184,28 +184,33 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             return new List<string>(Url.Encode(strValue).Split(';'));
         }
 
-         protected string GetDirectoriesString(Object directoryListObject)
+        protected string GetDirectoriesString(Object directoryListObject)
         {
             if (directoryListObject == null)
             {
                 return string.Empty;
             }
 
-            return String.Join(";", ((IList<string>) directoryListObject));
+            return String.Join(";", ((IList<string>)directoryListObject));
         }
 
-        private static bool IsMobileSitemapFormatChecked(Control container)
+        private SitemapFormat GetSitemapFormat(Control container)
         {
-            if (((RadioButton) container.FindControl("rbMobile")).Checked)
+            if (((RadioButton)container.FindControl("rbMobile")).Checked)
             {
-                return true;
+                return SitemapFormat.Mobile;
             }
 
-            return false;
+            if (((RadioButton)container.FindControl("rbCommerce")).Checked)
+            {
+                return SitemapFormat.Commerce;
+            }
+
+            return SitemapFormat.Standard;
         }
 
         private void UpdateSitemapData(Identity id, ListViewItem item)
-        {                                                                
+        {
             var sitemapData = sitemapRepository.GetSitemapData(id);
 
             if (sitemapData == null)
@@ -216,11 +221,9 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             sitemapData.Host = ((TextBox)item.FindControl("txtHost")).Text + SitemapHostPostfix;
             sitemapData.PathsToAvoid = GetDirectoryList(item, "txtDirectoriesToAvoid");
             sitemapData.PathsToInclude = GetDirectoryList(item, "txtDirectoriesToInclude");
-            sitemapData.IncludeDebugInfo = ((CheckBox) item.FindControl("cbIncludeDebugInfo")).Checked;
-            sitemapData.SitemapFormat = IsMobileSitemapFormatChecked(item)
-                                            ? SitemapFormat.Mobile
-                                            : SitemapFormat.Standard;
-            sitemapData.RootPageId = TryParse(((TextBox) item.FindControl("txtRootPageId")).Text);
+            sitemapData.IncludeDebugInfo = ((CheckBox)item.FindControl("cbIncludeDebugInfo")).Checked;
+            sitemapData.SitemapFormat = GetSitemapFormat(item);
+            sitemapData.RootPageId = TryParse(((TextBox)item.FindControl("txtRootPageId")).Text);
             sitemapData.SiteUrl = GetSelectedSiteUrl(item);
 
             sitemapRepository.Save(sitemapData);
@@ -263,7 +266,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
                 foreach (var host in siteInformation.Hosts)
                 {
-                    if (host.Name == "*"  || host.Name.Equals(siteInformation.SiteUrl.Host, StringComparison.InvariantCultureIgnoreCase))
+                    if (host.Name == "*" || host.Name.Equals(siteInformation.SiteUrl.Host, StringComparison.InvariantCultureIgnoreCase))
                     {
                         continue;
                     }

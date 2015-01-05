@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using EPiServer.BaseLibrary.Scheduling;
 using EPiServer.PlugIn;
+using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.Utils;
@@ -13,14 +15,20 @@ namespace Geta.SEO.Sitemaps
     {
         private readonly ISitemapRepository _sitemapRepository;
         private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
+
+        private bool _stopSignaled;
+
         public SitemapCreateJob()
         {
-            this._sitemapRepository = new SitemapRepository();
-            this._sitemapXmlGeneratorFactory = new SitemapXmlGeneratorFactory(this._sitemapRepository);
+            IsStoppable = true;
+
+            this._sitemapRepository = ServiceLocator.Current.GetInstance<ISitemapRepository>();
+            this._sitemapXmlGeneratorFactory = ServiceLocator.Current.GetInstance<SitemapXmlGeneratorFactory>();
         }
 
         public override string Execute()
         {
+            OnStatusChanged("Starting generation of sitemaps");
             var message = new StringBuilder();
 
             IList<SitemapData> sitemapConfigs = _sitemapRepository.GetAllSitemapData();
@@ -34,6 +42,11 @@ namespace Geta.SEO.Sitemaps
             // create xml sitemap for each configuration
             foreach (var sitemapConfig in sitemapConfigs)
             {
+                if (_stopSignaled)
+                {
+                    return "Stop of job was called";
+                }
+
                 this.GenerateSitemaps(sitemapConfig, message);
             }
 
@@ -65,6 +78,11 @@ namespace Geta.SEO.Sitemaps
             };
             
             return blankConfig;
+        }
+
+        public override void Stop()
+        {
+            _stopSignaled = true;
         }
     }
 }
