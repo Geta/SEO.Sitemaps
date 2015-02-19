@@ -8,11 +8,8 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
         <copyright>$copyright$</copyright>
-        <tags>Sitemap SEO EPiServer</tags>
+        <tags>Sitemap SEO EPiServer Commerce</tags>
         <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
 	<iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
     </metadata>
-  <files>
-        <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
-    </files>
 </package>
