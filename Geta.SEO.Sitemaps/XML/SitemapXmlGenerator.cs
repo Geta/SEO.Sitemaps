@@ -22,10 +22,10 @@ namespace Geta.SEO.Sitemaps.XML
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
 
-        private readonly ISitemapRepository _sitemapRepository;
-        private readonly IContentRepository _contentRepository;
-        private readonly UrlResolver _urlResolver;
-        private readonly SiteDefinitionRepository _siteDefinitionRepository;
+        protected readonly ISitemapRepository SitemapRepository;
+        protected readonly IContentRepository ContentRepository;
+        protected readonly UrlResolver UrlResolver;
+        protected readonly SiteDefinitionRepository SiteDefinitionRepository;
 
         private const int MaxSitemapEntryCount = 50000;
 
@@ -36,10 +36,10 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository)
         {
-            this._sitemapRepository = sitemapRepository;
-            this._contentRepository = contentRepository;
-            this._urlResolver = urlResolver;
-            this._siteDefinitionRepository = siteDefinitionRepository;
+            this.SitemapRepository = sitemapRepository;
+            this.ContentRepository = contentRepository;
+            this.UrlResolver = urlResolver;
+            this.SiteDefinitionRepository = siteDefinitionRepository;
             this._urlSet = new HashSet<string>();
         }
 
@@ -74,7 +74,7 @@ namespace Geta.SEO.Sitemaps.XML
                     sitemapData.Data = ms.ToArray();
                 }
 
-                this._sitemapRepository.Save(sitemapData);
+                this.SitemapRepository.Save(sitemapData);
 
                 return true;
             }
@@ -111,7 +111,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             var rootPage = this._sitemapData.RootPageId < 0 ? this._settings.StartPage : new ContentReference(this._sitemapData.RootPageId);
 
-            IList<ContentReference> descendants = this._contentRepository.GetDescendents(rootPage).ToList();
+            IList<ContentReference> descendants = this.ContentRepository.GetDescendents(rootPage).ToList();
 
             if (rootPage != ContentReference.RootPage)
             {
@@ -127,7 +127,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             foreach (ContentReference contentReference in pages)
             {
-                var languagePages = this._contentRepository.GetLanguageBranches<IContentData>(contentReference).OfType<IContent>();
+                var languagePages = this.ContentRepository.GetLanguageBranches<IContentData>(contentReference).OfType<IContent>();
 
                 foreach (var page in languagePages)
                 {
@@ -151,7 +151,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         private SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
         {
-            return this._siteDefinitionRepository
+            return this.SiteDefinitionRepository
                 .List()
                 .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host, StringComparison.InvariantCultureIgnoreCase)));
         }
@@ -218,7 +218,7 @@ namespace Geta.SEO.Sitemaps.XML
             if (contentData is PageData)
             {
                 var tempPage = (PageData)contentData;
-                url = this._urlResolver.GetUrl(contentData.ContentLink, tempPage.LanguageBranch);
+                url = this.UrlResolver.GetUrl(contentData.ContentLink, tempPage.LanguageBranch);
 
                 // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
                 if (this._hostLanguageBranch != null && tempPage.LanguageBranch.Equals(this._hostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
@@ -228,7 +228,7 @@ namespace Geta.SEO.Sitemaps.XML
             }
             else
             {
-                url = this._urlResolver.GetUrl(contentData.ContentLink);
+                url = this.UrlResolver.GetUrl(contentData.ContentLink);
             }
 
             Uri absoluteUri;
