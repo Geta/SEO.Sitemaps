@@ -269,7 +269,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Geta.SEO.Sitemaps.Commerce.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
