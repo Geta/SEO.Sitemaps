@@ -42,7 +42,6 @@ namespace Geta.SEO.Sitemaps.Commerce
         private SitemapData _sitemapData;
         private readonly HashSet<string> _urlSet;
         private SiteDefinition _settings;
-        private string _hostLanguageBranch;
 
         public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository)
         {
@@ -60,7 +59,6 @@ namespace Geta.SEO.Sitemaps.Commerce
                 this._sitemapData = sitemapData;
                 var sitemapSiteUri = new Uri(this._sitemapData.SiteUrl);
                 this._settings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
-                this._hostLanguageBranch = GetHostLanguageBranch();
 
                 XElement sitemap = CreateSitemapXmlContents(out entryCount);
 
@@ -129,11 +127,6 @@ namespace Geta.SEO.Sitemaps.Commerce
             {
                 var page = this._contentRepository.Get<CatalogContentBase>(contentReference);
 
-                //if (ExcludePageLanguageFromSitemap(page))
-                //{
-                //    continue;
-                //}
-
                 if (this._urlSet.Count >= MaxSitemapEntryCount)
                 {
                     this._sitemapData.ExceedsMaximumEntryCount = true;
@@ -146,16 +139,16 @@ namespace Geta.SEO.Sitemaps.Commerce
             return sitemapXmlElements;
         }
 
-        private void AddFilteredPageElement(CatalogContentBase page, IList<XElement> xmlElements)
+        private void AddFilteredPageElement(CatalogContentBase contentData, IList<XElement> xmlElements)
         {
-            if (page.ShouldExcludeContent())
+            if (contentData.ShouldExcludeContent())
             {
                 return;
             }
 
             try
             {
-                string url = this._urlResolver.GetUrl(page.ContentLink);
+                string url = this._urlResolver.GetUrl(contentData.ContentLink);
 
                 if (string.IsNullOrEmpty(url))
                 {
@@ -182,7 +175,7 @@ namespace Geta.SEO.Sitemaps.Commerce
                     return;
                 }
 
-                XElement pageElement = this.GenerateSiteElement(page, fullPageUrl.ToString());
+                XElement pageElement = this.GenerateSiteElement(contentData, fullPageUrl.ToString());
 
                 xmlElements.Add(pageElement);
                 this._urlSet.Add(fullPageUrl.ToString());
@@ -194,14 +187,14 @@ namespace Geta.SEO.Sitemaps.Commerce
 
         }
 
-        private XElement GenerateSiteElement(CatalogContentBase pageData, string url)
+        private XElement GenerateSiteElement(CatalogContentBase contentData, string url)
         {
-            var property = pageData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
+            var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
 
             var element = new XElement(
                 SitemapXmlNamespace + "url",
                 new XElement(SitemapXmlNamespace + "loc", url),
-                new XElement(SitemapXmlNamespace + "lastmod", pageData.StartPublish.Value.ToString(DateTimeFormat)), // TODO use modified
+                new XElement(SitemapXmlNamespace + "lastmod", contentData.StartPublish.Value.ToString(DateTimeFormat)), // TODO use modified
                 new XElement(SitemapXmlNamespace + "changefreq", (property != null) ? property.ChangeFreq : "weekly"),
                 new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url)));
 
@@ -210,7 +203,7 @@ namespace Geta.SEO.Sitemaps.Commerce
                 element.AddFirst(new XComment(
                     string.Format(
                         "content ID: '{0}', name: '{1}', language: '{2}'",
-                        pageData.ContentLink.ID, pageData.Name, pageData.Language)));
+                        contentData.ContentLink.ID, contentData.Name, contentData.Language)));
             }
 
             return element;

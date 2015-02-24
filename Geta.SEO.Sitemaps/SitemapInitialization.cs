@@ -5,25 +5,13 @@ using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Repositories;
 using StructureMap;
-using StructureMap.Configuration.DSL;
-
 namespace Geta.SEO.Sitemaps
 {
-    [ModuleDependency(typeof(ServiceContainerInitialization))]
+    [ModuleDependency(typeof(EPiServer.Web.InitializationModule))]
     [InitializableModule]
-    public class SitemapInitialization : IConfigurableModule
+    public class SitemapInitialization : IInitializableModule
     {
         private static bool _initialized;
-
-        public void ConfigureContainer(ServiceConfigurationContext context)
-        {
-            context.Container.Configure(ConfigureContainer);
-        }
-
-        private static void ConfigureContainer(ConfigurationExpression container)
-        {
-            container.AddRegistry<SitemapRegistry>();
-        }
 
         public void Initialize(InitializationEngine context)
         {
@@ -44,14 +32,6 @@ namespace Geta.SEO.Sitemaps
 
         public void Preload(string[] parameters)
         {
-        }
-    }
-
-    public class SitemapRegistry : Registry
-    {
-        public SitemapRegistry()
-        {
-            For<ISitemapRepository>().Use<SitemapRepository>();
         }
     }
 }
