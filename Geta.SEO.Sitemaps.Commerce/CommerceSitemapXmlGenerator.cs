@@ -44,12 +44,12 @@ namespace Geta.SEO.Sitemaps.Commerce
         private SiteDefinition _settings;
         private string _hostLanguageBranch;
 
-        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository)
+        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository)
         {
             this._sitemapRepository = sitemapRepository;
-            this._contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
-            this._urlResolver = ServiceLocator.Current.GetInstance<UrlResolver>();
-            this._siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
+            this._contentRepository = contentRepository;
+            this._urlResolver = urlResolver;
+            this._siteDefinitionRepository = siteDefinitionRepository;
             this._urlSet = new HashSet<string>();
         }
 
@@ -232,7 +232,7 @@ namespace Geta.SEO.Sitemaps.Commerce
         }
 
         /// <summary>
-        /// TODO could return null URL is changed. Since that's used as key. Return more descriptive error message.
+        /// TODO could return null if URL is changed. Since that's used as key. Return more descriptive error message.
         /// </summary>
         /// <param name="sitemapSiteUri"></param>
         /// <returns></returns>

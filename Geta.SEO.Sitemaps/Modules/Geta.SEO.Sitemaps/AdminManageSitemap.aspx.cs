@@ -21,14 +21,9 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         RequiredAccess = AccessLevel.Administer)]
     public partial class AdminManageSitemap : SimplePage
     {
-        private readonly ISitemapRepository sitemapRepository;
+        public Injected<ISitemapRepository> SitemapRepository { get; set; } 
 
         protected const string SitemapHostPostfix = "Sitemap.xml";
-
-        public AdminManageSitemap()
-        {
-            sitemapRepository = new SitemapRepository();
-        }
 
         protected override void OnPreInit(EventArgs e)
         {
@@ -56,7 +51,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         private void BindList()
         {
-            lvwSitemapData.DataSource = sitemapRepository.GetAllSitemapData();
+            lvwSitemapData.DataSource = SitemapRepository.Service.GetAllSitemapData();
             lvwSitemapData.DataBind();
         }
 
@@ -144,7 +139,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
                 RootPageId = TryParse(((TextBox)insertItem.FindControl("txtRootPageId")).Text)
             };
 
-            sitemapRepository.Save(sitemapData);
+            SitemapRepository.Service.Save(sitemapData);
 
             CloseInsert();
             BindList();
@@ -211,7 +206,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         private void UpdateSitemapData(Identity id, ListViewItem item)
         {
-            var sitemapData = sitemapRepository.GetSitemapData(id);
+            var sitemapData = SitemapRepository.Service.GetSitemapData(id);
 
             if (sitemapData == null)
             {
@@ -226,7 +221,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             sitemapData.RootPageId = TryParse(((TextBox)item.FindControl("txtRootPageId")).Text);
             sitemapData.SiteUrl = GetSelectedSiteUrl(item);
 
-            sitemapRepository.Save(sitemapData);
+            SitemapRepository.Service.Save(sitemapData);
 
             lvwSitemapData.EditIndex = -1;
             BindList();
@@ -234,13 +229,13 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         private void DeleteSitemapData(Identity id)
         {
-            sitemapRepository.Delete(id);
+            SitemapRepository.Service.Delete(id);
             BindList();
         }
 
         private void ViewSitemap(Identity id)
         {
-            var data = sitemapRepository.GetSitemapData(id).Data;
+            var data = SitemapRepository.Service.GetSitemapData(id).Data;
 
             Response.ContentType = "text/xml";
             Response.BinaryWrite(data);

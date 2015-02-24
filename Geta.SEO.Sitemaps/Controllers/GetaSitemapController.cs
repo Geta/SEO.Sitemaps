@@ -11,11 +11,16 @@ namespace Geta.SEO.Sitemaps.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly ISitemapRepository sitemapRepository = new SitemapRepository();
+        private readonly ISitemapRepository _sitemapRepository;
+
+        public GetaSitemapController(ISitemapRepository sitemapRepository)
+        {
+            _sitemapRepository = sitemapRepository;
+        }
 
         public ActionResult Index()
         {
-            SitemapData sitemapData = sitemapRepository.GetSitemapData(Request.Url.ToString());
+            SitemapData sitemapData = _sitemapRepository.GetSitemapData(Request.Url.ToString());
 
             if (sitemapData == null || sitemapData.Data == null)
             {

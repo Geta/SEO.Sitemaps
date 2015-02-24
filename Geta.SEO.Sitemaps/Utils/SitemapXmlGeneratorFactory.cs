@@ -1,19 +1,11 @@
 ﻿using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
-using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.XML;
 
 namespace Geta.SEO.Sitemaps.Utils
 {
     public class SitemapXmlGeneratorFactory
     {
-        private readonly ISitemapRepository _sitemapRepository;
-
-        public SitemapXmlGeneratorFactory(ISitemapRepository sitemapRepository)
-        {
-            this._sitemapRepository = sitemapRepository;
-        }
-
         public ISitemapXmlGenerator GetSitemapXmlGenerator(SitemapData sitemapData)
         {
             ISitemapXmlGenerator xmlGenerator;

@@ -3,10 +3,12 @@ using System.Linq;
 using EPiServer;
 using EPiServer.Data;
 using EPiServer.Data.Dynamic;
+using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.Repositories
 {
+    [ServiceConfiguration(typeof(ISitemapRepository))]
     public class SitemapRepository : ISitemapRepository
     {
         private static DynamicDataStore SitemapStore

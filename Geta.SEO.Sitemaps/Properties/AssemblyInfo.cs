@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Geta.SEO.Sitemaps")]
-[assembly: AssemblyDescription("Search Engine Sitemap generator for EPiServer CMS 7.5")]
+[assembly: AssemblyDescription("Search Engine Sitemap generator for EPiServer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Geta")]
 [assembly: AssemblyProduct("Geta.SEO.Sitemaps")]
