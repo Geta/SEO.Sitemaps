@@ -29,7 +29,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         private const int MaxSitemapEntryCount = 50000;
 
-        private SitemapData _sitemapData;
+        protected SitemapData SitemapData;
         private readonly ISet<string> _urlSet;
         private SiteDefinition _settings;
         private string _hostLanguageBranch;
@@ -57,8 +57,8 @@ namespace Geta.SEO.Sitemaps.XML
         {
             try
             {
-                this._sitemapData = sitemapData;
-                var sitemapSiteUri = new Uri(this._sitemapData.SiteUrl);
+                this.SitemapData = sitemapData;
+                var sitemapSiteUri = new Uri(this.SitemapData.SiteUrl);
                 this._settings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
                 this._hostLanguageBranch = GetHostLanguageBranch();
                 XElement sitemap = CreateSitemapXmlContents(out entryCount);
@@ -109,7 +109,7 @@ namespace Geta.SEO.Sitemaps.XML
                 return Enumerable.Empty<XElement>();
             }
 
-            var rootPage = this._sitemapData.RootPageId < 0 ? this._settings.StartPage : new ContentReference(this._sitemapData.RootPageId);
+            var rootPage = this.SitemapData.RootPageId < 0 ? this._settings.StartPage : new ContentReference(this.SitemapData.RootPageId);
 
             IList<ContentReference> descendants = this.ContentRepository.GetDescendents(rootPage).ToList();
 
@@ -138,7 +138,7 @@ namespace Geta.SEO.Sitemaps.XML
 
                     if (this._urlSet.Count >= MaxSitemapEntryCount)
                     {
-                        this._sitemapData.ExceedsMaximumEntryCount = true;
+                        this.SitemapData.ExceedsMaximumEntryCount = true;
                         return sitemapXmlElements;
                     }
 
@@ -167,7 +167,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         private bool HostDefinitionExistsForLanguage(string languageBranch)
         {
-            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", this._sitemapData.SiteUrl, languageBranch);
+            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", this.SitemapData.SiteUrl, languageBranch);
             object cachedObject = HttpRuntime.Cache.Get(cacheKey);
 
             if (cachedObject == null)
@@ -186,7 +186,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         private HostDefinition GetHostDefinition()
         {
-            var siteUrl = new Uri(this._sitemapData.SiteUrl);
+            var siteUrl = new Uri(this.SitemapData.SiteUrl);
             string sitemapHost = siteUrl.Host;
 
             return this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
@@ -236,17 +236,17 @@ namespace Geta.SEO.Sitemaps.XML
             // if the URL is relative we add the base site URL (protocol and hostname)
             if (!IsAbsoluteUrl(url, out absoluteUri))
             {
-                url = UriSupport.Combine(this._sitemapData.SiteUrl, url);
+                url = UriSupport.Combine(this.SitemapData.SiteUrl, url);
             }
             // Force the SiteUrl
             else
             {
-                url = UriSupport.Combine(this._sitemapData.SiteUrl, absoluteUri.AbsolutePath);
+                url = UriSupport.Combine(this.SitemapData.SiteUrl, absoluteUri.AbsolutePath);
             }
 
             var fullPageUrl = new Uri(url);
 
-            if (this._urlSet.Contains(fullPageUrl.ToString()) || UrlFilter.IsUrlFiltered(fullPageUrl.AbsolutePath, this._sitemapData))
+            if (this._urlSet.Contains(fullPageUrl.ToString()) || UrlFilter.IsUrlFiltered(fullPageUrl.AbsolutePath, this.SitemapData))
             {
                 return;
             }
