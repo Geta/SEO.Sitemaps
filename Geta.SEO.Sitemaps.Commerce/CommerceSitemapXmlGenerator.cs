@@ -24,8 +24,6 @@ namespace Geta.SEO.Sitemaps.Commerce
     {
         protected const string DateTimeFormat = "yyyy-MM-ddTHH:mm:sszzz";
 
-        private SiteDefinition _settings;
-
         public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository)
         {
         }
@@ -68,15 +66,17 @@ namespace Geta.SEO.Sitemaps.Commerce
 
         protected override IEnumerable<XElement> GetSitemapXmlElements()
         {
-
-            if (this._settings == null)
-            {
-                return Enumerable.Empty<XElement>();
-            }
-
             var referenceConverter = ServiceLocator.Current.GetInstance<ReferenceConverter>();
 
-            IList<ContentReference> descendants = ContentRepository.GetDescendents(referenceConverter.GetRootLink()).ToList();
+            var rootContentReference = referenceConverter.GetRootLink();
+
+            if (SitemapData.RootPageId != -1)
+            {
+                rootContentReference = new ContentReference(SitemapData.RootPageId);
+                rootContentReference.ProviderName = "CatalogContent";
+            }
+
+            IList<ContentReference> descendants = ContentRepository.GetDescendents(rootContentReference).ToList();
 
             return GenerateXmlElements(descendants);
         }
