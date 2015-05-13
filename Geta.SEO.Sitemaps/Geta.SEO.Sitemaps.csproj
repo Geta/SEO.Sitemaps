@@ -229,7 +229,9 @@
     <None Include="Geta.SEO.Sitemaps.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx">
