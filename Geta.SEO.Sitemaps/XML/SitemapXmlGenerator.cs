@@ -127,7 +127,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             foreach (ContentReference contentReference in pages)
             {
-                var languagePages = this.ContentRepository.GetLanguageBranches<IContentData>(contentReference).OfType<IContent>();
+                var languagePages = this.GetLanguageBranches(contentReference);
 
                 foreach (var page in languagePages)
                 {
@@ -147,6 +147,11 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             return sitemapXmlElements;
+        }
+
+        protected virtual IEnumerable<IContent> GetLanguageBranches(ContentReference contentLink)
+        {
+            return this.ContentRepository.GetLanguageBranches<IContentData>(contentLink).OfType<IContent>();
         }
 
         private SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
@@ -215,13 +220,19 @@ namespace Geta.SEO.Sitemaps.XML
 
             string url;
 
-            if (contentData is PageData)
+            var localizableContent = contentData as ILocalizable;
+
+            if (localizableContent != null)
             {
-                var tempPage = (PageData)contentData;
-                url = this.UrlResolver.GetUrl(contentData.ContentLink, tempPage.LanguageBranch);
+                url = this.UrlResolver.GetUrl(contentData.ContentLink, localizableContent.Language.Name);
+
+                if (string.IsNullOrWhiteSpace(url))
+                {
+                    return;
+                }
 
                 // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
-                if (this._hostLanguageBranch != null && tempPage.LanguageBranch.Equals(this._hostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
+                if (this._hostLanguageBranch != null && localizableContent.Language.Name.Equals(this._hostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
                 {
                     url = url.Replace(string.Format("/{0}/", this._hostLanguageBranch), "/");
                 }
@@ -229,6 +240,11 @@ namespace Geta.SEO.Sitemaps.XML
             else
             {
                 url = this.UrlResolver.GetUrl(contentData.ContentLink);
+
+                if (string.IsNullOrWhiteSpace(url))
+                {
+                    return;
+                }
             }
 
             Uri absoluteUri;
