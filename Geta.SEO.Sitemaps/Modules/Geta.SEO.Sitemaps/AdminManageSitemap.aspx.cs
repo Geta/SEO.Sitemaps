@@ -5,9 +5,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using EPiServer;
 using EPiServer.Data;
+using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
+using EPiServer.Shell.Dashboard;
 using EPiServer.Web;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
@@ -21,7 +23,17 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         RequiredAccess = AccessLevel.Administer)]
     public partial class AdminManageSitemap : SimplePage
     {
-        public Injected<ISitemapRepository> SitemapRepository { get; set; } 
+        public Injected<ISitemapRepository> SitemapRepository { get; set; }
+        public Injected<SiteDefinitionRepository> SiteDefinitionRepository { get; set; }
+        public Injected<ILanguageBranchRepository> LanguageBranchRepository { get; set; }
+        protected IList<string> SiteHosts { get; set; }
+        protected bool ShowLanguageDropDown { get; set; }
+        protected IList<LanguageBranchData> LanguageBranches { get; set; } 
+
+        protected SitemapData CurrentSitemapData
+        {
+            get { return this.GetDataItem() as SitemapData; }
+        }
 
         protected const string SitemapHostPostfix = "Sitemap.xml";
 
@@ -35,6 +47,21 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
+            SiteHosts = GetSiteHosts();
+            ShowLanguageDropDown = ShouldShowLanguageDropDown();
+
+            LanguageBranches = LanguageBranchRepository.Service.ListEnabled().Select(x => new LanguageBranchData
+            {
+                DisplayName = x.CurrentUrlSegment,
+                Language = x.Culture.Name
+            }).ToList();
+
+            LanguageBranches.Insert(0, new LanguageBranchData
+            {
+                DisplayName = "*",
+                Language = ""
+            });
 
             if (!PrincipalInfo.HasAdminAccess)
             {
@@ -65,9 +92,36 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             PopulateHostListControl(lvwSitemapData.InsertItem);
         }
 
+        private void PopulateLanguageListControl(ListViewItem containerItem)
+        {
+            var ddl = containerItem.FindControl("ddlLanguage") as DropDownList;
+
+            if (ddl == null || containerItem.DataItem == null)
+            {
+                return;
+            }
+
+            var data = containerItem.DataItem as SitemapData;
+            if (data == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(data.Language))
+            {
+                var selectedItem = ddl.Items.FindByValue(data.Language);
+
+                if (selectedItem != null)
+                {
+                    ddl.SelectedValue = selectedItem.Value;
+                }
+            }
+        }
+
         private void PopulateHostListControl(ListViewItem containerItem)
         {
-            var siteHosts = GetSiteHosts();
+            var siteHosts = SiteHosts;
+
             if (siteHosts.Count() > 1)
             {
                 var ddl = containerItem.FindControl("ddlHostUrls") as DropDownList;
@@ -132,6 +186,8 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             {
                 SiteUrl = GetSelectedSiteUrl(insertItem),
                 Host = ((TextBox)insertItem.FindControl("txtHost")).Text + SitemapHostPostfix,
+                Language = ((DropDownList)insertItem.FindControl("ddlLanguage")).SelectedValue,
+                EnableLanguageFallback = ((CheckBox)insertItem.FindControl("cbEnableLanguageFallback")).Checked,
                 PathsToAvoid = GetDirectoryList(insertItem, "txtDirectoriesToAvoid"),
                 PathsToInclude = GetDirectoryList(insertItem, "txtDirectoriesToInclude"),
                 IncludeDebugInfo = ((CheckBox)insertItem.FindControl("cbIncludeDebugInfo")).Checked,
@@ -189,6 +245,23 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             return String.Join(";", ((IList<string>)directoryListObject));
         }
 
+        protected string GetLanguage(string language)
+        {
+            if (!string.IsNullOrWhiteSpace(language) && SiteDefinition.WildcardHostName.Equals(language) == false)
+            {
+                var languageBranch = LanguageBranchRepository.Service.Load(language);
+                return string.Format("{0}/", languageBranch.CurrentUrlSegment);
+            }
+
+            return string.Empty;
+        }
+
+        protected bool ShouldShowLanguageDropDown()
+        {
+            var siteHostCount = SiteHosts.Count();
+            return siteHostCount == 1 && LanguageBranchRepository.Service.ListEnabled().Count > 1;
+        }
+
         private SitemapFormat GetSitemapFormat(Control container)
         {
             if (((RadioButton)container.FindControl("rbMobile")).Checked)
@@ -214,6 +287,8 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             }
 
             sitemapData.Host = ((TextBox)item.FindControl("txtHost")).Text + SitemapHostPostfix;
+            sitemapData.Language = ((DropDownList)item.FindControl("ddlLanguage")).SelectedValue;
+            sitemapData.EnableLanguageFallback = ((CheckBox)item.FindControl("cbEnableLanguageFallback")).Checked;
             sitemapData.PathsToAvoid = GetDirectoryList(item, "txtDirectoriesToAvoid");
             sitemapData.PathsToInclude = GetDirectoryList(item, "txtDirectoriesToInclude");
             sitemapData.IncludeDebugInfo = ((CheckBox)item.FindControl("cbIncludeDebugInfo")).Checked;
@@ -245,11 +320,12 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         protected void lvwSitemapData_ItemDataBound(object sender, ListViewItemEventArgs e)
         {
             PopulateHostListControl(e.Item);
+            PopulateLanguageListControl(e.Item);
         }
 
         protected IList<string> GetSiteHosts()
         {
-            var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
+            var siteDefinitionRepository = SiteDefinitionRepository.Service;
 
             IList<SiteDefinition> hosts = siteDefinitionRepository.List().ToList();
 
@@ -326,5 +402,11 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         {
             return hostName.Substring(0, hostName.IndexOf(SitemapHostPostfix, StringComparison.InvariantCulture));
         }
+    }
+
+    public class LanguageBranchData
+    {
+        public string Language { get; set; }
+        public string DisplayName { get; set; }
     }
 }

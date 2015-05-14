@@ -14,6 +14,8 @@ namespace Geta.SEO.Sitemaps.Repositories
 
         SitemapData GetSitemapData(string requestUrl);
 
+        string GetHostWithLanguage(SitemapData sitemapData);
+
         void Save(SitemapData sitemapData);
     }
 }

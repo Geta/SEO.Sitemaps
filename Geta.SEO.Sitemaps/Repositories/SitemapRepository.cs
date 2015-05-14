@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EPiServer;
 using EPiServer.Data;
 using EPiServer.Data.Dynamic;
+using EPiServer.DataAbstraction;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
 
@@ -11,6 +13,14 @@ namespace Geta.SEO.Sitemaps.Repositories
     [ServiceConfiguration(typeof(ISitemapRepository))]
     public class SitemapRepository : ISitemapRepository
     {
+        private readonly ILanguageBranchRepository _languageBranchRepository;
+
+        public SitemapRepository(ILanguageBranchRepository languageBranchRepository)
+        {
+            if (languageBranchRepository == null) throw new ArgumentNullException("languageBranchRepository");
+            _languageBranchRepository = languageBranchRepository;
+        }
+
         private static DynamicDataStore SitemapStore
         {
             get
@@ -33,9 +43,26 @@ namespace Geta.SEO.Sitemaps.Repositories
         {
             var url = new Url(requestUrl); 
             
-            var host = url.Path.TrimStart('/').ToLower();
+            var host = url.Path.TrimStart('/').ToLowerInvariant();
 
-            return SitemapStore.Items<SitemapData>().FirstOrDefault(x => x.Host.ToLower() == host && (x.SiteUrl == null || x.SiteUrl.Contains(url.Host)));
+            return GetAllSitemapData().FirstOrDefault(x => GetHostWithLanguage(x) == host && (x.SiteUrl == null || x.SiteUrl.Contains(url.Host)));
+        }
+
+        public string GetHostWithLanguage(SitemapData sitemapData)
+        {
+            if (string.IsNullOrWhiteSpace(sitemapData.Language))
+            {
+                return sitemapData.Host.ToLowerInvariant();
+            }
+
+            var languageBranch = _languageBranchRepository.Load(sitemapData.Language);
+
+            if (languageBranch != null)
+            {
+                return string.Format("{0}/{1}", languageBranch.CurrentUrlSegment, sitemapData.Host).ToLowerInvariant();
+            }
+
+            return sitemapData.Host.ToLowerInvariant();
         }
 
         public IList<SitemapData> GetAllSitemapData()

@@ -12,6 +12,7 @@ using EPiServer.Core;
 using EPiServer.Logging.Compatibility;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
+using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.Utils;
@@ -51,9 +52,10 @@ namespace Geta.SEO.Sitemaps.XML
         /// Generates a xml sitemap about pages on site
         /// </summary>
         /// <param name="sitemapData">SitemapData object containing configuration info for sitemap</param>
+        /// <param name="persistData">True if the sitemap data should be persisted in DDS</param>
         /// <param name="entryCount">out count of site entries in generated sitemap</param>
         /// <returns>True if sitemap generation successful, false if error encountered</returns>
-        public virtual bool Generate(SitemapData sitemapData, out int entryCount)
+        public virtual bool Generate(SitemapData sitemapData, bool persistData, out int entryCount)
         {
             try
             {
@@ -74,7 +76,10 @@ namespace Geta.SEO.Sitemaps.XML
                     sitemapData.Data = ms.ToArray();
                 }
 
-                this.SitemapRepository.Save(sitemapData);
+                if (persistData)
+                {
+                    this.SitemapRepository.Save(sitemapData);
+                }
 
                 return true;
             }
@@ -151,6 +156,21 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected virtual IEnumerable<IContent> GetLanguageBranches(ContentReference contentLink)
         {
+            if (!string.IsNullOrWhiteSpace(this.SitemapData.Language))
+            {
+                IContent contentData;
+                ILanguageSelector languageSelector = this.SitemapData.EnableLanguageFallback
+                    ? LanguageSelector.Fallback(this.SitemapData.Language, true) 
+                    : new LanguageSelector(this.SitemapData.Language);
+
+                if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
+                {
+                    return new [] { contentData };
+                }
+
+                return Enumerable.Empty<IContent>();
+            }
+
             return this.ContentRepository.GetLanguageBranches<IContentData>(contentLink).OfType<IContent>();
         }
 
@@ -224,7 +244,11 @@ namespace Geta.SEO.Sitemaps.XML
 
             if (localizableContent != null)
             {
-                url = this.UrlResolver.GetUrl(contentData.ContentLink, localizableContent.Language.Name);
+                string language = string.IsNullOrWhiteSpace(this.SitemapData.Language)
+                    ? localizableContent.Language.Name
+                    : this.SitemapData.Language;
+
+                url = this.UrlResolver.GetUrl(contentData.ContentLink, language);
 
                 if (string.IsNullOrWhiteSpace(url))
                 {

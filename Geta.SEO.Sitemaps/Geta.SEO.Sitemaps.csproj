@@ -198,6 +198,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\SitemapConfigurationSection.cs" />
+    <Compile Include="Configuration\SitemapSettings.cs" />
     <Compile Include="Controllers\GetaSitemapController.cs" />
     <Compile Include="SitemapCreateJob.cs" />
     <Compile Include="Entities\SitemapFormat.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Utils\PageFilter.cs" />
     <Compile Include="Utils\SitemapXmlGeneratorFactory.cs" />
     <Compile Include="Utils\UrlFilter.cs" />
+    <Compile Include="XML\ICommerceAndStandardSitemapXmlGenerator.cs" />
     <Compile Include="XML\ICommerceSitemapXmlGenerator.cs" />
     <Compile Include="XML\ISitemapXmlGenerator.cs" />
     <Compile Include="XML\MobileSitemapXmlGenerator.cs" />
@@ -238,6 +241,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

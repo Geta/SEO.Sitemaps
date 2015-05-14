@@ -55,15 +55,15 @@ namespace Geta.SEO.Sitemaps
         private void GenerateSitemaps(SitemapData sitemapConfig, StringBuilder message)
         {
             int entryCount;
-            bool success = _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapConfig).Generate(sitemapConfig, out entryCount);
+            bool success = _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapConfig).Generate(sitemapConfig, true, out entryCount);
 
             if (success)
             {
-                message.Append(string.Format("<br/>\"{0}{1}\": {2} entries", sitemapConfig.SiteUrl, sitemapConfig.Host, entryCount));
+                message.Append(string.Format("<br/>\"{0}{1}\": {2} entries", sitemapConfig.SiteUrl, _sitemapRepository.GetHostWithLanguage(sitemapConfig), entryCount));
             }
             else
             {
-                message.Append("<br/>Error creating sitemap for \"" + sitemapConfig.Host + "\"");
+                message.Append("<br/>Error creating sitemap for \"" + _sitemapRepository.GetHostWithLanguage(sitemapConfig) + "\"");
             }
         }
 

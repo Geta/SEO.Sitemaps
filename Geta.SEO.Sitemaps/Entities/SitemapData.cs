@@ -17,6 +17,10 @@ namespace Geta.SEO.Sitemaps.Entities
         [EPiServerDataIndex]
         public string Host { get; set; }
 
+        public string Language { get; set; }
+
+        public bool EnableLanguageFallback { get; set; }
+
         public IList<string> PathsToInclude { get; set; }
 
         public IList<string> PathsToAvoid { get; set; }

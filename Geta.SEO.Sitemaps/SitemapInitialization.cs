@@ -2,9 +2,7 @@
 using System.Web.Routing;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
-using EPiServer.ServiceLocation;
-using Geta.SEO.Sitemaps.Repositories;
-using StructureMap;
+
 namespace Geta.SEO.Sitemaps
 {
     [ModuleDependency(typeof(EPiServer.Web.InitializationModule))]
@@ -22,6 +20,8 @@ namespace Geta.SEO.Sitemaps
 
             RouteTable.Routes.MapRoute("Sitemap without path", "sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
             RouteTable.Routes.MapRoute("Sitemap with path", "{path}sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
+            RouteTable.Routes.MapRoute("Sitemap with language", "{language}/sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
+            RouteTable.Routes.MapRoute("Sitemap with language and path", "{language}/{path}sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
 
             _initialized = true;
         }
