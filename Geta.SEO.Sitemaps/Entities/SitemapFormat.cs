@@ -5,6 +5,7 @@ namespace Geta.SEO.Sitemaps.Entities
     {
         Standard,
         Mobile,
-        Commerce
+        Commerce,
+        StandardAndCommerce
     }
 }

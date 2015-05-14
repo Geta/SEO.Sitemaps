@@ -18,6 +18,9 @@ namespace Geta.SEO.Sitemaps.Utils
                 case SitemapFormat.Commerce:
                     xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceSitemapXmlGenerator>();
                     break;
+                case SitemapFormat.StandardAndCommerce:
+                    xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceAndStandardSitemapXmlGenerator>();
+                    break;
                 default:
                     xmlGenerator = ServiceLocator.Current.GetInstance<StandardSitemapXmlGenerator>();
                     break;

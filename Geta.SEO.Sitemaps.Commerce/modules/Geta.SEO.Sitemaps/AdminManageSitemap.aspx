@@ -162,17 +162,14 @@
                     <asp:CheckBox runat="server" ID="cbIncludeDebugInfo" Checked='<%# CurrentSitemapData.IncludeDebugInfo %>' />
                 </td>
                 <td>
-                    <div>
+                    <div style="white-space: nowrap">
                         <asp:RadioButton runat="server" ID="rbStandard" GroupName="grSitemapFormat" Text="Standard" Checked='<%# CurrentSitemapData.SitemapFormat == SitemapFormat.Standard %>' />
                     </div>
-                    <div>
+                    <div style="white-space: nowrap">
                         <asp:RadioButton runat="server" ID="rbMobile" GroupName="grSitemapFormat" Text="Mobile" Checked='<%# CurrentSitemapData.SitemapFormat == SitemapFormat.Mobile %>' />
                     </div>
-                    <div>
+                    <div style="white-space: nowrap">
                         <asp:RadioButton runat="server" ID="rbCommerce" GroupName="grSitemapFormat" Text="Commerce" Checked='<%# CurrentSitemapData.SitemapFormat == SitemapFormat.Commerce %>' />
-                    </div>
-                    <div>
-                        <asp:RadioButton runat="server" ID="rbStandardAndCommerce" GroupName="grSitemapFormat" Text="Standard and commerce" Checked='<%# CurrentSitemapData.SitemapFormat == SitemapFormat.StandardAndCommerce %>' />
                     </div>
                 </td>
                 <td>
@@ -217,9 +214,6 @@
                     </div>
                     <div>
                         <asp:RadioButton runat="server" ID="rbCommerce" GroupName="grSitemapFormat" Text="Commerce" />
-                    </div>
-                    <div>
-                        <asp:RadioButton runat="server" ID="rbStandardAndCommerce" GroupName="grSitemapFormat" Text="Standard and commerce" />
                     </div>
                 </td>
                 <td>

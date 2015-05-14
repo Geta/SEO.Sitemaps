@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using EPiServer;
-using EPiServer.Commerce.Catalog.ContentTypes;
 using EPiServer.Core;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
@@ -22,33 +21,53 @@ namespace Geta.SEO.Sitemaps.Commerce
     [ServiceConfiguration(typeof(ICommerceSitemapXmlGenerator))]
     public class CommerceSitemapXmlGenerator : SitemapXmlGenerator, ICommerceSitemapXmlGenerator
     {
+        private readonly ReferenceConverter _referenceConverter;
         protected const string DateTimeFormat = "yyyy-MM-ddTHH:mm:sszzz";
 
-        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository)
+        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ReferenceConverter referenceConverter) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository)
         {
+            if (referenceConverter == null) throw new ArgumentNullException("referenceConverter");
+            _referenceConverter = referenceConverter;
         }
 
         public bool IsDebugMode { get; set; }
 
         protected override XElement GenerateSiteElement(IContent contentData, string url)
         {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            var catalogContent = (CatalogContentBase) contentData;
+            DateTime modified = DateTime.Now.AddMonths(-1);
+
+            var changeTrackableContent = contentData as IChangeTrackable;
+            var versionableContent = contentData as IVersionable;
+
+            if (changeTrackableContent != null)
+            {
+                modified = changeTrackableContent.Changed;
+            }
+            else if (versionableContent != null)
+            {
+                modified = versionableContent.StartPublish.HasValue
+                    ? versionableContent.StartPublish.Value
+                    : DateTime.Now.AddDays(-7);
+            }
+
             var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
 
             var element = new XElement(
                 SitemapXmlNamespace + "url",
                 new XElement(SitemapXmlNamespace + "loc", url),
-                new XElement(SitemapXmlNamespace + "lastmod", catalogContent.StartPublish.Value.ToString(DateTimeFormat)), // TODO use modified
+                new XElement(SitemapXmlNamespace + "lastmod", modified.ToString(DateTimeFormat)),
                 new XElement(SitemapXmlNamespace + "changefreq", (property != null) ? property.ChangeFreq : "weekly"),
                 new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url)));
 
             if (IsDebugMode)
             {
+                var localeContent = contentData as ILocale;
+                var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
+
                 element.AddFirst(new XComment(
                     string.Format(
                         "content ID: '{0}', name: '{1}', language: '{2}'",
-                        contentData.ContentLink.ID, contentData.Name, catalogContent.Language)));
+                        contentData.ContentLink.ID, contentData.Name, language)));
             }
 
             return element;
@@ -66,14 +85,14 @@ namespace Geta.SEO.Sitemaps.Commerce
 
         protected override IEnumerable<XElement> GetSitemapXmlElements()
         {
-            var referenceConverter = ServiceLocator.Current.GetInstance<ReferenceConverter>();
-
-            var rootContentReference = referenceConverter.GetRootLink();
+            var rootContentReference = _referenceConverter.GetRootLink();
 
             if (SitemapData.RootPageId != -1)
             {
-                rootContentReference = new ContentReference(SitemapData.RootPageId);
-                rootContentReference.ProviderName = "CatalogContent";
+                rootContentReference = new ContentReference(SitemapData.RootPageId)
+                {
+                    ProviderName = "CatalogContent"
+                };
             }
 
             IList<ContentReference> descendants = ContentRepository.GetDescendents(rootContentReference).ToList();

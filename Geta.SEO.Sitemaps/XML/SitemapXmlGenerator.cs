@@ -22,18 +22,16 @@ namespace Geta.SEO.Sitemaps.XML
     public abstract class SitemapXmlGenerator
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
+        private const int MaxSitemapEntryCount = 50000;
+        private readonly ISet<string> _urlSet;
+        private string _hostLanguageBranch;
 
         protected readonly ISitemapRepository SitemapRepository;
         protected readonly IContentRepository ContentRepository;
         protected readonly UrlResolver UrlResolver;
         protected readonly SiteDefinitionRepository SiteDefinitionRepository;
-
-        private const int MaxSitemapEntryCount = 50000;
-
-        protected SitemapData SitemapData;
-        private readonly ISet<string> _urlSet;
-        private SiteDefinition _settings;
-        private string _hostLanguageBranch;
+        protected SitemapData SitemapData { get; set; }
+        protected SiteDefinition SiteSettings { get; set; }
 
         protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository)
         {
@@ -61,7 +59,7 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 this.SitemapData = sitemapData;
                 var sitemapSiteUri = new Uri(this.SitemapData.SiteUrl);
-                this._settings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
+                this.SiteSettings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
                 this._hostLanguageBranch = GetHostLanguageBranch();
                 XElement sitemap = CreateSitemapXmlContents(out entryCount);
 
@@ -109,12 +107,12 @@ namespace Geta.SEO.Sitemaps.XML
         protected virtual IEnumerable<XElement> GetSitemapXmlElements()
         {
 
-            if (this._settings == null)
+            if (this.SiteSettings == null)
             {
                 return Enumerable.Empty<XElement>();
             }
 
-            var rootPage = this.SitemapData.RootPageId < 0 ? this._settings.StartPage : new ContentReference(this.SitemapData.RootPageId);
+            var rootPage = this.SitemapData.RootPageId < 0 ? this.SiteSettings.StartPage : new ContentReference(this.SitemapData.RootPageId);
 
             IList<ContentReference> descendants = this.ContentRepository.GetDescendents(rootPage).ToList();
 
@@ -132,11 +130,13 @@ namespace Geta.SEO.Sitemaps.XML
 
             foreach (ContentReference contentReference in pages)
             {
-                var languagePages = this.GetLanguageBranches(contentReference);
+                var languageContents = this.GetLanguageBranches(contentReference);
 
-                foreach (var page in languagePages)
+                foreach (var content in languageContents)
                 {
-                    if ((page is PageData) && ExcludePageLanguageFromSitemap((PageData)page))
+                    var localeContent = content as ILocale;
+
+                    if (localeContent != null && ExcludeContentLanguageFromSitemap(localeContent))
                     {
                         continue;
                     }
@@ -147,7 +147,7 @@ namespace Geta.SEO.Sitemaps.XML
                         return sitemapXmlElements;
                     }
 
-                    AddFilteredPageElement(page, sitemapXmlElements);
+                    AddFilteredContentElement(content, sitemapXmlElements);
                 }
             }
 
@@ -186,7 +186,7 @@ namespace Geta.SEO.Sitemaps.XML
             var hostDefinition = GetHostDefinition();
 
             return hostDefinition != null && hostDefinition.Language != null
-                ? hostDefinition.Language.ToString()
+                ? hostDefinition.Language.Name
                 : null;
         }
 
@@ -198,7 +198,7 @@ namespace Geta.SEO.Sitemaps.XML
             if (cachedObject == null)
             {
                 cachedObject =
-                    this._settings.Hosts.Any(
+                    this.SiteSettings.Hosts.Any(
                         x =>
                         x.Language != null &&
                         x.Language.ToString().Equals(languageBranch, StringComparison.InvariantCultureIgnoreCase));
@@ -214,26 +214,27 @@ namespace Geta.SEO.Sitemaps.XML
             var siteUrl = new Uri(this.SitemapData.SiteUrl);
             string sitemapHost = siteUrl.Host;
 
-            return this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
-                   this._settings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
+            return this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
+                   this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
         }
 
-        /// <summary>
-        /// Check if the page languagebranch should be excluded from the current sitemap.
-        /// </summary>
-        /// <param name="page">PageData</param>
-        /// <returns>True if the current sitemap host is mapped to a specific language and the page languagebranch doesn't match this language AND if a HostDefinition mapped to the page.LanguageBranch exists, otherwise false.</returns>
-        private bool ExcludePageLanguageFromSitemap(PageData page)
+        private bool ExcludeContentLanguageFromSitemap(ILocale content)
         {
             return this._hostLanguageBranch != null &&
-               !this._hostLanguageBranch.Equals(page.LanguageBranch, StringComparison.InvariantCultureIgnoreCase) &&
-               HostDefinitionExistsForLanguage(page.LanguageBranch);
-
+               !this._hostLanguageBranch.Equals(content.Language.Name, StringComparison.InvariantCultureIgnoreCase) &&
+               HostDefinitionExistsForLanguage(content.Language.Name);
         }
 
-        private void AddFilteredPageElement(IContent contentData, IList<XElement> xmlElements)
+        private void AddFilteredContentElement(IContent contentData, IList<XElement> xmlElements)
         {
-            if (contentData is PageData && PageFilter.ShouldExcludePage((PageData)contentData))
+            var page = contentData as PageData;
+
+            if (page != null && ContentFilter.ShouldExcludePage((PageData)contentData))
+            {
+                return;
+            }
+
+            if (ContentFilter.ShouldExcludeContent(contentData))
             {
                 return;
             }

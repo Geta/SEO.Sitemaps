@@ -274,6 +274,11 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
                 return SitemapFormat.Commerce;
             }
 
+            if (((RadioButton)container.FindControl("rbStandardAndCommerce")).Checked)
+            {
+                return SitemapFormat.StandardAndCommerce;
+            }
+
             return SitemapFormat.Standard;
         }
 
