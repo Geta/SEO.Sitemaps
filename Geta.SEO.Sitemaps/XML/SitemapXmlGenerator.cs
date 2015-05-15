@@ -22,7 +22,7 @@ using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps.XML
 {
-    public abstract class SitemapXmlGenerator : ISitemapXmlGenerator
+    public class SitemapXmlGenerator : ISitemapXmlGenerator
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
         private const int MaxSitemapEntryCount = 50000;
@@ -187,27 +187,30 @@ namespace Geta.SEO.Sitemaps.XML
         {
             bool isSpecificLanguage = !string.IsNullOrWhiteSpace(this.SitemapData.Language);
 
-            if (isSpecificLanguage || this.SitemapData.EnableLanguageFallback)
+            if (isSpecificLanguage)
             {
-                if (isSpecificLanguage)
+                ILanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback 
+                    ? new LanguageSelector(this.SitemapData.Language)
+                    : LanguageSelector.Fallback(this.SitemapData.Language, false);
+
+                IContent contentData;
+
+                if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
                 {
-                    ILanguageSelector languageSelector = this.SitemapData.EnableLanguageFallback
-                        ? LanguageSelector.Fallback(this.SitemapData.Language, false)
-                        : new LanguageSelector(this.SitemapData.Language);
-
-                    IContent contentData;
-
-                    if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
+                    if (this.SitemapData.EnableLanguageFallback)
                     {
-                        return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
+                        return GetFallbackLanguageBranches(contentLink);
                     }
-                }
-                else
-                {
-                    return GetFallbackLanguageBranches(contentLink);
+
+                    return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
                 }
 
                 return Enumerable.Empty<CurrentLanguageContent>();
+            }
+
+            if (this.SitemapData.EnableLanguageFallback)
+            {
+                return GetFallbackLanguageBranches(contentLink);
             }
 
             return this.ContentRepository.GetLanguageBranches<IContentData>(contentLink).OfType<IContent>().Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
@@ -343,48 +346,73 @@ namespace Geta.SEO.Sitemaps.XML
 
             IList<object> hrefLangList = new List<object>();
 
-            foreach (var languageBranch in this.EnabledLanguages)
+            if (this.CurrentLanguageInfos != null)
             {
-                IContent languageContent;
-
-                if (!ContentRepository.TryGet(content.ContentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false), out languageContent))
+                foreach (var languageInfo in this.CurrentLanguageInfos)
                 {
-                    continue;
+                    var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageInfo.CurrentLanguage, languageInfo.MasterLanguage);
+                    AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
                 }
-
-                string languageUrl = UrlResolver.GetUrl(languageContent.ContentLink, languageBranch.Culture.Name);
-
-                if (string.IsNullOrWhiteSpace(languageUrl))
+            }
+            else
+            {
+                foreach (var languageBranch in this.EnabledLanguages)
                 {
-                    continue;
+                    IContent languageContent;
+
+                    if (!ContentRepository.TryGet(content.ContentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false), out languageContent))
+                    {
+                        continue;
+                    }
+
+                    var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageBranch.Culture, localeContent.MasterLanguage);
+                    AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
                 }
-
-                XAttribute hrefLangAttr;
-                string masterLanguageUrl = UrlResolver.GetUrl(languageContent.ContentLink, localeContent.MasterLanguage.Name);
-
-                if (languageUrl.Equals(masterLanguageUrl))
-                {
-                    hrefLangAttr = new XAttribute("hreflang", "x-default");
-                }
-                else
-                {
-                    hrefLangAttr = new XAttribute("hreflang", languageBranch.Culture.Name.ToLowerInvariant());
-                }
-
-                var hrefLangElement = new XElement(
-                    SitemapXhtmlNamespace + "link",
-                    new XAttribute("rel", "alternate"),
-                    hrefLangAttr,
-                    new XAttribute("href", GetAbsoluteUrl(languageUrl))
-                    );
-
-                hrefLangList.Add(hrefLangElement);
             }
 
             if (hrefLangList.Count > 1)
             {
                 element.Add(hrefLangList);
             }
+        }
+
+        private void AddHrefLangElementToList(XElement hrefLangElement, ref IList<object> hrefLangList)
+        {
+            if (hrefLangElement == null)
+            {
+                return;
+            }
+
+            hrefLangList.Add(hrefLangElement);
+        }
+
+        private XElement CreateHrefLangElement(ContentReference contentLink, CultureInfo language, CultureInfo masterLanguage)
+        {
+            string languageUrl = UrlResolver.GetUrl(contentLink, language.Name);
+
+            if (string.IsNullOrWhiteSpace(languageUrl))
+            {
+                return null;
+            }
+
+            XAttribute hrefLangAttr;
+            string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
+
+            if (languageUrl.Equals(masterLanguageUrl))
+            {
+                hrefLangAttr = new XAttribute("hreflang", "x-default");
+            }
+            else
+            {
+                hrefLangAttr = new XAttribute("hreflang", language.Name.ToLowerInvariant());
+            }
+
+            return new XElement(
+                SitemapXhtmlNamespace + "link",
+                new XAttribute("rel", "alternate"),
+                hrefLangAttr,
+                new XAttribute("href", GetAbsoluteUrl(languageUrl))
+                );
         }
 
         protected virtual string GetPriority(string url)

@@ -76,18 +76,21 @@ namespace Geta.SEO.Sitemaps.Controllers
 
                 if (_sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, false, out entryCount))
                 {
-                    CacheEvictionPolicy cachePolicy;
-
-                    if (isGoogleBot)
+                    if (SitemapSettings.Instance.EnableRealtimeCaching)
                     {
-                        cachePolicy = new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null, Cache.NoSlidingExpiration, CacheTimeoutType.Sliding);
-                    }
-                    else
-                    {
-                        cachePolicy = null;
-                    }
+                        CacheEvictionPolicy cachePolicy;
 
-                    CacheManager.Insert(cacheKey, sitemapData.Data, cachePolicy);
+                        if (isGoogleBot)
+                        {
+                            cachePolicy = new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null, Cache.NoSlidingExpiration, CacheTimeoutType.Sliding);
+                        }
+                        else
+                        {
+                            cachePolicy = null;
+                        }
+
+                        CacheManager.Insert(cacheKey, sitemapData.Data, cachePolicy);
+                    }
 
                     return true;
                 }

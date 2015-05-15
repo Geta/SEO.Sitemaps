@@ -31,6 +31,19 @@ namespace Geta.SEO.Sitemaps.Configuration
             }
         }
 
+        [ConfigurationProperty("enableRealtimeCaching", DefaultValue = true, IsRequired = false)]
+        public bool EnableRealtimeCaching
+        {
+            get
+            {
+                return (bool)this["enableRealtimeCaching"];
+            }
+            set
+            {
+                this["enableRealtimeCaching"] = value;
+            }
+        }
+
         [ConfigurationProperty("enableHrefLang", DefaultValue = false, IsRequired = false)]
         public bool EnableHrefLang
         {
