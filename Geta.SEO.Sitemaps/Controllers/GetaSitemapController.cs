@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Web.Caching;
 using System.Web.Mvc;
 using EPiServer;
+using EPiServer.Core;
 using EPiServer.Framework.Cache;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
@@ -36,7 +37,7 @@ namespace Geta.SEO.Sitemaps.Controllers
                 return new HttpNotFoundResult();
             }
 
-            if (sitemapData.Data == null || SitemapSettings.Instance.EnableRealtimeSitemap)
+            if (sitemapData.Data == null || (SitemapSettings.Instance.EnableRealtimeSitemap))
             {
                 if (!GetSitemapData(sitemapData))
                 {
@@ -54,9 +55,16 @@ namespace Geta.SEO.Sitemaps.Controllers
         private bool GetSitemapData(SitemapData sitemapData)
         {
             int entryCount;
+            string userAgent = Request.ServerVariables["USER_AGENT"];
+
+            var isGoogleBot = userAgent != null &&
+                              userAgent.IndexOf("Googlebot", StringComparison.InvariantCultureIgnoreCase) > -1;
+
+            string googleBotCacheKey = isGoogleBot ? "Google-" : string.Empty;
+
             if (SitemapSettings.Instance.EnableRealtimeSitemap)
             {
-                string cacheKey = _sitemapRepository.GetSitemapUrl(sitemapData);
+                string cacheKey = googleBotCacheKey + _sitemapRepository.GetSitemapUrl(sitemapData);
 
                 var sitemapDataData = CacheManager.Get(cacheKey) as byte[];
 
@@ -68,9 +76,18 @@ namespace Geta.SEO.Sitemaps.Controllers
 
                 if (_sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, false, out entryCount))
                 {
-                    CacheManager.Insert(cacheKey, sitemapData.Data,
-                        new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null,
-                            Cache.NoSlidingExpiration, CacheTimeoutType.Sliding));
+                    CacheEvictionPolicy cachePolicy;
+
+                    if (isGoogleBot)
+                    {
+                        cachePolicy = new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null, Cache.NoSlidingExpiration, CacheTimeoutType.Sliding);
+                    }
+                    else
+                    {
+                        cachePolicy = null;
+                    }
+
+                    CacheManager.Insert(cacheKey, sitemapData.Data, cachePolicy);
 
                     return true;
                 }

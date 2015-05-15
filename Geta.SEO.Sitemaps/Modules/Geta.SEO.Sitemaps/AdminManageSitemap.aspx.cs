@@ -9,7 +9,6 @@ using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
-using EPiServer.Shell.Dashboard;
 using EPiServer.Web;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
