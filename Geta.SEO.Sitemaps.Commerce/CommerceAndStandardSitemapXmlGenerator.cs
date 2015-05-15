@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using EPiServer;
 using EPiServer.Core;
+using EPiServer.DataAbstraction;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
@@ -19,8 +20,8 @@ namespace Geta.SEO.Sitemaps.Commerce
     [ServiceConfiguration(typeof(ICommerceAndStandardSitemapXmlGenerator))]
     public class CommerceAndStandardSitemapXmlGenerator : CommerceSitemapXmlGenerator, ICommerceAndStandardSitemapXmlGenerator
     {
-        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ReferenceConverter referenceConverter)
-            : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, referenceConverter)
+        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter)
+            : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, referenceConverter)
         {
         }
 

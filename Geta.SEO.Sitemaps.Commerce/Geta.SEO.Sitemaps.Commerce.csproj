@@ -138,9 +138,9 @@
       <HintPath>..\packages\EPiServer.CMS.Core.7.16.0\lib\net45\EPiServer.XForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Geta.SEO.Sitemaps, Version=1.3.0.17, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Geta.SEO.Sitemaps.1.3.0.17\lib\net45\Geta.SEO.Sitemaps.dll</HintPath>
+    <Reference Include="Geta.SEO.Sitemaps, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geta.SEO.Sitemaps.1.3.0.19\lib\net45\Geta.SEO.Sitemaps.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -294,12 +294,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Geta.SEO.Sitemaps.Commerce.nuspec" />
-    <None Include="modules\_protected\CMS\EPiServer.Cms.Shell.UI.zip" />
-    <None Include="modules\_protected\Shell\EPiServer.Shell.UI.zip" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
