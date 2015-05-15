@@ -1,6 +1,10 @@
-﻿using System.IO.Compression;
+﻿using System;
+using System.IO.Compression;
 using System.Reflection;
+using System.Web.Caching;
 using System.Web.Mvc;
+using EPiServer;
+using EPiServer.Framework.Cache;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
@@ -50,6 +54,30 @@ namespace Geta.SEO.Sitemaps.Controllers
         private bool GetSitemapData(SitemapData sitemapData)
         {
             int entryCount;
+            if (SitemapSettings.Instance.EnableRealtimeSitemap)
+            {
+                string cacheKey = _sitemapRepository.GetSitemapUrl(sitemapData);
+
+                var sitemapDataData = CacheManager.Get(cacheKey) as byte[];
+
+                if (sitemapDataData != null)
+                {
+                    sitemapData.Data = sitemapDataData;
+                    return true;
+                }
+
+                if (_sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, false, out entryCount))
+                {
+                    CacheManager.Insert(cacheKey, sitemapData.Data,
+                        new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null,
+                            Cache.NoSlidingExpiration, CacheTimeoutType.Sliding));
+
+                    return true;
+                }
+
+                return false;
+            }
+
             return _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, !SitemapSettings.Instance.EnableRealtimeSitemap, out entryCount);
         }
     }

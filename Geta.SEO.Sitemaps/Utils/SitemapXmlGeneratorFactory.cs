@@ -22,7 +22,7 @@ namespace Geta.SEO.Sitemaps.Utils
                     xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceAndStandardSitemapXmlGenerator>();
                     break;
                 default:
-                    xmlGenerator = ServiceLocator.Current.GetInstance<StandardSitemapXmlGenerator>();
+                    xmlGenerator = ServiceLocator.Current.GetInstance<SitemapXmlGenerator>();
                     break;
             }
 

@@ -18,7 +18,7 @@ namespace Geta.SEO.Sitemaps.Configuration
             }
         }
 
-        [ConfigurationProperty("enableRealtimeSitemap", DefaultValue = false, IsRequired = true)]
+        [ConfigurationProperty("enableRealtimeSitemap", DefaultValue = false, IsRequired = false)]
         public bool EnableRealtimeSitemap
         {
             get
@@ -28,6 +28,32 @@ namespace Geta.SEO.Sitemaps.Configuration
             set
             {
                 this["enableRealtimeSitemap"] = value;
+            }
+        }
+
+        [ConfigurationProperty("enableHrefLang", DefaultValue = false, IsRequired = false)]
+        public bool EnableHrefLang
+        {
+            get
+            {
+                return (bool)this["enableHrefLang"];
+            }
+            set
+            {
+                this["enableHrefLang"] = value;
+            }
+        }
+
+        [ConfigurationProperty("enableLanguageDropDownInAdmin", DefaultValue = false, IsRequired = false)]
+        public bool EnableLanguageDropDownInAdmin
+        {
+            get
+            {
+                return (bool)this["enableLanguageDropDownInAdmin"];
+            }
+            set
+            {
+                this["enableLanguageDropDownInAdmin"] = value;
             }
         }
     }

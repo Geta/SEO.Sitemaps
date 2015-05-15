@@ -11,6 +11,7 @@ using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Shell.Dashboard;
 using EPiServer.Web;
+using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 
@@ -258,8 +259,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
         protected bool ShouldShowLanguageDropDown()
         {
-            var siteHostCount = SiteHosts.Count();
-            return siteHostCount == 1 && LanguageBranchRepository.Service.ListEnabled().Count > 1;
+            return SitemapSettings.Instance.EnableLanguageDropDownInAdmin;
         }
 
         private SitemapFormat GetSitemapFormat(Control container)

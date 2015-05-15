@@ -1,15 +1,16 @@
 ﻿using System.Xml.Linq;
 using EPiServer;
 using EPiServer.Core;
+using EPiServer.DataAbstraction;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Repositories;
 
 namespace Geta.SEO.Sitemaps.XML
 {
-    public class MobileSitemapXmlGenerator : StandardSitemapXmlGenerator
+    public class MobileSitemapXmlGenerator : SitemapXmlGenerator
     {
-        public MobileSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository)
+        public MobileSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository)
         {
         }
 

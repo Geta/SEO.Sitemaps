@@ -18,6 +18,7 @@ namespace Geta.SEO.Sitemaps
                 return;
             }
 
+            RouteTable.Routes.MapRoute("Sitemap index", "sitemapindex.xml", new { controller = "GetaSitemapIndex", action = "Index" });
             RouteTable.Routes.MapRoute("Sitemap without path", "sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
             RouteTable.Routes.MapRoute("Sitemap with path", "{path}sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
             RouteTable.Routes.MapRoute("Sitemap with language", "{language}/sitemap.xml", new { controller = "GetaSitemap", action = "Index" });

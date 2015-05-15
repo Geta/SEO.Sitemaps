@@ -48,6 +48,11 @@ namespace Geta.SEO.Sitemaps.Repositories
             return GetAllSitemapData().FirstOrDefault(x => GetHostWithLanguage(x) == host && (x.SiteUrl == null || x.SiteUrl.Contains(url.Host)));
         }
 
+        public string GetSitemapUrl(SitemapData sitemapData)
+        {
+            return string.Format("{0}{1}", sitemapData.SiteUrl, GetHostWithLanguage(sitemapData));
+        }
+
         public string GetHostWithLanguage(SitemapData sitemapData)
         {
             if (string.IsNullOrWhiteSpace(sitemapData.Language))
