@@ -39,7 +39,7 @@ namespace Geta.SEO.Sitemaps.XML
         protected SitemapData SitemapData { get; set; }
         protected SiteDefinition SiteSettings { get; set; }
         protected IEnumerable<LanguageBranch> EnabledLanguages { get; set; }
-        protected IEnumerable<CurrentLanguageContent> CurrentLanguageInfos { get; set; }
+        protected IEnumerable<CurrentLanguageContent> HrefLanguageContents { get; set; }
 
         protected XNamespace SitemapXmlNamespace
         {
@@ -156,12 +156,20 @@ namespace Geta.SEO.Sitemaps.XML
         protected virtual IEnumerable<XElement> GenerateXmlElements(IEnumerable<ContentReference> pages)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
+            var isSpecificLanguage = !string.IsNullOrWhiteSpace(this.SitemapData.Language);
 
             foreach (ContentReference contentReference in pages)
             {
-                this.CurrentLanguageInfos = this.GetLanguageBranches(contentReference);
+                var contentLanguages = this.GetLanguageBranches(contentReference);
 
-                foreach (var contentLanguageInfo in this.CurrentLanguageInfos)
+                if (SitemapSettings.Instance.EnableHrefLang)
+                {
+                    this.HrefLanguageContents = !isSpecificLanguage && this.SitemapData.EnableLanguageFallback
+                        ? contentLanguages
+                        : this.GetFallbackLanguageBranches(contentReference);
+                }
+
+                foreach (var contentLanguageInfo in contentLanguages)
                 {
                     var localeContent = contentLanguageInfo.Content as ILocale;
 
@@ -197,11 +205,6 @@ namespace Geta.SEO.Sitemaps.XML
 
                 if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
                 {
-                    if (this.SitemapData.EnableLanguageFallback)
-                    {
-                        return GetFallbackLanguageBranches(contentLink);
-                    }
-
                     return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
                 }
 
@@ -213,7 +216,7 @@ namespace Geta.SEO.Sitemaps.XML
                 return GetFallbackLanguageBranches(contentLink);
             }
 
-            return this.ContentRepository.GetLanguageBranches<IContentData>(contentLink).OfType<IContent>().Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
+            return this.ContentRepository.GetLanguageBranches<IContent>(contentLink).Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
         }
 
         protected virtual IEnumerable<CurrentLanguageContent> GetFallbackLanguageBranches(ContentReference contentLink)
@@ -346,9 +349,9 @@ namespace Geta.SEO.Sitemaps.XML
 
             IList<object> hrefLangList = new List<object>();
 
-            if (this.CurrentLanguageInfos != null)
+            if (this.HrefLanguageContents != null)
             {
-                foreach (var languageInfo in this.CurrentLanguageInfos)
+                foreach (var languageInfo in this.HrefLanguageContents)
                 {
                     var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageInfo.CurrentLanguage, languageInfo.MasterLanguage);
                     AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
