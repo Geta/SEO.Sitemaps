@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using EPiServer;
 using EPiServer.BaseLibrary.Scheduling;
 using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
@@ -42,17 +44,22 @@ namespace Geta.SEO.Sitemaps
                 _sitemapRepository.Save(CreateDefaultConfig());
             }
 
+            CacheManager.Insert("SitemapGenerationKey", DateTime.Now.Ticks);
+
             // create xml sitemap for each configuration
             foreach (var sitemapConfig in sitemapConfigs)
             {
                 if (_stopSignaled)
                 {
+                    CacheManager.Remove("SitemapGenerationKey");
                     return "Stop of job was called.";
                 }
 
                 OnStatusChanged(string.Format("Generating {0}{1}.", sitemapConfig.SiteUrl, _sitemapRepository.GetHostWithLanguage(sitemapConfig)));
                 this.GenerateSitemaps(sitemapConfig, message);
             }
+
+            CacheManager.Remove("SitemapGenerationKey");
 
             if (_stopSignaled)
             {
@@ -98,6 +105,8 @@ namespace Geta.SEO.Sitemaps
             {
                 _currentGenerator.Stop();
             }
+
+            base.Stop();
         }
     }
 }

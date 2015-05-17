@@ -222,6 +222,7 @@
     <Compile Include="Utils\ContentFilter.cs" />
     <Compile Include="Utils\SitemapXmlGeneratorFactory.cs" />
     <Compile Include="Utils\UrlFilter.cs" />
+    <Compile Include="XML\HrefLangData.cs" />
     <Compile Include="XML\ICommerceAndStandardSitemapXmlGenerator.cs" />
     <Compile Include="XML\ICommerceSitemapXmlGenerator.cs" />
     <Compile Include="XML\ISitemapXmlGenerator.cs" />

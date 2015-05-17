@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
+using EPiServer.Framework.Cache;
 using EPiServer.Logging.Compatibility;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
@@ -88,6 +89,7 @@ namespace Geta.SEO.Sitemaps.XML
         {
             try
             {
+
                 this.SitemapData = sitemapData;
                 var sitemapSiteUri = new Uri(this.SitemapData.SiteUrl);
                 this.SiteSettings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
@@ -164,7 +166,6 @@ namespace Geta.SEO.Sitemaps.XML
         protected virtual IEnumerable<XElement> GenerateXmlElements(IEnumerable<ContentReference> pages)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
-            var isSpecificLanguage = !string.IsNullOrWhiteSpace(this.SitemapData.Language);
 
             foreach (ContentReference contentReference in pages)
             {
@@ -174,13 +175,6 @@ namespace Geta.SEO.Sitemaps.XML
                 }
 
                 var contentLanguages = this.GetLanguageBranches(contentReference);
-
-                if (SitemapSettings.Instance.EnableHrefLang)
-                {
-                    this.HrefLanguageContents = !isSpecificLanguage && this.SitemapData.EnableLanguageFallback
-                        ? contentLanguages
-                        : this.GetFallbackLanguageBranches(contentReference);
-                }
 
                 foreach (var contentLanguageInfo in contentLanguages)
                 {
@@ -252,7 +246,115 @@ namespace Geta.SEO.Sitemaps.XML
             }
         }
 
-        private void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
+        protected virtual IEnumerable<HrefLangData> GetHrefLangDataFromCache(ContentReference contentLink)
+        {
+            var cacheKey = string.Format("HrefLangData-{0}", contentLink.ToReferenceWithoutVersion());
+            var cachedObject = CacheManager.Get(cacheKey) as IEnumerable<HrefLangData>;
+
+            if (cachedObject == null)
+            {
+                cachedObject = GetHrefLangData(contentLink);
+                CacheManager.Insert(cacheKey, cachedObject, new CacheEvictionPolicy(null, new [] { "SitemapGenerationKey" }, TimeSpan.FromMinutes(10), CacheTimeoutType.Absolute));
+            }
+
+            return cachedObject;
+        } 
+
+        protected virtual IEnumerable<HrefLangData> GetHrefLangData(ContentReference contentLink)
+        {
+            foreach (var languageBranch in this.EnabledLanguages)
+            {
+                var languageContent = ContentRepository.Get<IContent>(contentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false));
+
+                if (languageContent == null)
+                {
+                    continue;
+                }
+
+                yield return CreateHrefLangData(contentLink, languageBranch.Culture, GetMasterLanguage(languageContent));
+            }
+        }
+
+        protected virtual HrefLangData CreateHrefLangData(ContentReference contentLink, CultureInfo language, CultureInfo masterLanguage)
+        {
+            string languageUrl = UrlResolver.GetUrl(contentLink, language.Name);
+            string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
+            var data = new HrefLangData();
+
+            if (languageUrl.Equals(masterLanguageUrl))
+            {
+
+                data.HrefLang = "x-default";
+            }
+            else
+            {
+                data.HrefLang = language.Name.ToLowerInvariant();
+            }
+
+            data.Href = GetAbsoluteUrl(languageUrl);
+            return data;
+        }
+
+        protected virtual XElement GenerateSiteElement(IContent contentData, string url)
+        {
+            DateTime modified = DateTime.Now.AddMonths(-1);
+
+            var changeTrackableContent = contentData as IChangeTrackable;
+            var versionableContent = contentData as IVersionable;
+
+            if (changeTrackableContent != null)
+            {
+                modified = changeTrackableContent.Saved;
+            }
+            else if (versionableContent != null && versionableContent.StartPublish.HasValue)
+            {
+                modified = versionableContent.StartPublish.Value;
+            }
+
+            var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
+
+            var element = new XElement(
+                SitemapXmlNamespace + "url",
+                new XElement(SitemapXmlNamespace + "loc", url),
+                new XElement(SitemapXmlNamespace + "lastmod", modified.ToString(DateTimeFormat)),
+                new XElement(SitemapXmlNamespace + "changefreq", (property != null) ? property.ChangeFreq : "weekly"),
+                new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url))
+            );
+
+            if (SitemapSettings.Instance.EnableHrefLang)
+            {
+                AddHrefLangToElement(contentData, element);
+            }
+
+            if (IsDebugMode)
+            {
+                var localeContent = contentData as ILocale;
+                var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
+
+                element.AddFirst(new XComment(string.Format("page ID: '{0}', name: '{1}', language: '{2}'", contentData.ContentLink.ID, contentData.Name, language.Name)));
+            }
+
+            return element;
+        }
+
+        protected virtual void AddHrefLangToElement(IContent content, XElement element)
+        {
+            var localeContent = content as ILocalizable;
+
+            if (localeContent == null)
+            {
+                return;
+            }
+
+            var hrefLangDatas = GetHrefLangDataFromCache(content.ContentLink);
+
+            foreach (var hrefLangData in hrefLangDatas)
+            {
+                element.Add(CreateHrefLangElement(hrefLangData));
+            }
+        }
+
+        protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
         {
             var content = languageContentInfo.Content;
 
@@ -314,135 +416,13 @@ namespace Geta.SEO.Sitemaps.XML
             this._urlSet.Add(fullContentUrl.ToString());
         }
 
-        protected virtual XElement GenerateSiteElement(IContent contentData, string url)
+        protected virtual XElement CreateHrefLangElement(HrefLangData data)
         {
-            DateTime modified = DateTime.Now.AddMonths(-1);
-
-            var changeTrackableContent = contentData as IChangeTrackable;
-            var versionableContent = contentData as IVersionable;
-
-            if (changeTrackableContent != null)
-            {
-                modified = changeTrackableContent.Saved;
-            }
-            else if (versionableContent != null && versionableContent.StartPublish.HasValue)
-            {
-                modified = versionableContent.StartPublish.Value;
-            }
-
-            var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
-
-            var element = new XElement(
-                SitemapXmlNamespace + "url",
-                new XElement(SitemapXmlNamespace + "loc", url),
-                new XElement(SitemapXmlNamespace + "lastmod", modified.ToString(DateTimeFormat)),
-                new XElement(SitemapXmlNamespace + "changefreq", (property != null) ? property.ChangeFreq : "weekly"),
-                new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url))
-            );
-
-            if (SitemapSettings.Instance.EnableHrefLang)
-            {
-                AddHrefLangToElement(contentData, url, element);
-            }
-
-            if (IsDebugMode)
-            {
-                var localeContent = contentData as ILocale;
-                var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
-
-                element.AddFirst(new XComment(string.Format("page ID: '{0}', name: '{1}', language: '{2}'", contentData.ContentLink.ID, contentData.Name, language.Name)));
-            }
-
-            return element;
-        }
-
-        protected virtual void AddHrefLangToElement(IContent content, string url, XElement element)
-        {
-            var localeContent = content as ILocalizable;
-
-            if (localeContent == null)
-            {
-                return;
-            }
-
-            IList<object> hrefLangList = new List<object>();
-
-            if (this.HrefLanguageContents != null)
-            {
-                foreach (var languageInfo in this.HrefLanguageContents)
-                {
-                    if (_stopGeneration)
-                    {
-                        return;
-                    }
-
-                    var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageInfo.CurrentLanguage, languageInfo.MasterLanguage);
-                    AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
-                }
-            }
-            else
-            {
-                foreach (var languageBranch in this.EnabledLanguages)
-                {
-                    if (_stopGeneration)
-                    {
-                        return;
-                    }
-
-                    IContent languageContent;
-
-                    if (!ContentRepository.TryGet(content.ContentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false), out languageContent))
-                    {
-                        continue;
-                    }
-
-                    var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageBranch.Culture, localeContent.MasterLanguage);
-                    AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
-                }
-            }
-
-            if (hrefLangList.Count > 1)
-            {
-                element.Add(hrefLangList);
-            }
-        }
-
-        private void AddHrefLangElementToList(XElement hrefLangElement, ref IList<object> hrefLangList)
-        {
-            if (hrefLangElement == null)
-            {
-                return;
-            }
-
-            hrefLangList.Add(hrefLangElement);
-        }
-
-        private XElement CreateHrefLangElement(ContentReference contentLink, CultureInfo language, CultureInfo masterLanguage)
-        {
-            string languageUrl = UrlResolver.GetUrl(contentLink, language.Name);
-
-            if (string.IsNullOrWhiteSpace(languageUrl))
-            {
-                return null;
-            }
-
-            XAttribute hrefLangAttr;
-            string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
-
-            if (languageUrl.Equals(masterLanguageUrl))
-            {
-                hrefLangAttr = new XAttribute("hreflang", "x-default");
-            }
-            else
-            {
-                hrefLangAttr = new XAttribute("hreflang", language.Name.ToLowerInvariant());
-            }
-
             return new XElement(
                 SitemapXhtmlNamespace + "link",
                 new XAttribute("rel", "alternate"),
-                hrefLangAttr,
-                new XAttribute("href", GetAbsoluteUrl(languageUrl))
+                data.HrefLang,
+                new XAttribute("href", data.Href)
                 );
         }
 
