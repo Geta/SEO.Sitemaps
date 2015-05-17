@@ -1,11 +1,14 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 using EPiServer.BaseLibrary.Scheduling;
+using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.Utils;
+using Geta.SEO.Sitemaps.XML;
 
 namespace Geta.SEO.Sitemaps
 {
@@ -14,6 +17,7 @@ namespace Geta.SEO.Sitemaps
     {
         private readonly ISitemapRepository _sitemapRepository;
         private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
+        private ISitemapXmlGenerator _currentGenerator;
 
         private bool _stopSignaled;
 
@@ -43,10 +47,16 @@ namespace Geta.SEO.Sitemaps
             {
                 if (_stopSignaled)
                 {
-                    return "Stop of job was called";
+                    return "Stop of job was called.";
                 }
 
+                OnStatusChanged(string.Format("Generating {0}{1}.", sitemapConfig.SiteUrl, _sitemapRepository.GetHostWithLanguage(sitemapConfig)));
                 this.GenerateSitemaps(sitemapConfig, message);
+            }
+
+            if (_stopSignaled)
+            {
+                return "Stop of job was called.";
             }
 
             return string.Format("Job successfully executed.<br/>Generated sitemaps: {0}", message);
@@ -55,7 +65,8 @@ namespace Geta.SEO.Sitemaps
         private void GenerateSitemaps(SitemapData sitemapConfig, StringBuilder message)
         {
             int entryCount;
-            bool success = _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapConfig).Generate(sitemapConfig, true, out entryCount);
+            _currentGenerator = _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapConfig);
+            bool success = _currentGenerator.Generate(sitemapConfig, true, out entryCount);
 
             if (success)
             {
@@ -82,6 +93,11 @@ namespace Geta.SEO.Sitemaps
         public override void Stop()
         {
             _stopSignaled = true;
+
+            if (_currentGenerator != null)
+            {
+                _currentGenerator.Stop();
+            }
         }
     }
 }

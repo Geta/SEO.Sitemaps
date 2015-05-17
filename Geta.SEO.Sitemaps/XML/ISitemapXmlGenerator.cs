@@ -6,5 +6,6 @@ namespace Geta.SEO.Sitemaps.XML
     {
         bool IsDebugMode { get; set; }
         bool Generate(SitemapData sitemapData, bool persistData, out int entryCount);
+        void Stop();
     }
 }

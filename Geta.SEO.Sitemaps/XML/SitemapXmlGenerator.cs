@@ -27,6 +27,7 @@ namespace Geta.SEO.Sitemaps.XML
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
         private const int MaxSitemapEntryCount = 50000;
         private readonly ISet<string> _urlSet;
+        private bool _stopGeneration;
         private string _hostLanguageBranch;
 
         protected const string DateTimeFormat = "yyyy-MM-ddTHH:mm:sszzz";
@@ -104,7 +105,7 @@ namespace Geta.SEO.Sitemaps.XML
                     sitemapData.Data = ms.ToArray();
                 }
 
-                if (persistData)
+                if (persistData && !_stopGeneration)
                 {
                     this.SitemapRepository.Save(sitemapData);
                 }
@@ -119,6 +120,11 @@ namespace Geta.SEO.Sitemaps.XML
             }
         }
 
+        public void Stop()
+        {
+            _stopGeneration = true;
+        }
+
         /// <summary>
         /// Creates xml content for a given sitemap configuration entity
         /// </summary>
@@ -126,9 +132,11 @@ namespace Geta.SEO.Sitemaps.XML
         /// <returns>XElement that contains sitemap entries according to the configuration</returns>
         private XElement CreateSitemapXmlContents(out int entryCount)
         {
+            IEnumerable<XElement> sitemapXmlElements = GetSitemapXmlElements();
+
             XElement sitemapElement = GenerateRootElement();
 
-            sitemapElement.Add(GetSitemapXmlElements());
+            sitemapElement.Add(sitemapXmlElements);
 
             entryCount = _urlSet.Count;
             return sitemapElement;
@@ -160,6 +168,11 @@ namespace Geta.SEO.Sitemaps.XML
 
             foreach (ContentReference contentReference in pages)
             {
+                if (_stopGeneration)
+                {
+                    return Enumerable.Empty<XElement>();
+                }
+
                 var contentLanguages = this.GetLanguageBranches(contentReference);
 
                 if (SitemapSettings.Instance.EnableHrefLang)
@@ -171,6 +184,11 @@ namespace Geta.SEO.Sitemaps.XML
 
                 foreach (var contentLanguageInfo in contentLanguages)
                 {
+                    if (_stopGeneration)
+                    {
+                        return Enumerable.Empty<XElement>();
+                    }
+
                     var localeContent = contentLanguageInfo.Content as ILocale;
 
                     if (localeContent != null && ExcludeContentLanguageFromSitemap(localeContent.Language))
@@ -353,6 +371,11 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 foreach (var languageInfo in this.HrefLanguageContents)
                 {
+                    if (_stopGeneration)
+                    {
+                        return;
+                    }
+
                     var hrefLangElement = CreateHrefLangElement(content.ContentLink, languageInfo.CurrentLanguage, languageInfo.MasterLanguage);
                     AddHrefLangElementToList(hrefLangElement, ref hrefLangList);
                 }
@@ -361,6 +384,11 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 foreach (var languageBranch in this.EnabledLanguages)
                 {
+                    if (_stopGeneration)
+                    {
+                        return;
+                    }
+
                     IContent languageContent;
 
                     if (!ContentRepository.TryGet(content.ContentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false), out languageContent))
