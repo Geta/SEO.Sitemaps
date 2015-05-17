@@ -421,7 +421,7 @@ namespace Geta.SEO.Sitemaps.XML
             return new XElement(
                 SitemapXhtmlNamespace + "link",
                 new XAttribute("rel", "alternate"),
-                data.HrefLang,
+                new XAttribute("hreflang", data.HrefLang),
                 new XAttribute("href", data.Href)
                 );
         }
