@@ -291,7 +291,7 @@ namespace Geta.SEO.Sitemaps.XML
             string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
             var data = new HrefLangData();
 
-            if (languageUrl.Equals(masterLanguageUrl))
+            if (languageUrl.Equals(masterLanguageUrl) && contentLink.CompareToIgnoreWorkID(this.SiteSettings.StartPage))
             {
 
                 data.HrefLang = "x-default";
