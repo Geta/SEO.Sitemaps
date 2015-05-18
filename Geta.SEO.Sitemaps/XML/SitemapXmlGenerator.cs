@@ -271,7 +271,17 @@ namespace Geta.SEO.Sitemaps.XML
                     continue;
                 }
 
-                yield return CreateHrefLangData(contentLink, languageBranch.Culture, GetMasterLanguage(languageContent));
+                var hrefLangData = CreateHrefLangData(contentLink, languageBranch.Culture, GetMasterLanguage(languageContent));
+                yield return hrefLangData;
+
+                if (hrefLangData.HrefLang == "x-default")
+                {
+                    yield return new HrefLangData
+                    {
+                        HrefLang = languageBranch.Culture.Name.ToLowerInvariant(),
+                        Href = hrefLangData.Href
+                    };
+                }
             }
         }
 
@@ -347,6 +357,11 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             var hrefLangDatas = GetHrefLangDataFromCache(content.ContentLink);
+
+            if (hrefLangDatas.Count() == 2 && hrefLangDatas.Count(x => x.HrefLang == "x-default") == 1)
+            {
+                return;
+            }
 
             foreach (var hrefLangData in hrefLangDatas)
             {
