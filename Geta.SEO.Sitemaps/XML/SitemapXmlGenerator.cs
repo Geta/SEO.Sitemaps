@@ -357,8 +357,14 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             var hrefLangDatas = GetHrefLangDataFromCache(content.ContentLink);
+            var count = hrefLangDatas.Count();
 
-            if (hrefLangDatas.Count() == 2 && hrefLangDatas.Count(x => x.HrefLang == "x-default") == 1)
+            if (count < 2)
+            {
+                return;
+            }
+
+            if (count == 2 && hrefLangDatas.Count(x => x.HrefLang == "x-default") == 1)
             {
                 return;
             }
