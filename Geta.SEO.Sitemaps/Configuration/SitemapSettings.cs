@@ -44,19 +44,6 @@ namespace Geta.SEO.Sitemaps.Configuration
             }
         }
 
-        [ConfigurationProperty("enableHrefLang", DefaultValue = false, IsRequired = false)]
-        public bool EnableHrefLang
-        {
-            get
-            {
-                return (bool)this["enableHrefLang"];
-            }
-            set
-            {
-                this["enableHrefLang"] = value;
-            }
-        }
-
         [ConfigurationProperty("enableLanguageDropDownInAdmin", DefaultValue = false, IsRequired = false)]
         public bool EnableLanguageDropDownInAdmin
         {

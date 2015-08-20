@@ -15,7 +15,6 @@ using EPiServer.Framework.Cache;
 using EPiServer.Logging.Compatibility;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
-using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.SpecializedProperties;
@@ -23,7 +22,7 @@ using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps.XML
 {
-    public class SitemapXmlGenerator : ISitemapXmlGenerator
+    public abstract class SitemapXmlGenerator : ISitemapXmlGenerator
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
         private const int MaxSitemapEntryCount = 50000;
@@ -70,7 +69,7 @@ namespace Geta.SEO.Sitemaps.XML
         {
             var rootElement = new XElement(SitemapXmlNamespace + "urlset");
 
-            if (SitemapSettings.Instance.EnableHrefLang)
+            if (this.SitemapData.IncludeAlternateLanguagePages)
             {
                 rootElement.Add(new XAttribute(XNamespace.Xmlns + "xhtml", SitemapXhtmlNamespace));
             }
@@ -209,7 +208,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             if (isSpecificLanguage)
             {
-                ILanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback 
+                LanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback 
                     ? new LanguageSelector(this.SitemapData.Language)
                     : LanguageSelector.Fallback(this.SitemapData.Language, false);
 
@@ -331,7 +330,7 @@ namespace Geta.SEO.Sitemaps.XML
                 new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url))
             );
 
-            if (SitemapSettings.Instance.EnableHrefLang)
+            if (this.SitemapData.IncludeAlternateLanguagePages)
             {
                 AddHrefLangToElement(contentData, element);
             }

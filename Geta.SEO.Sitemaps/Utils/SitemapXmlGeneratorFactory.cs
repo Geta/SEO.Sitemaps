@@ -13,7 +13,7 @@ namespace Geta.SEO.Sitemaps.Utils
             switch (sitemapData.SitemapFormat)
             {
                 case SitemapFormat.Mobile:
-                    xmlGenerator = ServiceLocator.Current.GetInstance<MobileSitemapXmlGenerator>();
+                    xmlGenerator = ServiceLocator.Current.GetInstance<IMobileSitemapXmlGenerator>();
                     break;
                 case SitemapFormat.Commerce:
                     xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceSitemapXmlGenerator>();
@@ -22,7 +22,7 @@ namespace Geta.SEO.Sitemaps.Utils
                     xmlGenerator = ServiceLocator.Current.GetInstance<ICommerceAndStandardSitemapXmlGenerator>();
                     break;
                 default:
-                    xmlGenerator = ServiceLocator.Current.GetInstance<SitemapXmlGenerator>();
+                    xmlGenerator = ServiceLocator.Current.GetInstance<IStandardSitemapXmlGenerator>();
                     break;
             }
 

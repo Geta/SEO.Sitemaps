@@ -58,6 +58,10 @@
             The host name to access the sitemap
         </div>
         <div>
+            <span class="nb-text">Include alternate languages:</span>
+            If your site targets users in many languages and you can provide Google with rel="alternate" hreflang="x". These attributes help Google serve the correct language or regional URL to searchers.
+        </div>
+        <div>
             <span class="nb-text">Path to include:</span>
             Sitemap will contain only pages from this virtual directory url. Separate multiple with ";".
         </div>
@@ -75,7 +79,7 @@
         </div>
         <div>
             <span class="nb-text">Format:</span>
-            Standard/Mobile/Commerce
+            Standard/Mobile/Commerce/Standard and commere
         </div>
     </div>
     
@@ -148,6 +152,9 @@
                         <asp:DropDownList ID="ddlLanguage" DataSource="<%# LanguageBranches %>" DataTextField="DisplayName" DataValueField="Language" runat="server" /><br/><br/>
                         Language fallback: <asp:CheckBox ID="cbEnableLanguageFallback" runat="server" Checked="<%# CurrentSitemapData.EnableLanguageFallback %>"/>
                     </asp:PlaceHolder>
+                    <br/><br/>
+                    Include alternate language pages:
+                    <asp:CheckBox runat="server" ID="cbIncludeAlternateLanguagePages" Checked='<%# CurrentSitemapData.IncludeAlternateLanguagePages %>'/>
                 </td>
                 <td>
                     <asp:TextBox runat="server" ID="txtDirectoriesToInclude" Text='<%# GetDirectoriesString(CurrentSitemapData.PathsToInclude) %>' />
@@ -195,6 +202,9 @@
                         <asp:DropDownList ID="ddlLanguage" DataSource="<%# LanguageBranches %>" DataTextField="DisplayName" DataValueField="Language" runat="server" /><br/><br/>
                         Language fallback: <asp:CheckBox ID="cbEnableLanguageFallback" runat="server" />
                     </asp:PlaceHolder>
+                    <br/><br/>
+                    Include alternate language pages:
+                    <asp:CheckBox runat="server" ID="cbIncludeAlternateLanguagePages" Checked="false"/>
                 </td>
                 <td>
                     <asp:TextBox runat="server" ID="txtDirectoriesToInclude" />
