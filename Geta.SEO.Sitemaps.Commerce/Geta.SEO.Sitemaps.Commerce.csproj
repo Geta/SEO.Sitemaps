@@ -267,7 +267,6 @@
   <ItemGroup>
     <Compile Include="CatalogContentExtensions.cs" />
     <Compile Include="CommerceAndStandardSitemapXmlGenerator.cs" />
-    <Compile Include="CommerceSitemapInitialization.cs" />
     <Compile Include="CommerceSitemapXmlGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
