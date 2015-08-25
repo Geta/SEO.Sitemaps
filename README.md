@@ -52,6 +52,7 @@ and specify values for the dynamic property:
 
 ## Changelog
 1.0.0. Initial version
+
 1.4.1. 
   1. Added support for alternate language pages (e.g. <link rel="alternate" href="x">).
   2. Added sitemap index support (/sitemapindex.xml) that might be useful if you have more than one sitemap on your site.
