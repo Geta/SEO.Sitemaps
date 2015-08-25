@@ -4,6 +4,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Repositories;
 
 namespace Geta.SEO.Sitemaps.Controllers
@@ -15,6 +16,10 @@ namespace Geta.SEO.Sitemaps.Controllers
         protected XNamespace SitemapXmlNamespace
         {
             get { return @"http://www.sitemaps.org/schemas/sitemap/0.9"; }
+        }
+
+        public GetaSitemapIndexController() : this(ServiceLocator.Current.GetInstance<ISitemapRepository>())
+        {
         }
 
         public GetaSitemapIndexController(ISitemapRepository sitemapRepository)
