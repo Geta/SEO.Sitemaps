@@ -54,6 +54,6 @@ and specify values for the dynamic property:
 1.0.0. Initial version
 
 1.4.1. 
-  1. Added support for alternate language pages (e.g. <link rel="alternate" href="x">).
+  1. Added support for alternate language pages. See details at https://support.google.com/webmasters/answer/2620865?hl=en.
   2. Added sitemap index support (/sitemapindex.xml) that might be useful if you have more than one sitemap on your site.
   3. Added a new sitemap format, Standard and Commerce, including both standard and commerce pages in one single sitemap.
