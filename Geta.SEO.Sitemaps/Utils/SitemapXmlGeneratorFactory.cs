@@ -4,6 +4,7 @@ using Geta.SEO.Sitemaps.XML;
 
 namespace Geta.SEO.Sitemaps.Utils
 {
+    [ServiceConfiguration(typeof(SitemapXmlGeneratorFactory))]
     public class SitemapXmlGeneratorFactory
     {
         public ISitemapXmlGenerator GetSitemapXmlGenerator(SitemapData sitemapData)

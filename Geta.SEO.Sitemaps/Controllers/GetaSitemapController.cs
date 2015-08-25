@@ -4,8 +4,8 @@ using System.Reflection;
 using System.Web.Caching;
 using System.Web.Mvc;
 using EPiServer;
-using EPiServer.Core;
 using EPiServer.Framework.Cache;
+using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
@@ -20,6 +20,11 @@ namespace Geta.SEO.Sitemaps.Controllers
 
         private readonly ISitemapRepository _sitemapRepository;
         private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
+
+        // This constructor was added to support web forms projects without dependency injection configured.
+        public GetaSitemapController() : this(ServiceLocator.Current.GetInstance<ISitemapRepository>(), ServiceLocator.Current.GetInstance<SitemapXmlGeneratorFactory>())
+        {
+        }
 
         public GetaSitemapController(ISitemapRepository sitemapRepository, SitemapXmlGeneratorFactory sitemapXmlGeneratorFactory)
         {
