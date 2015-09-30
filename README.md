@@ -58,3 +58,7 @@ and specify values for the dynamic property:
   2. Added sitemap index support (/sitemapindex.xml) that might be useful if you have more than one sitemap on your site.
   3. Added a new sitemap format, Standard and Commerce, including both standard and commerce pages in one single sitemap (requires the Geta.Seo.Sitemaps.Commerce NuGet package).
   4. Added ability to create language specific sitemaps.
+
+1.5.0.
+  1. Added support for EPiServer 9
+  2. Removed depedency on log4net
