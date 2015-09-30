@@ -5,12 +5,12 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using EPiServer;
 using EPiServer.Framework.Cache;
+using EPiServer.Logging.Compatibility;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.Utils;
-using log4net;
 
 namespace Geta.SEO.Sitemaps.Controllers
 {
