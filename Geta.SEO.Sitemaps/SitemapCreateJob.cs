@@ -3,9 +3,8 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using EPiServer;
-using EPiServer.BaseLibrary.Scheduling;
-using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
+using EPiServer.Scheduler;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
@@ -15,7 +14,7 @@ using Geta.SEO.Sitemaps.XML;
 namespace Geta.SEO.Sitemaps
 {
     [ScheduledPlugIn(DisplayName = "Generate search engine sitemaps")]
-    public class SitemapCreateJob : JobBase
+    public class SitemapCreateJob : ScheduledJobBase
     {
         private readonly ISitemapRepository _sitemapRepository;
         private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
