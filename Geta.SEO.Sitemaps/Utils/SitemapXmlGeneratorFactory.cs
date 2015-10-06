@@ -7,7 +7,7 @@ namespace Geta.SEO.Sitemaps.Utils
     [ServiceConfiguration(typeof(SitemapXmlGeneratorFactory))]
     public class SitemapXmlGeneratorFactory
     {
-        public ISitemapXmlGenerator GetSitemapXmlGenerator(SitemapData sitemapData)
+        public virtual ISitemapXmlGenerator GetSitemapXmlGenerator(SitemapData sitemapData)
         {
             ISitemapXmlGenerator xmlGenerator;
 
