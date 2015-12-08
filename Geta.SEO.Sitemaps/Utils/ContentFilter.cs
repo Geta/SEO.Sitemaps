@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using EPiServer.Core;
 using EPiServer.Framework.Web;
 using EPiServer.Security;
@@ -83,6 +84,20 @@ namespace Geta.SEO.Sitemaps.Utils
         private static bool IsSitemapPropertyEnabled(IContentData content)
         {
             var property = content.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
+            if (property==null) //not set on the page, check if there are default values for a page type perhaps 
+            { 
+                var page = content as PageData;
+                if (page == null)
+                    return false;
+
+                var seoProperty = page.GetType().GetProperty(PropertySEOSitemaps.PropertyName);
+                if (seoProperty?.GetValue(page) is PropertySEOSitemaps) //check unlikely situation when the property name is the same as defined for SEOSiteMaps
+                {
+                    var isEnabled= ((PropertySEOSitemaps)seoProperty.GetValue(page)).Enabled;
+                    return isEnabled;
+                }
+
+            }
 
             if (null != property && !property.Enabled)
             {
