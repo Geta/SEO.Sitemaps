@@ -48,7 +48,7 @@ and specify values for the dynamic property:
 ![Set value for the dynamic property](/Geta.SEO.Sitemaps/Screenshots/SitemapDynamicPropertyOnPage.PNG?raw=true)
 
 ### Adding Sitemap Properties to all content pages
-As of EPiServer 9, the Dynamic Properties is disabled by default. If you don't want to trun on Dynamic Properties then you can add the SEOSitemaps peoperty to of base PageData class as below:
+As of EPiServer 9, the Dynamic Properties is disabled by default. If you don't want to run on Dynamic Properties you can add the SEOSitemaps peoperty to a content type as below:
 ```
 [UIHint(UIHint.Legacy, PresentationLayer.Edit)]
 [BackingType(typeof(PropertySEOSitemaps))]
