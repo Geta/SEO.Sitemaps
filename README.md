@@ -47,6 +47,14 @@ You can specify page specific sitemap properties (like change frequency, priorit
 and specify values for the dynamic property:
 ![Set value for the dynamic property](/Geta.SEO.Sitemaps/Screenshots/SitemapDynamicPropertyOnPage.PNG?raw=true)
 
+### Adding Sitemap Properties to all content pages
+As of EPiServer 9, the Dynamic Properties is disabled by default. If you don't want to trun on Dynamic Properties then you can add the SEOSitemaps peoperty to of base PageData class as below:
+```
+[UIHint(UIHint.Legacy, PresentationLayer.Edit)]
+[BackingType(typeof(PropertySEOSitemaps))]
+public virtual string SEOSitemaps { get; set; }
+```
+
 ## Limitations
 * Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).
 
