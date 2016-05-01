@@ -1,5 +1,6 @@
-SEO.Sitemaps
-============
+# SEO.Sitemaps
+
+![](http://tc.geta.no/app/rest/builds/buildType:(id:TeamFrederik_Sitemap_Debug)/statusIcon)
 
 Search engine sitemaps.xml for EPiServer CMS
 
