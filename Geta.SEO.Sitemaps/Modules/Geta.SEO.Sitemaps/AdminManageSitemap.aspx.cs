@@ -348,7 +348,13 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
                         continue;
                     }
 
-                    siteUrls.Add(string.Format("{0}://{1}/", siteInformation.SiteUrl.Scheme, host.Name));
+                    string scheme = "http";
+                    if (host.UseSecureConnection != null && host.UseSecureConnection == true)
+                    {
+                        scheme = "https";
+                    }
+
+                    siteUrls.Add(string.Format("{0}://{1}/", scheme, host.Name));
                 }
             }
 
