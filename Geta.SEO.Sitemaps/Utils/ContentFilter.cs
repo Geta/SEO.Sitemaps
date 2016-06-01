@@ -88,7 +88,7 @@ namespace Geta.SEO.Sitemaps.Utils
             { 
                 var page = content as PageData;
                 if (page == null)
-                    return false;
+                    return true;
 
                 var seoProperty = page.GetType().GetProperty(PropertySEOSitemaps.PropertyName);
                 if (seoProperty?.GetValue(page) is PropertySEOSitemaps) //check unlikely situation when the property name is the same as defined for SEOSiteMaps
