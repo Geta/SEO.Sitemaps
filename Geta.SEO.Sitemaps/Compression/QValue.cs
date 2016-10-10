@@ -4,24 +4,24 @@
 
 namespace Geta.SEO.Sitemaps
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-
-	/// <summary>
-	/// Represents a weighted value (or quality value) from an http header e.g. gzip=0.9; deflate; x-gzip=0.5;
-	/// </summary>
-	/// <remarks>
-	/// accept-encoding spec: 
-	///		http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-	/// </remarks>
-	/// <example>
-	/// Accept:          text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
-	/// Accept-Encoding: gzip,deflate
-	/// Accept-Charset:  ISO-8859-1,utf-8;q=0.7,*;q=0.7
-	/// Accept-Language: en-us,en;q=0.5
-	/// </example>
-	[DebuggerDisplay("QValue[{Name}, {Weight}]")]
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    /// <summary>
+    /// Represents a weighted value (or quality value) from an http header e.g. gzip=0.9; deflate; x-gzip=0.5;
+    /// </summary>
+    /// <remarks>
+    /// accept-encoding spec: 
+    ///		http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+    /// </remarks>
+    /// <example>
+    /// Accept:          text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+    /// Accept-Encoding: gzip,deflate
+    /// Accept-Charset:  ISO-8859-1,utf-8;q=0.7,*;q=0.7
+    /// Accept-Language: en-us,en;q=0.5
+    /// </example>
+    [DebuggerDisplay("QValue[{Name}, {Weight}]")]
 	public struct QValue : IComparable<QValue>
 	{
 		static char[] delimiters = { ';', '=' };
@@ -146,7 +146,7 @@ namespace Geta.SEO.Sitemaps
 
 			if (parts.Length == 3)
 			{
-				float.TryParse(parts[2], out target._weight);
+				float.TryParse(parts[2],NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out target._weight);
 			}
 		}
 
