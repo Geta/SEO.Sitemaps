@@ -51,8 +51,34 @@ namespace Geta.SEO.Sitemaps.Controllers
                 }
             }
 
-            Response.Filter = new GZipStream(Response.Filter, CompressionMode.Compress);
-            Response.AppendHeader("Content-Encoding", "gzip");
+            /// load encodings from header
+            QValueList encodings = new QValueList(Request.Headers["Accept-Encoding"]);
+
+            /// get the types we can handle, can be accepted and
+            /// in the defined client preference
+            QValue preferred = encodings.FindPreferred("gzip", "deflate", "identity");
+
+            /// if none of the preferred values were found, but the
+            /// client can accept wildcard encodings, we'll default
+            /// to Gzip.
+            if (preferred.IsEmpty && encodings.AcceptWildcard && encodings.Find("gzip").IsEmpty)
+                preferred = new QValue("gzip");
+
+            // handle the preferred encoding
+            switch (preferred.Name)
+            {
+                case "gzip":
+                    Response.AppendHeader("Content-Encoding", "gzip");
+                    Response.Filter = new GZipStream(Response.Filter, CompressionMode.Compress);
+                    break;
+                case "deflate":
+                    Response.AppendHeader("Content-Encoding", "deflate");
+                    Response.Filter = new DeflateStream(Response.Filter, CompressionMode.Compress);
+                    break;
+                case "identity":
+                default:
+                    break;
+            }
 
             return new FileContentResult(sitemapData.Data, "text/xml");
         }

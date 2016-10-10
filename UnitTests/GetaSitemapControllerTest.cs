@@ -72,7 +72,7 @@ namespace Tests
             httpRequestBase.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             var requestContext = createRequestContext(httpRequestBase, createResponseBase());
 
-            var controller = createController(repo, factory);
+            var controller = createController(repo, factory, createControllerContext(requestContext));
             addDummySitemapData(repo);
 
             // Act
