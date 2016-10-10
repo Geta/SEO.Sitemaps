@@ -117,13 +117,7 @@ namespace Tests
 
         private static HttpResponseBase createResponseBase()
         {
-            var responseBase = Substitute.For<HttpResponseBase>();
-            var collection = new System.Collections.Specialized.NameValueCollection();
-            responseBase.Headers.Returns(collection);
-            responseBase.When(x => x.AppendHeader(Arg.Any<string>(), Arg.Any<string>()))
-                .Do(args => collection.Add((string) args[0], (string) args[1]));
-
-            return responseBase;
+            return CompressionHandlerTest.createResponseBase();
         }
 
         private static HttpRequestBase createRequestBase()
@@ -136,11 +130,11 @@ namespace Tests
             return requestBase;
         }
 
-        private static void addDummySitemapData(ISitemapRepository repo2)
+        private static void addDummySitemapData(ISitemapRepository repo)
         {
             var sitemapData = new SitemapData();
             sitemapData.Data = new byte[] { 0, 1, 2, 3, 4 };
-            repo2.GetSitemapData(Arg.Any<string>()).Returns(sitemapData);
+            repo.GetSitemapData(Arg.Any<string>()).Returns(sitemapData);
         }
 
         public static GetaSitemapController createController(ISitemapRepository repo, SitemapXmlGeneratorFactory factory)

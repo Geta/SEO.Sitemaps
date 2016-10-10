@@ -62,7 +62,7 @@ namespace Tests
         }
 
 
-        private static HttpResponseBase createResponseBase()
+        public static HttpResponseBase createResponseBase()
         {
             var responseBase = Substitute.For<HttpResponseBase>();
             var collection = new NameValueCollection();
