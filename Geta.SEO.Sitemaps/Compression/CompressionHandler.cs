@@ -7,8 +7,11 @@ using System.Web.Mvc;
 
 namespace Geta.SEO.Sitemaps.Compression
 {
-    class CompressionHandler
+    public class CompressionHandler
     {
+        public const string ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+        public const string CONTENT_ENCODING_HEADER = "Content-Encoding";
+
         public static void ChooseSuitableCompression(NameValueCollection requestHeaders, HttpResponseBase response)
         {
             if (requestHeaders == null) throw new ArgumentNullException(nameof(requestHeaders));
@@ -16,7 +19,7 @@ namespace Geta.SEO.Sitemaps.Compression
 
 
             /// load encodings from header
-            QValueList encodings = new QValueList(requestHeaders["Accept-Encoding"]);
+            QValueList encodings = new QValueList(requestHeaders[ACCEPT_ENCODING_HEADER]);
 
             /// get the types we can handle, can be accepted and
             /// in the defined client preference
@@ -32,11 +35,11 @@ namespace Geta.SEO.Sitemaps.Compression
             switch (preferred.Name)
             {
                 case "gzip":
-                    response.AppendHeader("Content-Encoding", "gzip");
+                    response.AppendHeader(CONTENT_ENCODING_HEADER, "gzip");
                     response.Filter = new GZipStream(response.Filter, CompressionMode.Compress);
                     break;
                 case "deflate":
-                    response.AppendHeader("Content-Encoding", "deflate");
+                    response.AppendHeader(CONTENT_ENCODING_HEADER, "deflate");
                     response.Filter = new DeflateStream(response.Filter, CompressionMode.Compress);
                     break;
                 case "identity":
