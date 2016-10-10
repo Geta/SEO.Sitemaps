@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Linq;
 using EPiServer.ServiceLocation;
 using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Compression;
 
 namespace Geta.SEO.Sitemaps.Controllers
 {
@@ -45,8 +46,7 @@ namespace Geta.SEO.Sitemaps.Controllers
 
             doc.Add(indexElement);
 
-            Response.Filter = new GZipStream(Response.Filter, CompressionMode.Compress);
-            Response.AppendHeader("Content-Encoding", "gzip");
+            CompressionHandler.ChooseSuitableCompression(Request.Headers, Response);
 
             byte[] sitemapIndexData;
 
