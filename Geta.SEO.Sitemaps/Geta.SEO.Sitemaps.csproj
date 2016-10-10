@@ -178,6 +178,7 @@
     <Compile Include="Controllers\GetaSitemapIndexController.cs" />
     <Compile Include="Controllers\GetaSitemapController.cs" />
     <Compile Include="CurrentLanguageContent.cs" />
+    <Compile Include="QValue.cs" />
     <Compile Include="SitemapCreateJob.cs" />
     <Compile Include="Entities\SitemapFormat.cs" />
     <Compile Include="SpecializedProperties\PropertySEOSitemaps.cs" />
