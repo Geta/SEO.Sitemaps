@@ -59,6 +59,9 @@ public virtual string SEOSitemaps { get; set; }
 ## Limitations
 * Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).
 
+## Contributing
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
 ## Changelog
 1.0.0. Initial version
 
