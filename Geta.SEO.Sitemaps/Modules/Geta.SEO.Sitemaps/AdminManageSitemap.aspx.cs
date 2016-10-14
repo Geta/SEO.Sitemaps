@@ -410,9 +410,9 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         {
         }
 
-        protected static string GetHostNameEditPart(string hostName)
+        public static string GetHostNameEditPart(string hostName)
         {
-            return hostName.Substring(0, hostName.IndexOf(SitemapHostPostfix, StringComparison.InvariantCulture));
+            return hostName.Substring(0, hostName.IndexOf(SitemapHostPostfix, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 
