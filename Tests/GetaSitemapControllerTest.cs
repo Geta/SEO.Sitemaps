@@ -17,8 +17,6 @@ namespace Tests
     {
         ISitemapRepository repo = Substitute.For<ISitemapRepository>();
         SitemapXmlGeneratorFactory factory = Substitute.For<SitemapXmlGeneratorFactory>();
-        ISitemapXmlGenerator sitemapXmlGenerator = Substitute.For<ISitemapXmlGenerator>();
-
 
         [Fact]
         public void ReturnsHttpNotFoundResultWhenMissingSitemap()
@@ -56,7 +54,7 @@ namespace Tests
             addDummySitemapData(repo);
 
             // Act
-            ActionResult result = controller.Index();
+            controller.Index();
 
             // Assert
             var encoding = controller.Response.Headers.Get("Content-Encoding");
@@ -76,7 +74,7 @@ namespace Tests
             addDummySitemapData(repo);
 
             // Act
-            ActionResult result = controller.Index();
+            controller.Index();
 
             // Assert
             var encoding = controller.Response.Headers.Get("Content-Encoding");
