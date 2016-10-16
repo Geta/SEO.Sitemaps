@@ -22,7 +22,7 @@ namespace Tests
         public void ReturnsHttpNotFoundResultWhenMissingSitemap()
         {
             // Arrange
-            var controller = createController(repo, factory);
+            var controller = CreateController(repo, factory);
 
             // Act
             var actionResult = controller.Index();
@@ -35,8 +35,8 @@ namespace Tests
         public void ReturnsSitemapWhenRepoIsNonEmpty()
         {
             // Arrange
-            var controller = createController(repo, factory);
-            addDummySitemapData(repo);
+            var controller = CreateController(repo, factory);
+            AddDummySitemapData(repo);
 
             // Act
             var actionResult = controller.Index();
@@ -50,8 +50,8 @@ namespace Tests
         public void ChecksAcceptHeaderBeforeSettingGzipEncoding()
         {
             // Arrange
-            var controller = createController(repo, factory);
-            addDummySitemapData(repo);
+            var controller = CreateController(repo, factory);
+            AddDummySitemapData(repo);
 
             // Act
             controller.Index();
@@ -66,12 +66,12 @@ namespace Tests
         {
 
             // Arrange
-            var httpRequestBase = createRequestBase();
+            var httpRequestBase = CreateRequestBase();
             httpRequestBase.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            var requestContext = createRequestContext(httpRequestBase, createResponseBase());
+            var requestContext = CreateRequestContext(httpRequestBase, CreateResponseBase());
 
-            var controller = createController(repo, factory, createControllerContext(requestContext));
-            addDummySitemapData(repo);
+            var controller = CreateController(repo, factory, CreateControllerContext(requestContext));
+            AddDummySitemapData(repo);
 
             // Act
             controller.Index();
@@ -81,14 +81,14 @@ namespace Tests
             Assert.Equal("gzip", encoding);
         }
 
-        private static ControllerContext createControllerContext()
+        private static ControllerContext CreateControllerContext()
         {
-            var requestContext = createRequestContext(createRequestBase(), createResponseBase());
+            var requestContext = CreateRequestContext(CreateRequestBase(), CreateResponseBase());
 
-            return createControllerContext(requestContext);
+            return CreateControllerContext(requestContext);
         }
 
-        private static ControllerContext createControllerContext(RequestContext requestContext)
+        private static ControllerContext CreateControllerContext(RequestContext requestContext)
         {
             var context = new ControllerContext();
             context.RequestContext = requestContext;
@@ -96,16 +96,16 @@ namespace Tests
             return context;
         }
 
-        private static RequestContext createRequestContext(HttpRequestBase requestBase, HttpResponseBase responseBase)
+        private static RequestContext CreateRequestContext(HttpRequestBase requestBase, HttpResponseBase responseBase)
         {
-            var httpContext = createHttpContext(requestBase, responseBase);
+            var httpContext = CreateHttpContext(requestBase, responseBase);
 
             var requestContext = new RequestContext();
             requestContext.HttpContext = httpContext;
             return requestContext;
         }
 
-        private static HttpContextBase createHttpContext(HttpRequestBase requestBase, HttpResponseBase responseBase)
+        private static HttpContextBase CreateHttpContext(HttpRequestBase requestBase, HttpResponseBase responseBase)
         {
             var httpContext = Substitute.For<HttpContextBase>();
             httpContext.Request.Returns(requestBase);
@@ -113,12 +113,12 @@ namespace Tests
             return httpContext;
         }
 
-        private static HttpResponseBase createResponseBase()
+        private static HttpResponseBase CreateResponseBase()
         {
-            return CompressionHandlerTest.createResponseBase();
+            return CompressionHandlerTest.CreateResponseBase();
         }
 
-        private static HttpRequestBase createRequestBase()
+        private static HttpRequestBase CreateRequestBase()
         {
             Uri dummyUri = new Uri("http://foo.bar");
             var requestBase = Substitute.For<HttpRequestBase>();
@@ -128,19 +128,19 @@ namespace Tests
             return requestBase;
         }
 
-        private static void addDummySitemapData(ISitemapRepository repo)
+        private static void AddDummySitemapData(ISitemapRepository repo)
         {
             var sitemapData = new SitemapData();
             sitemapData.Data = new byte[] { 0, 1, 2, 3, 4 };
             repo.GetSitemapData(Arg.Any<string>()).Returns(sitemapData);
         }
 
-        public static GetaSitemapController createController(ISitemapRepository repo, SitemapXmlGeneratorFactory factory)
+        public static GetaSitemapController CreateController(ISitemapRepository repo, SitemapXmlGeneratorFactory factory)
         {
-            return createController(repo, factory, createControllerContext());
+            return CreateController(repo, factory, CreateControllerContext());
         }
 
-        private static GetaSitemapController createController(ISitemapRepository repo, SitemapXmlGeneratorFactory factory,
+        private static GetaSitemapController CreateController(ISitemapRepository repo, SitemapXmlGeneratorFactory factory,
             ControllerContext controllerContext)
         {
             var controller = new GetaSitemapController(repo, factory);

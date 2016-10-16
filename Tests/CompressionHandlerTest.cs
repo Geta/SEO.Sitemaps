@@ -14,7 +14,7 @@ namespace Tests
         public void DoesNotChangeFilterIfNoSuitableEncodingWasFound()
         {
             // Arrange
-            var res = createResponseBase();
+            var res = CreateResponseBase();
             var emptyHeaders = new NameValueCollection();
             var beforeFilter = res.Filter;
 
@@ -29,7 +29,7 @@ namespace Tests
         [Fact]
         public void DoesNotChangeContentEncodingIfNoSuitableEncodingWasFound()
         {
-            var res = createResponseBase();
+            var res = CreateResponseBase();
             var emptyHeaders = new NameValueCollection();
             CompressionHandler.ChooseSuitableCompression(emptyHeaders, res);
 
@@ -39,7 +39,7 @@ namespace Tests
         [Fact]
         public void ChangesContentEncodingIfSuitableEncodingWasFound()
         {
-            var res = createResponseBase();
+            var res = CreateResponseBase();
             var headers = new NameValueCollection();
             headers.Add(CompressionHandler.ACCEPT_ENCODING_HEADER, "gzip");
             CompressionHandler.ChooseSuitableCompression(headers, res);
@@ -52,7 +52,7 @@ namespace Tests
         [Fact]
         public void ChoosesMostSuitableEncoding()
         {
-            var res = createResponseBase();
+            var res = CreateResponseBase();
             var headers = new NameValueCollection();
             headers.Add(CompressionHandler.ACCEPT_ENCODING_HEADER, "gzip;q=0.3,deflate;q=0.8,foobar;q=0.9");
             CompressionHandler.ChooseSuitableCompression(headers, res);
@@ -62,7 +62,7 @@ namespace Tests
         }
 
 
-        public static HttpResponseBase createResponseBase()
+        public static HttpResponseBase CreateResponseBase()
         {
             var responseBase = Substitute.For<HttpResponseBase>();
             var collection = new NameValueCollection();
