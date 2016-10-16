@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps", "Geta.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps.Commerce", "Geta.SEO.Sitemaps.Commerce\Geta.SEO.Sitemaps.Commerce.csproj", "{A7A5A567-3473-4881-B263-4428F57FDD55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

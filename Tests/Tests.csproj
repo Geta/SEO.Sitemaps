@@ -7,8 +7,8 @@
     <ProjectGuid>{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnitTests</RootNamespace>
-    <AssemblyName>UnitTests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,7 +16,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
+    <TestProjectType>Test</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -48,7 +48,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" >
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib/net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -66,20 +68,6 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <Choose>
-    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <ItemGroup>
     <Compile Include="GetaSitemapControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
