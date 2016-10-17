@@ -11,6 +11,7 @@ using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.Utils;
+using Geta.SEO.Sitemaps.Compression;
 
 namespace Geta.SEO.Sitemaps.Controllers
 {
@@ -51,8 +52,7 @@ namespace Geta.SEO.Sitemaps.Controllers
                 }
             }
 
-            Response.Filter = new GZipStream(Response.Filter, CompressionMode.Compress);
-            Response.AppendHeader("Content-Encoding", "gzip");
+            CompressionHandler.ChooseSuitableCompression(Request.Headers, Response);
 
             return new FileContentResult(sitemapData.Data, "text/xml");
         }
