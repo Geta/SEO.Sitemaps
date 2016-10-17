@@ -27,15 +27,12 @@ namespace Geta.SEO.Sitemaps
 		static char[] delimiters = { ';', '=' };
 		const float defaultWeight = 1;
 
-		#region Fields
 
 		string _name;
 		float _weight;
 		int _ordinal;
 
-		#endregion
 
-		#region Constructors
 
 		/// <summary>
 		/// Creates a new QValue by parsing the given value 
@@ -62,10 +59,6 @@ namespace Geta.SEO.Sitemaps
 
 			ParseInternal(ref this, value);
 		}
-
-		#endregion
-
-		#region Properties
 
 		/// <summary>
 		/// The name of the value part
@@ -100,9 +93,7 @@ namespace Geta.SEO.Sitemaps
 			get { return string.IsNullOrEmpty(_name); }
 		}
 
-		#endregion
 
-		#region Methods
 
 		/// <summary>
 		/// Parses the given string for name and 
@@ -150,9 +141,7 @@ namespace Geta.SEO.Sitemaps
 			}
 		}
 
-		#endregion
 
-		#region IComparable<QValue> Members
 
 		/// <summary>
 		/// Compares this instance to another QValue by
@@ -171,9 +160,7 @@ namespace Geta.SEO.Sitemaps
 			return value;
 		}
 
-		#endregion
 
-		#region CompareByWeight
 
 		/// <summary>
 		/// Compares two QValues in ascending order.
@@ -197,7 +184,6 @@ namespace Geta.SEO.Sitemaps
 			return -x.CompareTo(y);
 		}
 
-		#endregion
 
 	}
 
@@ -213,14 +199,11 @@ namespace Geta.SEO.Sitemaps
 	{
 		static char[] delimiters = { ',' };
 
-		#region Fields
 
 		bool _acceptWildcard;
 		bool _autoSort;
 
-		#endregion
 
-		#region Constructors
 
 		/// <summary>
 		/// Creates a new instance of an QValueList list from 
@@ -258,9 +241,7 @@ namespace Geta.SEO.Sitemaps
 			_autoSort = true;
 		}
 
-		#endregion
 
-		#region Properties
 
 		/// <summary>
 		/// Whether or not the wildcarded encoding is available and allowed
@@ -289,9 +270,7 @@ namespace Geta.SEO.Sitemaps
 			get { return FindPreferred(candidates); }
 		}
 
-		#endregion
 
-		#region Add
 
 		/// <summary>
 		/// Adds an item to the list, then applies sorting 
@@ -305,9 +284,7 @@ namespace Geta.SEO.Sitemaps
 			applyAutoSort();
 		}
 
-		#endregion
 
-		#region AddRange
 
 		/// <summary>
 		/// Adds a range of items to the list, then applies sorting 
@@ -325,9 +302,7 @@ namespace Geta.SEO.Sitemaps
 			applyAutoSort();
 		}
 
-		#endregion
 
-		#region Find
 
 		/// <summary>
 		/// Finds the first QValue with the given name (case-insensitive)
@@ -340,9 +315,7 @@ namespace Geta.SEO.Sitemaps
 			return Find(criteria);
 		}
 
-		#endregion
 
-		#region FindHighestWeight
 
 		/// <summary>
 		/// Returns the first match found from the given candidates
@@ -361,9 +334,7 @@ namespace Geta.SEO.Sitemaps
 			return Find(criteria);
 		}
 
-		#endregion
 
-		#region FindPreferred
 
 		/// <summary>
 		/// Returns the first match found from the given candidates that is accepted
@@ -382,9 +353,7 @@ namespace Geta.SEO.Sitemaps
 			return Find(criteria);
 		}
 
-		#endregion
 
-		#region DefaultSort
 
 		/// <summary>
 		/// Sorts the list comparing by weight in 
@@ -395,9 +364,7 @@ namespace Geta.SEO.Sitemaps
 			Sort(QValue.CompareByWeightDesc);
 		}
 
-		#endregion
 
-		#region applyAutoSort
 
 		/// <summary>
 		/// Applies the default sorting method if
@@ -409,9 +376,7 @@ namespace Geta.SEO.Sitemaps
 				DefaultSort();
 		}
 
-		#endregion
 
-		#region isCandidate
 
 		/// <summary>
 		/// Determines if the given item contained within the applied array 
@@ -430,7 +395,6 @@ namespace Geta.SEO.Sitemaps
 			return false;
 		}
 
-		#endregion
 
 	}
 }
