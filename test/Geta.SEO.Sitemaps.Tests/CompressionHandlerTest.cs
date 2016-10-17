@@ -1,9 +1,8 @@
-﻿
-using Geta.SEO.Sitemaps.Compression;
-using NSubstitute;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.IO;
 using System.Web;
+using Geta.SEO.Sitemaps.Compression;
+using NSubstitute;
 using Xunit;
 
 namespace Tests

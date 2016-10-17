@@ -1,14 +1,13 @@
-﻿using Geta.SEO.Sitemaps.Controllers;
-using Geta.SEO.Sitemaps.Entities;
-using Geta.SEO.Sitemaps.Repositories;
-using Geta.SEO.Sitemaps.Utils;
-using Geta.SEO.Sitemaps.XML;
-using NSubstitute;
-using System;
+﻿using System;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Geta.SEO.Sitemaps.Controllers;
+using Geta.SEO.Sitemaps.Entities;
+using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Utils;
+using NSubstitute;
 using Xunit;
 
 namespace Tests
