@@ -72,9 +72,9 @@ namespace Geta.SEO.Sitemaps.Commerce
                 return false;
             }
 
-            var templateModelRepository = ServiceLocator.Current.GetInstance<TemplateModelRepository>();
+            var templateRepository = ServiceLocator.Current.GetInstance<ITemplateRepository>();
 
-            return templateModelRepository.List(contentData.GetOriginalType()).Any(x => x.TemplateTypeCategory.IsCategory(TemplateTypeCategories.Page));
+            return templateRepository.List(contentData.GetOriginalType()).Any(x => x.TemplateTypeCategory.IsCategory(TemplateTypeCategories.Page));
         }
     }
 }
