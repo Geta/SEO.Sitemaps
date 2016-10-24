@@ -78,4 +78,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
   2. Removed depedency on log4net
 
 1.6.1.
-  1 Added support for Episerver 10
+  1. Added support for Episerver 10
