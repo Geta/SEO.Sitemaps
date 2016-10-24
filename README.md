@@ -76,3 +76,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 1.5.0.
   1. Added support for EPiServer 9
   2. Removed depedency on log4net
+
+1.6.1.
+  1 Added support for Episerver 10
