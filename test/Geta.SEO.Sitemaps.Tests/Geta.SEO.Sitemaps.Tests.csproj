@@ -168,10 +168,12 @@
     <Compile Include="CompressionHandlerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.csproj">
+    <ProjectReference Include="..\..\src\Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.csproj">
       <Project>{E1C27292-1731-4C8C-A305-80E084D8EE3D}</Project>
       <Name>Geta.SEO.Sitemaps</Name>
     </ProjectReference>
