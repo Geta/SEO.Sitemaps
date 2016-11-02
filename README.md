@@ -43,6 +43,21 @@ Each sitemap configuration must have a unique host name:
 
 When configuration done go to the scheduled task "Generate search engine sitemaps" and run/schedule it to run in the necessary frequency. After the scheduled job has been run successfully you can view the sitemap(-s) by either opening the configured sitemap host or clicking "View" next to the sitemap configuration.
 
+#### Enabling multi language support
+
+Add this to your web.config file:
+```xml
+<configuration>
+<configSections>
+<section name="SitemapSettings" type="Geta.SEO.Sitemaps.Configuration.SitemapConfigurationSection, Geta.SEO.Sitemaps"/>
+</configSections>
+
+  <Geta.SEO.Sitemaps>
+    <settings enableLanguageDropDownInAdmin="true" />
+  </Geta.SEO.Sitemaps>
+</configuration>
+```
+
 ### Dynamic property for specific pages
 You can specify page specific sitemap properties (like change frequency, priority or inclulde/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
 ![Create dynamic property](docs/SitemapDynamicPropertyDefine.png?raw=true)
