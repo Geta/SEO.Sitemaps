@@ -49,7 +49,7 @@ Add this to your web.config file:
 ```xml
 <configuration>
 <configSections>
-<section name="SitemapSettings" type="Geta.SEO.Sitemaps.Configuration.SitemapConfigurationSection, Geta.SEO.Sitemaps"/>
+<section name="Geta.SEO.Sitemaps" type="Geta.SEO.Sitemaps.Configuration.SitemapConfigurationSection, Geta.SEO.Sitemaps"/>
 </configSections>
 
   <Geta.SEO.Sitemaps>
