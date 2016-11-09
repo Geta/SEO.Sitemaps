@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps", "Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.csproj", "{E1C27292-1731-4C8C-A305-80E084D8EE3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps", "src\Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.csproj", "{E1C27292-1731-4C8C-A305-80E084D8EE3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps.Commerce", "Geta.SEO.Sitemaps.Commerce\Geta.SEO.Sitemaps.Commerce.csproj", "{A7A5A567-3473-4881-B263-4428F57FDD55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps.Commerce", "src\Geta.SEO.Sitemaps.Commerce\Geta.SEO.Sitemaps.Commerce.csproj", "{A7A5A567-3473-4881-B263-4428F57FDD55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps.Tests", "test\Geta.SEO.Sitemaps.Tests\Geta.SEO.Sitemaps.Tests.csproj", "{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geta.SEO.Sitemaps.UnitTests", "Geta.SEO.Sitemaps.UnitTests\Geta.SEO.Sitemaps.UnitTests.csproj", "{AE2A177C-D1D8-4793-8905-4AC3D27919A8}"
 EndProject
@@ -23,10 +25,10 @@ Global
 		{A7A5A567-3473-4881-B263-4428F57FDD55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7A5A567-3473-4881-B263-4428F57FDD55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7A5A567-3473-4881-B263-4428F57FDD55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE2A177C-D1D8-4793-8905-4AC3D27919A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE2A177C-D1D8-4793-8905-4AC3D27919A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE2A177C-D1D8-4793-8905-4AC3D27919A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE2A177C-D1D8-4793-8905-4AC3D27919A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1CE9AE-8DBE-4CA4-B15C-54F16D5F2C86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

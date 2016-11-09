@@ -1,6 +1,8 @@
 # SEO.Sitemaps
 
 ![](http://tc.geta.no/app/rest/builds/buildType:(id:TeamFrederik_Sitemap_Debug)/statusIcon)
+[![Platform](https://img.shields.io/badge/Platform-.NET 4.5.2-blue.svg?style=flat)](https://msdn.microsoft.com/en-us/library/w0x726c2%28v=vs.110%29.aspx)
+[![Platform](https://img.shields.io/badge/Episerver-%2010-orange.svg?style=flat)](http://world.episerver.com/cms/)
 
 Search engine sitemaps.xml for EPiServer CMS
 
@@ -31,22 +33,37 @@ Add a new sitemap definition and fill values for sitemap host and other fields:
 * Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry   
 * Format - currently standard or mobile (to specify [mobile content] (http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
 
-![Add a sitemap](/Geta.SEO.Sitemaps/Screenshots/SitemapAdd.png?raw=true)
+![Add a sitemap](docs/SitemapAdd.png?raw=true)
 
 In case of multiple sites you choose for which site to host this sitemap:   
-![Add a sitemap multiple site](/Geta.SEO.Sitemaps/Screenshots/SitemapAddMultiSite.png?raw=true)
+![Add a sitemap multiple site](docs/SitemapAddMultiSite.png?raw=true)
 
 Each sitemap configuration must have a unique host name:
-![Configure sitemaps](/Geta.SEO.Sitemaps/Screenshots/SitemapConfigure.png?raw=true)
+![Configure sitemaps](docs/SitemapConfigure.png?raw=true)
 
 When configuration done go to the scheduled task "Generate search engine sitemaps" and run/schedule it to run in the necessary frequency. After the scheduled job has been run successfully you can view the sitemap(-s) by either opening the configured sitemap host or clicking "View" next to the sitemap configuration.
 
+#### Enabling multi language support
+
+Add this to your web.config file:
+```xml
+<configuration>
+<configSections>
+<section name="Geta.SEO.Sitemaps" type="Geta.SEO.Sitemaps.Configuration.SitemapConfigurationSection, Geta.SEO.Sitemaps"/>
+</configSections>
+
+  <Geta.SEO.Sitemaps>
+    <settings enableLanguageDropDownInAdmin="true" />
+  </Geta.SEO.Sitemaps>
+</configuration>
+```
+
 ### Dynamic property for specific pages
 You can specify page specific sitemap properties (like change frequency, priority or inclulde/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
-![Create dynamic property](/Geta.SEO.Sitemaps/Screenshots/SitemapDynamicPropertyDefine.png?raw=true)
+![Create dynamic property](docs/SitemapDynamicPropertyDefine.png?raw=true)
 
 and specify values for the dynamic property:
-![Set value for the dynamic property](/Geta.SEO.Sitemaps/Screenshots/SitemapDynamicPropertyOnPage.PNG?raw=true)
+![Set value for the dynamic property](docs/SitemapDynamicPropertyOnPage.PNG?raw=true)
 
 ### Adding Sitemap Properties to all content pages
 As of EPiServer 9, the Dynamic Properties is disabled by default. If you don't want to run on Dynamic Properties you can add the SEOSitemaps peoperty to a content type as below:
@@ -74,3 +91,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 1.5.0.
   1. Added support for EPiServer 9
   2. Removed depedency on log4net
+
+1.6.1.
+  1. Added support for Episerver 10
