@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.Utils
@@ -36,16 +37,15 @@ namespace Geta.SEO.Sitemaps.Utils
         {
             if (paths != null && paths.Count > 0)
             {
-                foreach (var path in paths)
+                var anyPathIsInUrl = paths.Any(x =>
                 {
-                    var dir = AddStartSlash(AddTailingSlash(path.ToLower().Trim()));
+                    var dir = AddStartSlash(AddTailingSlash(x.ToLower().Trim()));
+                    return url.ToLower().StartsWith(dir);
+                });
 
-                    var pathIsInUrl = url.ToLower().StartsWith(dir);
-
-                    if (pathIsInUrl != mustContainPath)
-                    {
-                        return true;
-                    }
+                if (anyPathIsInUrl != mustContainPath)
+                {
+                    return true;
                 }
             }
 
