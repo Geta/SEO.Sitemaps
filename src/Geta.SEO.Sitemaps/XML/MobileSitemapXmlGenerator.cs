@@ -6,13 +6,14 @@ using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps.XML
 {
     [ServiceConfiguration(typeof(IMobileSitemapXmlGenerator))]
     public class MobileSitemapXmlGenerator : SitemapXmlGenerator, IMobileSitemapXmlGenerator
     {
-        public MobileSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository)
+        public MobileSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, IContentFilter contentFilter) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, contentFilter)
         {
         }
 

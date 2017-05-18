@@ -9,6 +9,7 @@ using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Utils;
 using Geta.SEO.Sitemaps.XML;
 using Mediachase.Commerce.Catalog;
 
@@ -20,8 +21,8 @@ namespace Geta.SEO.Sitemaps.Commerce
     [ServiceConfiguration(typeof(ICommerceAndStandardSitemapXmlGenerator))]
     public class CommerceAndStandardSitemapXmlGenerator : CommerceSitemapXmlGenerator, ICommerceAndStandardSitemapXmlGenerator
     {
-        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter)
-            : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, referenceConverter)
+        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter, IContentFilter contentFilter)
+            : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, referenceConverter, contentFilter)
         {
         }
 

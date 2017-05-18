@@ -122,10 +122,6 @@
       <HintPath>..\..\packages\EPiServer.CMS.Core.10.0.1\lib\net45\EPiServer.XForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Geta.SEO.Sitemaps, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Geta.SEO.Sitemaps.1.5.1\lib\net45\Geta.SEO.Sitemaps.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -270,6 +266,12 @@
     <None Include="modules\_protected\CMS\CMS.zip" />
     <None Include="modules\_protected\Shell\Shell.zip" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.csproj">
+      <Project>{e1c27292-1731-4c8c-a305-80e084d8ee3d}</Project>
+      <Name>Geta.SEO.Sitemaps</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
