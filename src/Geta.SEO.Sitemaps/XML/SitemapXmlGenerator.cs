@@ -265,7 +265,7 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 var languageContent = ContentRepository.Get<IContent>(contentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false));
 
-                if (languageContent == null)
+                if (languageContent == null || ContentFilter.ShouldExcludeContent(languageContent))
                 {
                     continue;
                 }
