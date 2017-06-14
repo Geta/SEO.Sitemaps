@@ -37,6 +37,7 @@ namespace Geta.SEO.Sitemaps.XML
         protected readonly UrlResolver UrlResolver;
         protected readonly SiteDefinitionRepository SiteDefinitionRepository;
         protected readonly ILanguageBranchRepository LanguageBranchRepository;
+        protected readonly IContentFilter ContentFilter;
         protected SitemapData SitemapData { get; set; }
         protected SiteDefinition SiteSettings { get; set; }
         protected IEnumerable<LanguageBranch> EnabledLanguages { get; set; }
@@ -54,7 +55,8 @@ namespace Geta.SEO.Sitemaps.XML
 
         public bool IsDebugMode { get; set; }
 
-        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository)
+        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
+            IContentFilter contentFilter)
         {
             this.SitemapRepository = sitemapRepository;
             this.ContentRepository = contentRepository;
@@ -63,6 +65,7 @@ namespace Geta.SEO.Sitemaps.XML
             this.LanguageBranchRepository = languageBranchRepository;
             this.EnabledLanguages = this.LanguageBranchRepository.ListEnabled();
             this.UrlSet = new HashSet<string>();
+            this.ContentFilter = contentFilter;
         }
 
         protected virtual XElement GenerateRootElement()

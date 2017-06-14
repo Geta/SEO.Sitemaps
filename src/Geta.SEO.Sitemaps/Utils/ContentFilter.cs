@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using EPiServer.Core;
 using EPiServer.Framework.Web;
 using EPiServer.Security;
@@ -8,12 +7,13 @@ using EPiServer.Web;
 using Geta.SEO.Sitemaps.SpecializedProperties;
 
 namespace Geta.SEO.Sitemaps.Utils
-{
-    public class ContentFilter
+{ 
+    [ServiceConfiguration(typeof(IContentFilter))]
+    public class ContentFilter : IContentFilter
     {
         protected static Injected<TemplateResolver> TemplateResolver { get; set; }
 
-        public static bool ShouldExcludeContent(IContent content)
+        public virtual bool ShouldExcludeContent(IContent content)
         {
             if (content == null)
             {

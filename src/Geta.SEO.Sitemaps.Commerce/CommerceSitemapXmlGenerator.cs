@@ -11,6 +11,7 @@ using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.SpecializedProperties;
+using Geta.SEO.Sitemaps.Utils;
 using Geta.SEO.Sitemaps.XML;
 using Mediachase.Commerce.Catalog;
 
@@ -24,7 +25,7 @@ namespace Geta.SEO.Sitemaps.Commerce
     {
         private readonly ReferenceConverter _referenceConverter;
 
-        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository)
+        public CommerceSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter, IContentFilter contentFilter) : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, contentFilter)
         {
             if (referenceConverter == null) throw new ArgumentNullException("referenceConverter");
             _referenceConverter = referenceConverter;
