@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Helpers;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using EPiServer;
@@ -24,7 +25,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
     public partial class AdminManageSitemap : SimplePage
     {
         public Injected<ISitemapRepository> SitemapRepository { get; set; }
-        public Injected<SiteDefinitionRepository> SiteDefinitionRepository { get; set; }
+        public Injected<ISiteDefinitionRepository> SiteDefinitionRepository { get; set; }
         public Injected<ILanguageBranchRepository> LanguageBranchRepository { get; set; }
         protected IList<string> SiteHosts { get; set; }
         protected bool ShowLanguageDropDown { get; set; }
@@ -48,12 +49,18 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         {
             base.OnInit(e);
 
+            if (IsPostBack)
+            {
+                // will throw exception if invalid
+                AntiForgery.Validate();
+            }
+
             SiteHosts = GetSiteHosts();
             ShowLanguageDropDown = ShouldShowLanguageDropDown();
 
             LanguageBranches = LanguageBranchRepository.Service.ListEnabled().Select(x => new LanguageBranchData
             {
-                DisplayName = x.CurrentUrlSegment,
+                DisplayName = x.URLSegment,
                 Language = x.Culture.Name
             }).ToList();
 
@@ -251,7 +258,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             if (!string.IsNullOrWhiteSpace(language) && SiteDefinition.WildcardHostName.Equals(language) == false)
             {
                 var languageBranch = LanguageBranchRepository.Service.Load(language);
-                return string.Format("{0}/", languageBranch.CurrentUrlSegment);
+                return string.Format("{0}/", languageBranch.URLSegment);
             }
 
             return string.Empty;

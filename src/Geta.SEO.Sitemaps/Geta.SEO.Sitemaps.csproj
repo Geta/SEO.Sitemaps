@@ -211,8 +211,6 @@
     <None Include="Geta.SEO.Sitemaps.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Modules\_protected\CMS\CMS.zip" />
-    <None Include="Modules\_protected\Shell\Shell.zip" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
