@@ -21,7 +21,7 @@ namespace Geta.SEO.Sitemaps.Commerce
     [ServiceConfiguration(typeof(ICommerceAndStandardSitemapXmlGenerator))]
     public class CommerceAndStandardSitemapXmlGenerator : CommerceSitemapXmlGenerator, ICommerceAndStandardSitemapXmlGenerator
     {
-        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter, IContentFilter contentFilter)
+        public CommerceAndStandardSitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, ISiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository, ReferenceConverter referenceConverter, IContentFilter contentFilter)
             : base(sitemapRepository, contentRepository, urlResolver, siteDefinitionRepository, languageBranchRepository, referenceConverter, contentFilter)
         {
         }
