@@ -35,7 +35,7 @@ namespace Geta.SEO.Sitemaps.XML
         protected readonly ISitemapRepository SitemapRepository;
         protected readonly IContentRepository ContentRepository;
         protected readonly UrlResolver UrlResolver;
-        protected readonly SiteDefinitionRepository SiteDefinitionRepository;
+        protected readonly ISiteDefinitionRepository SiteDefinitionRepository;
         protected readonly ILanguageBranchRepository LanguageBranchRepository;
         protected readonly IContentFilter ContentFilter;
         protected SitemapData SitemapData { get; set; }
@@ -55,7 +55,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         public bool IsDebugMode { get; set; }
 
-        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, SiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
+        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, ISiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
             IContentFilter contentFilter)
         {
             this.SitemapRepository = sitemapRepository;
