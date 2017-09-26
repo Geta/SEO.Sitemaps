@@ -518,7 +518,7 @@ namespace Geta.SEO.Sitemaps.XML
         protected HostDefinition GetHostDefinition()
         {
             var siteUrl = new Uri(this.SitemapData.SiteUrl);
-            string sitemapHost = siteUrl.Host;
+            string sitemapHost = siteUrl.Authority;
 
             return this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
                    this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
