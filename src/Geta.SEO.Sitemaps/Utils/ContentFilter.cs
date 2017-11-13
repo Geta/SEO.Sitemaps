@@ -5,9 +5,10 @@ using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using Geta.SEO.Sitemaps.SpecializedProperties;
+using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.Utils
-{ 
+{
     [ServiceConfiguration(typeof(IContentFilter))]
     public class ContentFilter : IContentFilter
     {
@@ -16,6 +17,11 @@ namespace Geta.SEO.Sitemaps.Utils
         public virtual bool ShouldExcludeContent(IContent content)
         {
             if (content == null)
+            {
+                return true;
+            }
+
+            if(content is IExcludeInSitemap)
             {
                 return true;
             }
@@ -44,6 +50,11 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
+            if (content is IIncludeInSitemap && IsNoIndexSet(content))
+            {
+                return true;
+            }
+
             if (!IsVisibleOnSite(content))
             {
                 return true;
@@ -67,6 +78,12 @@ namespace Geta.SEO.Sitemaps.Utils
             }
 
             return false;
+        }
+
+        private bool IsNoIndexSet(IContent content)
+        {
+            var includeInSitemap = (IIncludeInSitemap)content;
+            return includeInSitemap.NoIndex;
         }
 
         private static bool IsVisibleOnSite(IContent content)
