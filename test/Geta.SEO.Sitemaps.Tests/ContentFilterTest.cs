@@ -9,12 +9,7 @@
     using Geta.SEO.Sitemaps.SpecializedProperties;
     using Geta.SEO.Sitemaps.Utils;
     using NSubstitute;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Security.Principal;
-    using System.Text;
-    using System.Threading.Tasks;
     using Xunit;
 
     public class ContentFilterTest
@@ -78,16 +73,11 @@
                 { PropertySEOSitemaps.PropertyName, new PropertySEOSitemaps() { Enabled = true } }
             };
             content.Property.Returns(propCollection);
-
-            // Create a mock service locator
+            
             var mockLocator = Substitute.For<IServiceLocator>();
             var mockTemplateResolver = Substitute.For<TemplateResolver>();
             mockTemplateResolver.HasTemplate(content, TemplateTypeCategories.Page).ReturnsForAnyArgs(true);
-
-            // Setup the service locator to return our mock repository when an IContentRepository is requested
             mockLocator.GetInstance<TemplateResolver>().Returns(mockTemplateResolver);
-
-            // Make use of our mock objects throughout EPiServer
             ServiceLocator.SetLocator(mockLocator);
 
             var startPageRef = new ContentReference(2);
@@ -110,16 +100,11 @@
                 { PropertySEOSitemaps.PropertyName, new PropertySEOSitemaps() { Enabled = true } }
             };
             content.Property.Returns(propCollection);
-
-            // Create a mock service locator
+            
             var mockLocator = Substitute.For<IServiceLocator>();
             var mockTemplateResolver = Substitute.For<TemplateResolver>();
-            mockTemplateResolver.HasTemplate(content, TemplateTypeCategories.Page).ReturnsForAnyArgs(true);
-
-            // Setup the service locator to return our mock repository when an IContentRepository is requested
+            mockTemplateResolver.HasTemplate(content, TemplateTypeCategories.Page).ReturnsForAnyArgs(true);            
             mockLocator.GetInstance<TemplateResolver>().Returns(mockTemplateResolver);
-
-            // Make use of our mock objects throughout EPiServer
             ServiceLocator.SetLocator(mockLocator);
 
             var startPageRef = new ContentReference(2);
