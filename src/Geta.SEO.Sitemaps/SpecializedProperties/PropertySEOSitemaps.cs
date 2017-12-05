@@ -76,11 +76,6 @@ namespace Geta.SEO.Sitemaps.SpecializedProperties
             }
         }
 
-        public override IPropertyControl CreatePropertyControl()
-        {
-            return new PropertySEOSitemapsControl();
-        }
-
         public void Deserialize(string xml)
         {
             StringReader s = new StringReader(xml);

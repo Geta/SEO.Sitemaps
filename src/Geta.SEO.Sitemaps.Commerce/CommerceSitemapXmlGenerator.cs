@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using EPiServer;
@@ -10,7 +9,6 @@ using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Repositories;
-using Geta.SEO.Sitemaps.SpecializedProperties;
 using Geta.SEO.Sitemaps.Utils;
 using Geta.SEO.Sitemaps.XML;
 using Mediachase.Commerce.Catalog;
