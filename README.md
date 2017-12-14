@@ -95,5 +95,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 1.6.1.
   1. Added support for Episerver 10
 
-2.0.1.
+2.0.2.
   1. Added support for Episerver 11
