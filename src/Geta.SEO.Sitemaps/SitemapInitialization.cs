@@ -1,10 +1,9 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
+using EPiServer.Core;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
-using EPiServer.ServiceLocation;
-using Geta.SEO.Sitemaps.XML;
-using StructureMap;
+using Geta.SEO.Sitemaps.SpecializedProperties;
 
 namespace Geta.SEO.Sitemaps
 {
@@ -27,14 +26,17 @@ namespace Geta.SEO.Sitemaps
             RouteTable.Routes.MapRoute("Sitemap with language", "{language}/sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
             RouteTable.Routes.MapRoute("Sitemap with language and path", "{language}/{path}sitemap.xml", new { controller = "GetaSitemap", action = "Index" });
 
+            var propertyControlFactory = context.Locate.Advanced.GetInstance<IPropertyControlFactory>();
+
+            if (!propertyControlFactory.IsRegistered<PropertySEOSitemaps>())
+            {
+                propertyControlFactory.Register<PropertySEOSitemaps>(() => new PropertySEOSitemapsControl());
+            }
+
             _initialized = true;
         }
 
         public void Uninitialize(InitializationEngine context)
-        {
-        }
-
-        public void Preload(string[] parameters)
         {
         }
     }

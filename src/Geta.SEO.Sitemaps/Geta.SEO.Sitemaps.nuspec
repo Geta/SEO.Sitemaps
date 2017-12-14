@@ -1,18 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-    <metadata>
-      <id>$id$</id>
-      <version>$version$</version>
-      <authors>$author$</authors>
-      <owners>$author$</owners>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>$description$</description>
-        <copyright>$copyright$</copyright>
-        <tags>Sitemap SEO EPiServer</tags>
-        <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
-	<iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
-    </metadata>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <tags>Sitemap SEO EPiServer</tags>
+    <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
+    <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
+    <dependencies>
+      <dependency id="EPiServer.CMS.UI" version="[11.1.0, 12.0)" />
+    </dependencies>
+  </metadata>
   <files>
-        <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
-    </files>
+    <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
+  </files>
 </package>
