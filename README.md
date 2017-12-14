@@ -1,8 +1,8 @@
 # SEO.Sitemaps
 
 ![](http://tc.geta.no/app/rest/builds/buildType:(id:TeamFrederik_Sitemap_Debug)/statusIcon)
-[![Platform](https://img.shields.io/badge/Platform-.NET%204.5.2-blue.svg?style=flat)](https://msdn.microsoft.com/en-us/library/w0x726c2%28v=vs.110%29.aspx)
-[![Platform](https://img.shields.io/badge/Episerver-%2010-orange.svg?style=flat)](http://world.episerver.com/cms/)
+[![Platform](https://img.shields.io/badge/Platform-.NET%204.6.1-blue.svg?style=flat)](https://msdn.microsoft.com/en-us/library/w0x726c2%28v=vs.110%29.aspx)
+[![Platform](https://img.shields.io/badge/Episerver-%2011-orange.svg?style=flat)](http://world.episerver.com/cms/)
 
 Search engine sitemaps.xml for EPiServer CMS
 
@@ -94,3 +94,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 1.6.1.
   1. Added support for Episerver 10
+
+2.0.1.
+  1. Added support for Episerver 11
