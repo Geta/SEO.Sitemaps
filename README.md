@@ -6,13 +6,15 @@
 
 Search engine sitemaps.xml for EPiServer CMS
 
-## About
-This tool allows you to generate xml sitemaps for search engines to better index your EPiServer sites. Although there are several EPiServer sitemap tools available like [SearchEngineSitemaps] (https://www.coderesort.com/p/epicode/wiki/SearchEngineSitemaps) and [EPiSiteMap](http://episitemap.codeplex.com/) which have inspired this project this tool gives you some additional specific features:  
+## Description
+This tool allows you to generate xml sitemaps for search engines to better index your EPiServer sites. Although there are several EPiServer sitemap tools available like [SearchEngineSitemaps] (https://www.coderesort.com/p/epicode/wiki/SearchEngineSitemaps) and [EPiSiteMap](http://episitemap.codeplex.com/) which have inspired this project this tool gives you some additional specific features.
+
+## Features  
 * sitemap generation as a scheduled job
 * filtering pages by virtual directories
 * ability to include pages that are in a different branch than the one of the start page
 * ability to generate sitemaps for mobile pages
-It also supports multi-site and multi-language environments.
+* it also supports multi-site and multi-language environments
 
 ## Latest release
 The latest version is available on the EPiServer NuGet feed. You can find it by searching the term Geta.SEO.Sitemaps.
@@ -79,6 +81,9 @@ public virtual string SEOSitemaps { get; set; }
 ## Contributing
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
+## Package maintainer 
+https://github.com/patkleef
+
 ## Changelog
 1.0.0. Initial version
 
@@ -97,3 +102,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 2.0.2.
   1. Added support for Episerver 11
+  
+2.0.3.
+  1. Update documentation and dependencies

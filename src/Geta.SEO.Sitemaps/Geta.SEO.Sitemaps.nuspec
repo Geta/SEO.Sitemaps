@@ -13,6 +13,7 @@
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
     <dependencies>
       <dependency id="EPiServer.CMS.UI" version="[11.1.0, 12.0)" />
+      <dependency id="EPiServer.CMS.Core" version="[11.2.1, 12.0)" />
     </dependencies>
   </metadata>
   <files>
