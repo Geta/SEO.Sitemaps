@@ -105,3 +105,6 @@ https://github.com/patkleef
   
 2.0.3.
   1. Update documentation and dependencies
+
+2.0.4.
+  1. Use InvariantCulture when writing lastmod. 
