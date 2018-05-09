@@ -83,28 +83,3 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Package maintainer 
 https://github.com/patkleef
-
-## Changelog
-1.0.0. Initial version
-
-1.4.1. 
-  1. Added support for alternate language pages. See details at https://support.google.com/webmasters/answer/2620865?hl=en.
-  2. Added sitemap index support (/sitemapindex.xml) that might be useful if you have more than one sitemap on your site.
-  3. Added a new sitemap format, Standard and Commerce, including both standard and commerce pages in one single sitemap (requires the Geta.Seo.Sitemaps.Commerce NuGet package).
-  4. Added ability to create language specific sitemaps.
-
-1.5.0.
-  1. Added support for EPiServer 9
-  2. Removed depedency on log4net
-
-1.6.1.
-  1. Added support for Episerver 10
-
-2.0.2.
-  1. Added support for Episerver 11
-  
-2.0.3.
-  1. Update documentation and dependencies
-
-2.0.4.
-  1. Use InvariantCulture when writing lastmod. 
