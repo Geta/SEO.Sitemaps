@@ -54,7 +54,7 @@ namespace Geta.SEO.Sitemaps.Controllers
 
             CompressionHandler.ChooseSuitableCompression(Request.Headers, Response);
 
-            return new FileContentResult(sitemapData.Data, "text/xml");
+            return new FileContentResult(sitemapData.Data, "text/xml; charset=utf-8");
         }
 
         private bool GetSitemapData(SitemapData sitemapData)
