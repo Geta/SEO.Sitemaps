@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.6]
+## [2.0.7]
 
+- [#73](https://github.com/Geta/SEO.Sitemaps/issues/73) - Fixed sitemap XML validation issues.
 - Upgraded Commerce project to Episerver Commerce 12
 
 ## [2.0.4]
