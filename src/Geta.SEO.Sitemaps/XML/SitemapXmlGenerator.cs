@@ -103,7 +103,7 @@ namespace Geta.SEO.Sitemaps.XML
 
                 using (var ms = new MemoryStream())
                 {
-                    var xtw = new XmlTextWriter(ms, Encoding.UTF8);
+                    var xtw = new XmlTextWriter(ms, new UTF8Encoding(false));
                     doc.Save(xtw);
                     xtw.Flush();
                     sitemapData.Data = ms.ToArray();
