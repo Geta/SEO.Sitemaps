@@ -329,8 +329,8 @@ namespace Geta.SEO.Sitemaps.XML
                 SitemapXmlNamespace + "url",
                 new XElement(SitemapXmlNamespace + "loc", url),
                 new XElement(SitemapXmlNamespace + "lastmod", modified.ToString(DateTimeFormat, CultureInfo.InvariantCulture)),
-                new XElement(SitemapXmlNamespace + "changefreq", (property != null) ? property.ChangeFreq : "weekly"),
-                new XElement(SitemapXmlNamespace + "priority", (property != null) ? property.Priority : GetPriority(url))
+                new XElement(SitemapXmlNamespace + "changefreq", (property != null && !property.IsNull) ? property.ChangeFreq : "weekly"),
+                new XElement(SitemapXmlNamespace + "priority", (property != null && !property.IsNull) ? property.Priority : GetPriority(url))
             );
 
             if (this.SitemapData.IncludeAlternateLanguagePages)
