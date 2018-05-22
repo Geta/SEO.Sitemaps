@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.8]
+
+- [#60](https://github.com/Geta/SEO.Sitemaps/issues/60) Fixed hosts which differ by scheme not added to the site hosts.
+- [#80](https://github.com/Geta/SEO.Sitemaps/pull/80) Checking if SEOSitemaps property is not empty when generating XML.
+
 ## [2.0.7]
 
 - [#73](https://github.com/Geta/SEO.Sitemaps/issues/73) - Fixed sitemap XML validation issues.
