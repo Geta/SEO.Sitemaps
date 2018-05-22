@@ -14,6 +14,7 @@ using EPiServer.Web;
 using Geta.SEO.Sitemaps.Configuration;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.Repositories;
+using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 {
@@ -350,22 +351,21 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 
                 foreach (var host in siteInformation.Hosts)
                 {
-                    if (host.Name == "*" || host.Name.Equals(siteInformation.SiteUrl.Host, StringComparison.InvariantCultureIgnoreCase))
+                    if (ShouldAddToSiteHosts(host, siteInformation))
                     {
-                        continue;
+                        var hostUri = host.GetUri();
+                        siteUrls.Add(hostUri.ToString());
                     }
-
-                    string scheme = "http";
-                    if (host.UseSecureConnection != null && host.UseSecureConnection == true)
-                    {
-                        scheme = "https";
-                    }
-
-                    siteUrls.Add(string.Format("{0}://{1}/", scheme, host.Name));
                 }
             }
 
             return siteUrls;
+        }
+
+        private static bool ShouldAddToSiteHosts(HostDefinition host, SiteDefinition siteInformation)
+        {
+            if (host.Name == "*") return false;
+            return !UriComparer.SchemeAndServerEquals(host.GetUri(), siteInformation.SiteUrl);
         }
 
         protected string GetSiteUrl(Object evaluatedUrl)

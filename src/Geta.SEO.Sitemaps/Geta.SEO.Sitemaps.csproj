@@ -195,8 +195,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SitemapInitialization.cs" />
     <Compile Include="Utils\ContentFilter.cs" />
+    <Compile Include="Utils\HostDefinitionExtensions.cs" />
     <Compile Include="Utils\IContentFilter.cs" />
     <Compile Include="Utils\SitemapXmlGeneratorFactory.cs" />
+    <Compile Include="Utils\UriComparer.cs" />
     <Compile Include="Utils\UrlFilter.cs" />
     <Compile Include="XML\HrefLangData.cs" />
     <Compile Include="XML\ICommerceAndStandardSitemapXmlGenerator.cs" />
