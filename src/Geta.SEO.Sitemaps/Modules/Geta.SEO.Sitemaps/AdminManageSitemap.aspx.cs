@@ -18,10 +18,10 @@ using Geta.SEO.Sitemaps.Utils;
 
 namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
 {
-    [GuiPlugIn(Area = PlugInArea.AdminMenu, 
+    [GuiPlugIn(Area = PlugInArea.AdminMenu,
         DisplayName = "Search engine sitemap settings",
         Description = "Manage the sitemap module settings and content",
-        Url = "~/Modules/Geta.SEO.Sitemaps/AdminManageSitemap.aspx", 
+        Url = "~/Modules/Geta.SEO.Sitemaps/AdminManageSitemap.aspx",
         RequiredAccess = AccessLevel.Administer)]
     public partial class AdminManageSitemap : SimplePage
     {
@@ -30,7 +30,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
         public Injected<ILanguageBranchRepository> LanguageBranchRepository { get; set; }
         protected IList<string> SiteHosts { get; set; }
         protected bool ShowLanguageDropDown { get; set; }
-        protected IList<LanguageBranchData> LanguageBranches { get; set; } 
+        protected IList<LanguageBranchData> LanguageBranches { get; set; }
 
         protected SitemapData CurrentSitemapData
         {
