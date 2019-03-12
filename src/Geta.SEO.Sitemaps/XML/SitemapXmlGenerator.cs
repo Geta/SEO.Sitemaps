@@ -211,7 +211,7 @@ namespace Geta.SEO.Sitemaps.XML
 
             if (isSpecificLanguage)
             {
-                LanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback 
+                LanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback
                     ? new LanguageSelector(this.SitemapData.Language)
                     : LanguageSelector.Fallback(this.SitemapData.Language, false);
 
@@ -260,7 +260,7 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             return cachedObject;
-        } 
+        }
 
         protected virtual IEnumerable<HrefLangData> GetHrefLangData(ContentReference contentLink)
         {
@@ -379,13 +379,12 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
         {
-            var content = languageContentInfo.Content;
-
-            if (ContentFilter.ShouldExcludeContent(content))
+            if (ContentFilter.ShouldExcludeContent(languageContentInfo))
             {
                 return;
             }
 
+            var content = languageContentInfo.Content;
             string url;
 
             var localizableContent = content as ILocalizable;

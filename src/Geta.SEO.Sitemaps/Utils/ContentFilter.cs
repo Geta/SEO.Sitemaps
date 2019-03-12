@@ -7,7 +7,7 @@ using EPiServer.Web;
 using Geta.SEO.Sitemaps.SpecializedProperties;
 
 namespace Geta.SEO.Sitemaps.Utils
-{ 
+{
     [ServiceConfiguration(typeof(IContentFilter))]
     public class ContentFilter : IContentFilter
     {
@@ -69,6 +69,11 @@ namespace Geta.SEO.Sitemaps.Utils
             return false;
         }
 
+        public virtual bool ShouldExcludeContent(CurrentLanguageContent languageContentInfo)
+        {
+            return ShouldExcludeContent(languageContentInfo.Content);
+        }
+
         private static bool IsVisibleOnSite(IContent content)
         {
             return TemplateResolver.Service.HasTemplate(content, TemplateTypeCategories.Page);
@@ -84,8 +89,8 @@ namespace Geta.SEO.Sitemaps.Utils
         private static bool IsSitemapPropertyEnabled(IContentData content)
         {
             var property = content.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
-            if (property==null) //not set on the page, check if there are default values for a page type perhaps 
-            { 
+            if (property==null) //not set on the page, check if there are default values for a page type perhaps
+            {
                 var page = content as PageData;
                 if (page == null)
                     return true;
