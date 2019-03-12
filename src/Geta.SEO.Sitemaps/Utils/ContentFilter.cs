@@ -70,7 +70,7 @@ namespace Geta.SEO.Sitemaps.Utils
             return false;
         }
 
-        public bool ShouldExcludeContent(
+        public virtual bool ShouldExcludeContent(
             CurrentLanguageContent languageContentInfo, SiteDefinition siteSettings, SitemapData sitemapData)
         {
             return ShouldExcludeContent(languageContentInfo.Content);
