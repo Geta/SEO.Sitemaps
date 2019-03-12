@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.9]
+
+- Added language details for ContentFilter to be able to filter based on content-language pair.
+
 ## [2.0.8]
 
 - [#60](https://github.com/Geta/SEO.Sitemaps/issues/60) Fixed hosts which differ by scheme not added to the site hosts.
