@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.9]
+## [2.0.10]
 
-- Added language details for ContentFilter to be able to filter based on content-language pair.
+- Added language details, site definition and sitemap data for ContentFilter to be able to filter in different contexts.
 
 ## [2.0.8]
 
