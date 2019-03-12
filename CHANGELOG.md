@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.10]
+## [2.0.11]
 
 - Added language details, site definition and sitemap data for ContentFilter to be able to filter in different contexts.
 
