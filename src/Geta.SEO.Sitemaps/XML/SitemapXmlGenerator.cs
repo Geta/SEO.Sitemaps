@@ -379,7 +379,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
         {
-            if (ContentFilter.ShouldExcludeContent(languageContentInfo))
+            if (ContentFilter.ShouldExcludeContent(languageContentInfo, SiteSettings, SitemapData))
             {
                 return;
             }
