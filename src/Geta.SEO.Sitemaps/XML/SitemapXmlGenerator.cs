@@ -96,6 +96,7 @@ namespace Geta.SEO.Sitemaps.XML
                 var sitemapSiteUri = new Uri(this.SitemapData.SiteUrl);
                 this.SiteSettings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
                 this.HostLanguageBranch = GetHostLanguageBranch();
+                SiteDefinition.Current = SiteSettings;
                 XElement sitemap = CreateSitemapXmlContents(out entryCount);
 
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
