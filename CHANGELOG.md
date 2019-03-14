@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.12]
+
+- Setting current site definition when generating URLs to get correct URLs.
+
 ## [2.0.11]
 
 - Added language details, site definition and sitemap data for ContentFilter to be able to filter in different contexts.
