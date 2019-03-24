@@ -8,11 +8,16 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>$copyright$</copyright>
-    <tags>Sitemap SEO EPiServer</tags>
+    <tags>Sitemap SEO EPiServer EPiServerModulePackage ThirdPartyAddOn</tags>
+    <dependencies>
+      <dependency id="EPiServer.Packaging" version="[3.2.1,4.0)" />
+    </dependencies>
     <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
   </metadata>
   <files>
-    <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
+    <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\_protected\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
+    <file src="ClientResources/**/*.*" target="content\modules\_protected\Geta.SEO.Sitemaps" />
+    <file src="module.config" target="content\modules\_protected\Geta.SEO.Sitemaps" />
   </files>
 </package>
