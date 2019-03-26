@@ -21,7 +21,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
     [GuiPlugIn(Area = PlugInArea.AdminMenu,
         DisplayName = "Search engine sitemap settings",
         Description = "Manage the sitemap module settings and content",
-        Url = "~/Modules/Geta.SEO.Sitemaps/AdminManageSitemap.aspx",
+        UrlFromModuleFolder = "AdminManageSitemap.aspx",
         RequiredAccess = AccessLevel.Administer)]
     public partial class AdminManageSitemap : SimplePage
     {

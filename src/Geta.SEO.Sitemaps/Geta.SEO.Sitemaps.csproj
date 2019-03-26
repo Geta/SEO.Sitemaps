@@ -178,10 +178,7 @@
     <Compile Include="Controllers\GetaSitemapController.cs" />
     <Compile Include="CurrentLanguageContent.cs" />
     <Compile Include="Compression\QValue.cs" />
-    <Compile Include="SitemapCreateJob.cs" />
-    <Compile Include="Entities\SitemapFormat.cs" />
-    <Compile Include="SpecializedProperties\PropertySEOSitemaps.cs" />
-    <Compile Include="SpecializedProperties\PropertySEOSitemapsControl.cs" />
+    <Compile Include="EditorDescriptors\SeoSitemapEditorDescriptor.cs" />
     <Compile Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx.cs">
       <DependentUpon>AdminManageSitemap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -189,6 +186,10 @@
     <Compile Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx.designer.cs">
       <DependentUpon>AdminManageSitemap.aspx.cs</DependentUpon>
     </Compile>
+    <Compile Include="SitemapCreateJob.cs" />
+    <Compile Include="Entities\SitemapFormat.cs" />
+    <Compile Include="SpecializedProperties\PropertySEOSitemaps.cs" />
+    <Compile Include="SpecializedProperties\PropertySEOSitemapsControl.cs" />
     <Compile Include="Repositories\ISitemapRepository.cs" />
     <Compile Include="Repositories\SitemapRepository.cs" />
     <Compile Include="Entities\SitemapData.cs" />
@@ -211,17 +212,24 @@
     <Compile Include="XML\StandardSitemapXmlGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="Geta.SEO.Sitemaps.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </EmbeddedResource>
+    <None Include="module.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <None Include="ClientResources\Editor.js" />
+    <None Include="ClientResources\templates\SeoSitemapProperty.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
