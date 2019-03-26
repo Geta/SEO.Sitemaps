@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.13]
+
+- New DOJO editor for sitemap property. [Pull request #87](https://github.com/Geta/SEO.Sitemaps/pull/87)
+
 ## [2.0.12]
 
 - Setting current site definition when generating URLs to get correct URLs.
