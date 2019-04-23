@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0]
+
+- Adds support for Episerver Commerce 13. [Pull request #91](https://github.com/Geta/SEO.Sitemaps/pull/91)
+
 ## [2.0.13]
 
 - New DOJO editor for sitemap property. [Pull request #87](https://github.com/Geta/SEO.Sitemaps/pull/87)
