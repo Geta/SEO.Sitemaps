@@ -24,12 +24,17 @@
                 templateString: template,
                 postCreate: function () {
                     this.inherited(arguments);
-                    this._frequencySelectEditor = new SelectionEditor({ selections: this._getfrequencySelections(), parent: this });
+                    this._frequencySelectEditor = new SelectionEditor({ selections: this._getfrequencySelections(), parent: this, disabled: this.readOnly });
                     this._frequencySelectEditor.on("change", this._frequencyOnChange);
                     this._frequencySelectEditor.placeAt(this.frequencySelect);
-                    this._prioritySelectEditor = new SelectionEditor({ selections: this._getPrioritySelections(), parent: this });
+                    this._prioritySelectEditor = new SelectionEditor({ selections: this._getPrioritySelections(), parent: this, disabled: this.readOnly });
                     this._prioritySelectEditor.on("change", this._priorityOnChange);
                     this._prioritySelectEditor.placeAt(this.prioritySelect);
+                    this.enabledCheckbox.set("readOnly", this.readOnly);
+                },
+
+                _setReadOnlyAttr: function (value) {
+                    this._set("readOnly", value);
                 },
 
                 _frequencySelectEditor: null,
