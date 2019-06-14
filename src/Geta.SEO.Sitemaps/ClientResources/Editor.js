@@ -73,7 +73,7 @@
 
                         var enabledNode = jsDom.byName("enabled")[0];
                         if (enabledNode.childNodes.length) {
-                            this._enabled = enabledNode.childNodes[0].nodeValue;
+                            this._enabled = enabledNode.childNodes[0].nodeValue.toLowerCase() === "true";
                         }
 
                         var frequencyNode = jsDom.byName("changefreq")[0];
