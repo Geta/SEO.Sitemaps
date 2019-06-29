@@ -1,13 +1,13 @@
 ﻿define("seositemaps/Editor", [
-        "dojo/_base/declare",
-        "dijit/_Widget",
-        "dijit/_TemplatedMixin",
-        "dijit/_WidgetsInTemplateMixin",
-        "dojox/xml/DomParser",
-        "dojo/text!./templates/SeoSitemapProperty.html",
-        "epi-cms/contentediting/editors/SelectionEditor",
-        "epi/shell/widget/CheckBox"
-    ],
+    "dojo/_base/declare",
+    "dijit/_Widget",
+    "dijit/_TemplatedMixin",
+    "dijit/_WidgetsInTemplateMixin",
+    "dojox/xml/DomParser",
+    "dojo/text!./templates/SeoSitemapProperty.html",
+    "epi-cms/contentediting/editors/SelectionEditor",
+    "epi/shell/widget/CheckBox"
+],
     function (
         declare,
         _Widget,
@@ -15,7 +15,6 @@
         _WidgetsInTemplateMixin,
         domParser,
         template,
-        SelectionEditor
     ) {
 
         return declare(
@@ -24,20 +23,16 @@
                 templateString: template,
                 postCreate: function () {
                     this.inherited(arguments);
-                    this._frequencySelectEditor = new SelectionEditor({ selections: this._getfrequencySelections(), parent: this, disabled: this.readOnly });
-                    this._frequencySelectEditor.on("change", this._frequencyOnChange);
-                    this._frequencySelectEditor.placeAt(this.frequencySelect);
-                    this._prioritySelectEditor = new SelectionEditor({ selections: this._getPrioritySelections(), parent: this, disabled: this.readOnly });
-                    this._prioritySelectEditor.on("change", this._priorityOnChange);
-                    this._prioritySelectEditor.placeAt(this.prioritySelect);
                     this.enabledCheckbox.set("readOnly", this.readOnly);
+                    this.frequencySelect.set("readOnly", this.readOnly);
+                    this.prioritySelect.set("readOnly", this.readOnly);
+                    this.frequencySelect.set("selections", this._getfrequencySelections());
+                    this.prioritySelect.set("selections", this._getPrioritySelections());
                 },
 
                 _setReadOnlyAttr: function (value) {
                     this._set("readOnly", value);
                 },
-
-                _frequencySelectEditor: null,
 
                 _getfrequencySelections: function () {
                     return [
@@ -61,13 +56,12 @@
                     ];
                 },
 
-                _prioritySelectEditor: null,
-
                 _priority: "0.5",
                 _frequency: "weekly",
                 _enabled: true,
 
                 _setValueAttr: function (value) {
+
                     if (value) {
                         var jsDom = domParser.parse(value);
 
@@ -87,8 +81,8 @@
                         }
                     }
                     this.enabledCheckbox.set("value", this._enabled);
-                    this._frequencySelectEditor.set("value", this._frequency);
-                    this._prioritySelectEditor.set("value", this._priority);
+                    this.frequencySelect.set("value", this._frequency);
+                    this.prioritySelect.set("value", this._priority);
                     this._set('value', value);
                 },
 
@@ -112,13 +106,13 @@
                 },
 
                 _frequencyOnChange: function (value) {
-                    this.parent._frequency = value;
-                    this.parent._setXml();
+                    this._frequency = value;
+                    this._setXml();
                 },
 
                 _priorityOnChange: function (value) {
-                    this.parent._priority = value;
-                    this.parent._setXml();
+                    this._priority = value;
+                    this._setXml();
                 }
             });
     }
