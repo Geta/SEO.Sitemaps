@@ -3,8 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [3.0.1]
-
- - Fixes #93
+ - Thanks [@jarihaa](https://github.com/jarihaa) for the [PR #94](https://github.com/Geta/SEO.Sitemaps/pull/94)
+ - Fixes [#93](https://github.com/Geta/SEO.Sitemaps/issues/93)
  - Fixes enabled checkbox being checked even if the value is false.
 
 ## [3.0.0]
