@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1]
+
+ - Fixes #93
+ - Fixes enabled checkbox being checked even if the value is false.
+
 ## [3.0.0]
 
 - Adds support for Episerver Commerce 13. [Pull request #91](https://github.com/Geta/SEO.Sitemaps/pull/91)
