@@ -96,7 +96,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Package maintainer
 
-https://github.com/patkleef
+https://github.com/frederikvig
 
 ## Changelog
 
