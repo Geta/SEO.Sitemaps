@@ -107,8 +107,9 @@ When the browser is not automatically opened, go to the docker output window and
 ![Docker debugging output](docs/images/docker-debugging-output.PNG)
 
 You can find the IP addresses also in the `docker-compose.yml` for Quicksilver and manager:
+
 | Site | IP Address |
-| ------------- |:-------------:|
+| ------------- | :-------------: |
 | Quicksilver | 172.16.238.11 |
 | Manager | 172.16.238.12 |
 
