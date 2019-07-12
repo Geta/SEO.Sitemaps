@@ -86,6 +86,13 @@ In order to debug or contribute to the package, the QuickSilver demo site which 
 
 - Checkout the repository
 - Install Docker on your local machine: https://docs.docker.com/get-started/
+- Enabling virtualization in BIOS advanced CPU settings
+
+If you don't enable virtualization in the BIOS you'll get this message when starting Docker:
+
+```
+Hardware assisted virtualization and data execution protection must be enabled in the BIOS
+```
 
 ### Get started
 
