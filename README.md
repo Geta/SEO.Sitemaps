@@ -98,7 +98,6 @@ In order to debug or contribute to the package, the QuickSilver demo site which 
 
 - Checkout the repository
 - Install Docker on your local machine: https://docs.docker.com/get-started/
-- Install the Docker extension for Visual Studio
 
 ### Get started
 

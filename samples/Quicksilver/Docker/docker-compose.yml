@@ -7,7 +7,8 @@ services:
       context: ..\EPiServer.Reference.Commerce.Site
       dockerfile: Dockerfile
     networks: 
-     - geta-sitemaps-network
+      geta-sitemaps-network:
+        ipv4_address: 172.16.238.11
     depends_on:
      - geta-sitemaps-sample-db
     mac_address: 84-69-95-6C-7F-85
@@ -20,7 +21,8 @@ services:
       context: ..\EPiServer.Reference.Commerce.Manager
       dockerfile: Dockerfile
     networks: 
-     - geta-sitemaps-network
+     geta-sitemaps-network:
+        ipv4_address: 172.16.238.12
     depends_on:
      - geta-sitemaps-sample-db
   geta-sitemaps-sample-db:
@@ -35,5 +37,7 @@ services:
       - geta-sitemaps-network
 networks: 
   geta-sitemaps-network:
-    external:
-      name: nat
+    ipam:
+      driver: default
+      config:
+         - subnet: '172.16.238.0/24'
