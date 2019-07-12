@@ -42,13 +42,13 @@ Add a new sitemap definition and fill values for sitemap host and other fields:
 - Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry
 - Format - currently standard or mobile (to specify [mobile content](http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
 
-![Add a sitemap](docs/SitemapAdd.png?raw=true)
+![Add a sitemap](docs/images/SitemapAdd.png?raw=true)
 
 In case of multiple sites you choose for which site to host this sitemap:  
-![Add a sitemap multiple site](docs/SitemapAddMultiSite.png?raw=true)
+![Add a sitemap multiple site](docs/images/SitemapAddMultiSite.png?raw=true)
 
 Each sitemap configuration must have a unique host name:
-![Configure sitemaps](docs/SitemapConfigure.png?raw=true)
+![Configure sitemaps](docs/images/SitemapConfigure.png?raw=true)
 
 When configuration done go to the scheduled task "Generate search engine sitemaps" and run/schedule it to run in the necessary frequency. After the scheduled job has been run successfully you can view the sitemap(-s) by either opening the configured sitemap host or clicking "View" next to the sitemap configuration.
 
@@ -71,10 +71,10 @@ Add this to your web.config file:
 ### Dynamic property for specific pages
 
 You can specify page specific sitemap properties (like change frequency, priority or inclulde/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
-![Create dynamic property](docs/SitemapDynamicPropertyDefine.png?raw=true)
+![Create dynamic property](docs/images/SitemapDynamicPropertyDefine.png?raw=true)
 
 and specify values for the dynamic property:
-![Set value for the dynamic property](docs/SitemapDynamicPropertyOnPage.PNG?raw=true)
+![Set value for the dynamic property](docs/images/SitemapDynamicPropertyOnPage.PNG?raw=true)
 
 ### Adding Sitemap Properties to all content pages
 
@@ -89,6 +89,28 @@ public virtual string SEOSitemaps { get; set; }
 ## Limitations
 
 - Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).
+
+## Local development setup
+
+In order to debug or contribute to the package, the QuickSilver demo site which is included in the repository can be used.
+
+### Prerequisites
+
+- Checkout the repository
+- Install Docker on your local machine: https://docs.docker.com/get-started/
+- Install the Docker extension for Visual Studio
+
+### Get started
+
+Set the `docker-compose` as default project (if not already by default). Now, the required images are downloaded (windows server and sql server), this will take some time. Note, this only happens the first time after that it cached on your local machine. See Output window (source Docker) to follow the progress. After you see the line 'Docker containers are ready', you are ready to run the project.
+
+![Docker output](docs/images/docker-output.PNG)
+
+After the images are downloaded just run the project and start debugging the code. The frontend and backend code can be found in the Geta.SEO.Sitemaps and Geta.SEO.Sitemaps.Commerce project. The frontend code is available under the module folder.
+
+### QuickSIlver login
+
+Use the default admin@example.com user for QuickSilver, see [Installation](https://github.com/episerver/Quicksilver).
 
 ## Contributing
 
