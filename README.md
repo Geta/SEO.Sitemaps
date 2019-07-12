@@ -18,6 +18,8 @@ This tool allows you to generate xml sitemaps for search engines to better index
 - ability to generate sitemaps for mobile pages
 - it also supports multi-site and multi-language environments
 
+See the [editor guide](docs/editor-guide.md) for more information.
+
 ## Latest release
 
 The latest version is available on the EPiServer NuGet feed. You can find it by searching the term Geta.SEO.Sitemaps.
@@ -26,31 +28,17 @@ The latest version is available on the EPiServer NuGet feed. You can find it by 
 
 From nuget.episerver.com feed.
 
-## Installation
+## How to get started?
 
 1. Install Sitemap plugin via NuGet in Visual Studio. Ensure that you also install the required dependencies.
+
+```
+  Install-Package Geta.SEO.Sitemaps
+  Install-Package Geta.SEO.Sitemaps.Commerce
+```
+
 2. Rebuild your solution.
-3. Configure sitemap settings and schedule the sitemap generation process. Configuration available at CMS -> Admin Mode -> Search engine sitemap settings.
-
-## Configuration
-
-Add a new sitemap definition and fill values for sitemap host and other fields:
-
-- Path to include - only pages that have external url in the specified virtual path will be included in the sitemap
-- Path to avoid - pages that have external url in the specified virtual path will not be included in the sitemap. If _Path to include_ specified this will be ignored.
-- Root page id - the specified page and it's descendants will be listed in the sitemap. You can leave 0 to list all pages.
-- Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry
-- Format - currently standard or mobile (to specify [mobile content](http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
-
-![Add a sitemap](docs/images/SitemapAdd.png?raw=true)
-
-In case of multiple sites you choose for which site to host this sitemap:  
-![Add a sitemap multiple site](docs/images/SitemapAddMultiSite.png?raw=true)
-
-Each sitemap configuration must have a unique host name:
-![Configure sitemaps](docs/images/SitemapConfigure.png?raw=true)
-
-When configuration done go to the scheduled task "Generate search engine sitemaps" and run/schedule it to run in the necessary frequency. After the scheduled job has been run successfully you can view the sitemap(-s) by either opening the configured sitemap host or clicking "View" next to the sitemap configuration.
+3. Configure sitemap settings and schedule the sitemap generation process. Configuration available at CMS -> Admin Mode -> Search engine sitemap settings. See the [editor guide](docs/editor-guide.md)
 
 #### Enabling multi language support
 
@@ -70,7 +58,7 @@ Add this to your web.config file:
 
 ### Dynamic property for specific pages
 
-You can specify page specific sitemap properties (like change frequency, priority or inclulde/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
+You can specify page specific sitemap properties (like change frequency, priority or include/disinclude the specific page in any sitemap) for each EPiServer page by defining a dynamic property with type SEOSitemaps (and the same name):
 ![Create dynamic property](docs/images/SitemapDynamicPropertyDefine.png?raw=true)
 
 and specify values for the dynamic property:
