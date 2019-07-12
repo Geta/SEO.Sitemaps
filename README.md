@@ -108,7 +108,11 @@ Set the `docker-compose` as default project (if not already by default). Now, th
 
 After the images are downloaded just run the project and start debugging the code. The frontend and backend code can be found in the Geta.SEO.Sitemaps and Geta.SEO.Sitemaps.Commerce project. The frontend code is available under the module folder.
 
-### QuickSIlver login
+When the browser is not automatically opened, go to the docker output window and check the IP addresses. You'll find two IP's one for QuickSilver and one for the manager. Just browse to the IP address.
+
+![Docker debugging output](docs/images/docker-debugging-output.PNG)
+
+### QuickSilver login
 
 Use the default admin@example.com user for QuickSilver, see [Installation](https://github.com/episerver/Quicksilver).
 
