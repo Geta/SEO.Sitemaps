@@ -1,0 +1,13 @@
+﻿@using EPiServer.Editor
+@using EPiServer.ServiceLocation
+@using EPiServer.Personalization.Commerce
+@functions
+{
+    private static readonly Injected<PersonalizationClientConfiguration> _personalizationClientConfiguration =
+        default(Injected<PersonalizationClientConfiguration>);
+
+    public static bool ShouldRenderTrackingSection()
+    {
+        return _personalizationClientConfiguration.Service.TrackingEnabled && !PageEditing.PageIsInEditMode;
+    }
+}

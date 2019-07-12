@@ -1,0 +1,14 @@
+﻿@using EPiServer.Editor
+@using EPiServer.Reference.Commerce.Site.Features.ResetPassword.Pages
+@model EPiServer.Reference.Commerce.Site.Features.ResetPassword.ViewModels.ResetPasswordMailPageViewModel
+@{
+    Layout = null;
+}
+@{ if (PageEditing.PageIsInEditMode)
+   {
+       @Html.Translate("/ResetPassword/Mail/Instructions")
+   }
+}
+@Html.PropertyFor(x => x.CurrentPage.MailBody)
+
+

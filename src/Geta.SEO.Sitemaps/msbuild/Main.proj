@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <UsingTask TaskName="ZipDirectory" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <InputPath ParameterType="System.String" Required="true" />
+      <OutputFileName ParameterType="System.String" Required="true" />
+      <OverwriteExistingFile ParameterType="System.Boolean" Required="false" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include=" System.IO.Compression.FileSystem" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[        
+          if(this.OverwriteExistingFile) {
+            File.Delete(this.OutputFileName);
+          }
+          ZipFile.CreateFromDirectory(this.InputPath, this.OutputFileName);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <UsingTask TaskName="GetVersion"
+         TaskFactory="CodeTaskFactory"
+         AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+
+    <ParameterGroup>
+      <AssemblyPath ParameterType="System.String" Required="true" />
+      <Version ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Diagnostics" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+              Log.LogMessage("Getting version details of assembly at: " + this.AssemblyPath, MessageImportance.High);
+
+              this.Version = FileVersionInfo.GetVersionInfo(this.AssemblyPath).FileVersion;
+              ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildProjectDirectory)\..\</SolutionDir>
+    <NuGetExe>$(SolutionDir)\.nuget\NuGet.exe</NuGetExe>
+    <TmpOutDir>$(SolutionDir)\tmp</TmpOutDir>
+    <NuspecFile>$(SolutionDir)\src\Geta.SEO.Sitemaps\Geta.SEO.Sitemaps.nuspec</NuspecFile>
+  </PropertyGroup>
+
+    <Target Name="CreateNugetPackage" AfterTargets="Build">
+      <PropertyGroup>
+        <Version></Version>
+      </PropertyGroup>
+      
+      <GetVersion AssemblyPath="$(SolutionDir)src\Geta.SEO.Sitemaps\bin\Geta.SEO.Sitemaps.dll">
+        <Output TaskParameter="Version" PropertyName="Version" />
+      </GetVersion>
+    
+      <!-- Create the Versioned out dir for the client resources-->
+      <MakeDir Directories="$(TmpOutDir)\content\$(Version)" />
+    
+      <!-- Copy -->
+      <ItemGroup>
+        <ClientResources Include="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\ClientResources\**\*" />
+        <Views Include="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\Views\**\*" />
+      </ItemGroup>  
+      
+      <Copy SourceFiles="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\module.config" DestinationFolder="$(TmpOutDir)\content" />
+      <Copy SourceFiles="@(ClientResources)" DestinationFiles="@(ClientResources -> '$(TmpOutDir)\content\$(Version)\ClientResources\%(RecursiveDir)%(Filename)%(Extension)')"/>
+      <Copy SourceFiles="@(Views)" DestinationFiles="@(Views -> '$(TmpOutDir)\content\$(Version)\Views\%(RecursiveDir)%(Filename)%(Extension)')"/>
+
+      <!-- Update the module config with the version information -->
+      <XmlPoke XmlInputPath="$(TmpOutDir)\content\module.config" Query="/module/@clientResourceRelativePath" Value="$(Version)" />
+
+      <ZipDirectory
+        InputPath="$(TmpOutDir)\content"
+        OutputFileName="$(OutDir)\Geta.SEO.Sitemaps.zip"
+        OverwriteExistingFile="true" />
+
+      <!-- Create the package -->
+      <PropertyGroup>
+        <NugetCommand>
+          "$(NuGetExe)" pack "$(NuspecFile)" -OutputDirectory "$(OutDir.TrimEnd('\\'))" -Version "$(Version)" -Properties Configuration=$(Configuration)
+        </NugetCommand>
+
+      </PropertyGroup>
+      <Exec Command="$(NugetCommand)"/>
+
+      <!-- Cleanup -->
+      <RemoveDir Directories="$(TmpOutDir)" />
+    </Target>
+  </Project>

@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  geta-sitemaps-sample-web:
+    image: ${DOCKER_REGISTRY-}geta-sitemaps-sample-web
+    build:
+      context: ..\EPiServer.Reference.Commerce.Site
+      dockerfile: Dockerfile
+    networks: 
+     - geta-sitemaps-network
+    depends_on:
+     - geta-sitemaps-sample-db
+    mac_address: 84-69-95-6C-7F-85
+    volumes: 
+      - ../EPiServer.Reference.Commerce.Site/App_Data/:C:/appdata/
+      - ../../../src/Geta.SEO.Sitemaps/module/:C:/data/
+  geta-sitemaps-sample-manager:
+    image: ${DOCKER_REGISTRY-}geta-sitemaps-sample-manager
+    build:
+      context: ..\EPiServer.Reference.Commerce.Manager
+      dockerfile: Dockerfile
+    networks: 
+     - geta-sitemaps-network
+    depends_on:
+     - geta-sitemaps-sample-db
+  geta-sitemaps-sample-db:
+    image: microsoft/mssql-server-windows-developer:1709
+    environment:
+     - ACCEPT_EULA=Y
+     - sa_password=Sitemaps19
+     - attach_dbs=[{'dbName':'Sitemaps.Quicksilver.Cms','dbFiles':['C:\\data\\Sitemaps.Quicksilver.Cms.mdf','C:\\data\\Sitemaps.Quicksilver.Cms_log.ldf']},{'dbName':'Sitemaps.Quicksilver.Commerce','dbFiles':['C:\\data\\Sitemaps.Quicksilver.Commerce.mdf','C:\\data\\Sitemaps.Quicksilver.Commerce_log.ldf']}]
+    volumes: 
+      - ../EPiServer.Reference.Commerce.Site/App_Data/:C:/data/
+    networks:
+      - geta-sitemaps-network
+networks: 
+  geta-sitemaps-network:
+    external:
+      name: nat
