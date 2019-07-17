@@ -33,8 +33,9 @@ services:
      - attach_dbs=[{'dbName':'Sitemaps.Quicksilver.Cms','dbFiles':['C:\\data\\Sitemaps.Quicksilver.Cms.mdf','C:\\data\\Sitemaps.Quicksilver.Cms_log.ldf']},{'dbName':'Sitemaps.Quicksilver.Commerce','dbFiles':['C:\\data\\Sitemaps.Quicksilver.Commerce.mdf','C:\\data\\Sitemaps.Quicksilver.Commerce_log.ldf']}]
     volumes: 
       - ../EPiServer.Reference.Commerce.Site/App_Data/:C:/data/
-    networks:
-      - geta-sitemaps-network
+    networks: 
+     geta-sitemaps-network:
+        ipv4_address: 172.16.238.13
 networks: 
   geta-sitemaps-network:
     ipam:
