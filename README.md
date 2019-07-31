@@ -80,38 +80,14 @@ public virtual string SEOSitemaps { get; set; }
 
 ## Local development setup
 
-In order to debug or contribute to the package, the QuickSilver demo site which is included in the repository can be used.
+See description in [shared repository](https://github.com/Geta/package-shared/blob/master/README.md#local-development-set-up) regarding how to setup local development environment.
 
-### Prerequisites
+### Docker hostnames
 
-- Checkout the repository
-- Install Docker on your local machine: https://docs.docker.com/get-started/
-- Enabling virtualization in BIOS advanced CPU settings
+Instead of using the static IP addresses the following hostnames can be used out-of-the-box.
 
-If you don't enable virtualization in the BIOS you'll get this message when starting Docker:
-
-```
-Hardware assisted virtualization and data execution protection must be enabled in the BIOS
-```
-
-### Get started
-
-Set the `docker-compose` as default project (if not already by default). Now, the required images are downloaded (windows server and sql server), this will take some time. Note, this only happens the first time after that it cached on your local machine. See Output window (source Docker) to follow the progress. After you see the line 'Docker containers are ready', you are ready to run the project.
-
-![Docker output](docs/images/docker-output.PNG)
-
-After the images are downloaded just run the project and start debugging the code. The frontend and backend code can be found in the Geta.SEO.Sitemaps and Geta.SEO.Sitemaps.Commerce project. The frontend code is available under the module folder.
-
-When the browser is not automatically opened, go to the docker output window and check the IP addresses.
-
-![Docker debugging output](docs/images/docker-debugging-output.PNG)
-
-You can find the IP addresses also in the `docker-compose.yml` for Quicksilver and manager:
-
-| Site | IP Address |
-| ------------- | :-------------: |
-| Quicksilver | 172.16.238.11 |
-| Manager | 172.16.238.12 |
+- http://sitemaps.getalocaltest.me
+- http://manager-sitemaps.getalocaltest.me
 
 ### QuickSilver login
 

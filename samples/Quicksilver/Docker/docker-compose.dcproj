@@ -5,7 +5,7 @@
     <DockerTargetOS>Windows</DockerTargetOS>
     <ProjectGuid>e580071a-6fc2-4d78-b2c9-fc376ef6e7fb</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>http://{ServiceIPAddress}</DockerServiceUrl>
+    <DockerServiceUrl>http://sitemaps.getalocaltest.me</DockerServiceUrl>
     <DockerServiceName>geta-sitemaps-sample-web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
