@@ -66,12 +66,12 @@
       <!-- Copy -->
       <ItemGroup>
         <ClientResources Include="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\ClientResources\**\*" />
-        <Views Include="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\Views\**\*" />
+        <Views Include="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\Views\**\*.aspx" />
       </ItemGroup>  
       
       <Copy SourceFiles="$(SolutionDir)\src\Geta.SEO.Sitemaps\module\module.config" DestinationFolder="$(TmpOutDir)\content" />
       <Copy SourceFiles="@(ClientResources)" DestinationFiles="@(ClientResources -> '$(TmpOutDir)\content\$(Version)\ClientResources\%(RecursiveDir)%(Filename)%(Extension)')"/>
-      <Copy SourceFiles="@(Views)" DestinationFiles="@(Views -> '$(TmpOutDir)\content\$(Version)\Views\%(RecursiveDir)%(Filename)%(Extension)')"/>
+      <Copy SourceFiles="@(Views)" DestinationFiles="@(Views -> '$(TmpOutDir)\content\Views\%(RecursiveDir)%(Filename)%(Extension)')"/>
 
       <!-- Update the module config with the version information -->
       <XmlPoke XmlInputPath="$(TmpOutDir)\content\module.config" Query="/module/@clientResourceRelativePath" Value="$(Version)" />

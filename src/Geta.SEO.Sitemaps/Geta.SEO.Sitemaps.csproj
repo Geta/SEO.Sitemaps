@@ -218,20 +218,20 @@
     <None Include="Geta.SEO.Sitemaps.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="module\module.config" />
+    <None Include="module\module.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="msbuild\Main.proj" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Web.config.transform" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\src\Geta.SEO.Sitemaps\msbuild\Main.proj" />
+  <Import Project="$(SolutionDir)\src\Geta.SEO.Sitemaps\msbuild\Main.proj" Condition="Exists('$(SolutionDir)\src\Geta.SEO.Sitemaps\msbuild\Main.proj')" />
   <ItemGroup>
-    <Content Include="module\ClientResources\Editor.js" />
-    <Content Include="module\ClientResources\templates\SeoSitemapProperty.html" />
-    <Content Include="module\Views\AdminManageSitemap.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <None Include="module\ClientResources\Editor.js" />
+    <None Include="module\ClientResources\templates\SeoSitemapProperty.html" />
+    <None Include="module\Views\AdminManageSitemap.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
