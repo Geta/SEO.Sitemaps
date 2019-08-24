@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>$id$</id>
+    <id>Geta.SEO.Sitemaps</id>
     <version>$version$</version>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>Geta</authors>
+    <owners>Geta</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <copyright>$copyright$</copyright>
+    <description>Search Engine Sitemap generator for EPiServer</description>
+    <copyright>Copyright © Geta 2019</copyright>
     <tags>Sitemap SEO EPiServer EPiServerModulePackage ThirdPartyAddOn</tags>
     <dependencies>
       <dependency id="EPiServer.Packaging" version="[3.2.1,4.0)" />
@@ -16,8 +16,8 @@
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
   </metadata>
   <files>
-    <file src="Modules\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" target="content\modules\_protected\Geta.SEO.Sitemaps\AdminManageSitemap.aspx" />
-    <file src="ClientResources/**/*.*" target="content\modules\_protected\Geta.SEO.Sitemaps" />
-    <file src="module.config" target="content\modules\_protected\Geta.SEO.Sitemaps" />
+    <file src="bin\Geta.SEO.Sitemaps.dll" target="lib\net45\" />
+    <file src="bin\Geta.SEO.Sitemaps.zip" target="content\modules\_protected\Geta.SEO.Sitemaps\" />
+    <file src="web.config.transform" target="content" />
   </files>
 </package>

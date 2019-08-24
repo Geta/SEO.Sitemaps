@@ -1,3 +1,6 @@
+// Copyright (c) Geta Digital. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
+
 // What's wrong with Request.Headers["Accept-Encoding"].Contains("gzip")?
 // http://www.singular.co.nz/2008/07/finding-preferred-accept-encoding-header-in-csharp/
 // Original code by Dave Transom

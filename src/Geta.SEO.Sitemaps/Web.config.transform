@@ -1,0 +1,8 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <episerver.shell>
+    <protectedModules>
+      <add name="Geta.SEO.Sitemaps" />
+    </protectedModules>
+  </episerver.shell>
+</configuration>
