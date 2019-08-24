@@ -1,0 +1,51 @@
+﻿@model EPiServer.Reference.Commerce.Site.Features.Checkout.ViewModels.OrderSummaryViewModel
+
+<div class="jsOrderSummary" data-url="@Url.Action("OrderSummary")">
+    <div class="quicksilver-well">
+        <h4>@Html.Translate("/Checkout/OrderSummary")</h4>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td><h4>@Html.Translate("/Checkout/SubTotal")</h4></td>
+                <td class="total-price"><h4 class="pull-right">@Helpers.RenderMoney(Model.SubTotal)</h4></td>
+            </tr>
+            <tr>
+                <td>
+                    <h4> @Html.Translate("/Checkout/OrderLevelDiscounts")</h4>
+                    @foreach (var discount in Model.OrderDiscounts)
+                    {
+                        @discount.DisplayName<br />
+                    }
+                <td class="total-price text-right">
+                    <h4>- @Helpers.RenderMoney(Model.OrderDiscountTotal)</h4>
+                    @foreach (var discount in Model.OrderDiscounts)
+                    {
+                        <span>- </span>
+                        @Helpers.RenderMoney(discount.Discount)<br />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>@Html.Translate("/Checkout/ShippingAndTax")</h4>
+                    @Html.Translate("/Checkout/ShippingSubtotal")<br />
+                    @Html.Translate("/Checkout/ShippingDiscount")<br />
+                    @Html.Translate("/Checkout/ShippingTotal")<br />
+                    @Html.Translate("/Checkout/TaxTotal")
+                </td>
+                <td class="total-price text-right">
+                    <h4>@Helpers.RenderMoney(Model.ShippingTaxTotal)</h4>
+                    @Helpers.RenderMoney(Model.ShippingSubtotal)<br />
+                    - @Helpers.RenderMoney(Model.ShippingDiscountTotal)<br />
+                    @Helpers.RenderMoney(Model.ShippingTotal)<br />
+                    @Helpers.RenderMoney(Model.TaxTotal)
+                </td>
+            </tr>
+            <tr>
+                <td><h4>@Html.Translate("/Checkout/CartTotal")</h4></td>
+                <td class="total-price"><h4 class="pull-right">@Helpers.RenderMoney(Model.CartTotal)</h4></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
