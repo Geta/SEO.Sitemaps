@@ -9,9 +9,6 @@
     <description>Search Engine Sitemap generator for EPiServer</description>
     <copyright>Copyright © Geta 2019</copyright>
     <tags>Sitemap SEO EPiServer EPiServerModulePackage ThirdPartyAddOn</tags>
-    <dependencies>
-      <dependency id="EPiServer.Packaging" version="[3.2.1,4.0)" />
-    </dependencies>
     <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
   </metadata>
