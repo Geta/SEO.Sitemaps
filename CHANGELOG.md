@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.3]
+
+- Removed Episerver.Packaging from NuGet package dependency
+
 ## [3.0.2]
 
 - Use ZIP file for client resources
