@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0]
+
+- Skip all pagetypes that implement the IExcludeFromSitemap interface [Pull request #107](https://github.com/Geta/SEO.Sitemaps/pull/107). Credits to [xudonax](https://github.com/xudonax).
+
 ## [3.0.3]
 
 - Removed Episerver.Packaging from NuGet package dependency

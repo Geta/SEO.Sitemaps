@@ -74,6 +74,14 @@ Credits to [jarihaa](https://github.com/jarihaa) for [contributing](https://gith
 public virtual string SEOSitemaps { get; set; }
 ```
 
+### Ignore page types
+
+Implement the `IExcludeFromSitemap` interface to ignore page types in the sitemap.
+
+```
+public class OrderConfirmationPage : PageData, IExcludeFromSitemap
+```
+
 ## Limitations
 
 - Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).
