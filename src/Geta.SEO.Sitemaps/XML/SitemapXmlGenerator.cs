@@ -19,6 +19,7 @@ using EPiServer.Logging.Compatibility;
 using EPiServer.Web;
 using EPiServer.Web.Routing;
 using Geta.SEO.Sitemaps.Entities;
+using Geta.SEO.Sitemaps.Models;
 using Geta.SEO.Sitemaps.Repositories;
 using Geta.SEO.Sitemaps.SpecializedProperties;
 using Geta.SEO.Sitemaps.Utils;
@@ -178,6 +179,11 @@ namespace Geta.SEO.Sitemaps.XML
                 if (StopGeneration)
                 {
                     return Enumerable.Empty<XElement>();
+                }
+
+                if (this.ContentRepository.TryGet<IExcludeFromSitemap>(contentReference, out _))
+                {
+                    continue;
                 }
 
                 var contentLanguages = this.GetLanguageBranches(contentReference);

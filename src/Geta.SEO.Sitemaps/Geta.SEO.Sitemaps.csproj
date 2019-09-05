@@ -182,6 +182,7 @@
     <Compile Include="CurrentLanguageContent.cs" />
     <Compile Include="Compression\QValue.cs" />
     <Compile Include="EditorDescriptors\SeoSitemapEditorDescriptor.cs" />
+    <Compile Include="Models\IExcludeFromSitemap.cs" />
     <Compile Include="module\Views\AdminManageSitemap.aspx.cs">
       <DependentUpon>AdminManageSitemap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
