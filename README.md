@@ -74,6 +74,21 @@ Credits to [jarihaa](https://github.com/jarihaa) for [contributing](https://gith
 public virtual string SEOSitemaps { get; set; }
 ```
 
+#### Set default value
+
+```
+public override void SetDefaultValues(ContentType contentType)
+{
+    base.SetDefaultValues(contentType);
+    var sitemap = new PropertySEOSitemaps
+    {
+        Enabled = false
+    };
+    sitemap.Serialize();
+    this.SEOSitemaps = sitemap.ToString();
+}
+```
+
 ### Ignore page types
 
 Implement the `IExcludeFromSitemap` interface to ignore page types in the sitemap.
