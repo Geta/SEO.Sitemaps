@@ -14,5 +14,9 @@ namespace EPiServer.Reference.Commerce.Site.Infrastructure
         [Display(Order = 110)]
         [RequiredAccess(AccessLevel.Edit)]
         public const string MailTemplates = "Mail templates";
+
+        [Display(Order = 120)]
+        [RequiredAccess(AccessLevel.Edit)]
+        public const string SEO = "SEO";
     }
 }
