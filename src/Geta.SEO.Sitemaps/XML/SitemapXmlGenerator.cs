@@ -352,8 +352,9 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 var localeContent = contentData as ILocale;
                 var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
+                var contentName = contentData.Name?.Trim('-');
 
-                element.AddFirst(new XComment(string.Format("page ID: '{0}', name: '{1}', language: '{2}'", contentData.ContentLink.ID, contentData.Name, language.Name)));
+                element.AddFirst(new XComment($"page ID: '{contentData.ContentLink.ID}', name: '{contentName}', language: '{language.Name}'"));
             }
 
             return element;
