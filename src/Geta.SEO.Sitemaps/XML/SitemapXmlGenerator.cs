@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
 using System.Xml;
@@ -352,7 +353,7 @@ namespace Geta.SEO.Sitemaps.XML
             {
                 var localeContent = contentData as ILocale;
                 var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
-                var contentName = contentData.Name?.Trim('-');
+                var contentName = Regex.Replace(contentData.Name, "[-]+", "", RegexOptions.None);
 
                 element.AddFirst(new XComment($"page ID: '{contentData.ContentLink.ID}', name: '{contentName}', language: '{language.Name}'"));
             }
