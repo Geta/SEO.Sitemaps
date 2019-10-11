@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1]
+
+- Fix issue #111 generating in debug mode fails if page name contains double dash "--"
+
 ## [3.1.0]
 
 - Skip all pagetypes that implement the IExcludeFromSitemap interface [Pull request #107](https://github.com/Geta/SEO.Sitemaps/pull/107). Credits to [xudonax](https://github.com/xudonax).
