@@ -14,7 +14,7 @@
         _TempateMixing,
         _WidgetsInTemplateMixin,
         domParser,
-        template,
+        template
     ) {
 
         return declare(
