@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.2]
+
+- Fix issue #118. Credits to [Vladimir Vedeneev](https://github.com/lanorkin)
+
 ## [3.1.1]
 
 - Fix issue #111 generating in debug mode fails if page name contains double dash "--"
