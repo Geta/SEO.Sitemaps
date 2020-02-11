@@ -67,7 +67,7 @@ namespace Geta.SEO.Sitemaps.Repositories
 
             if (languageBranch != null)
             {
-                return string.Format("{0}/{1}", languageBranch.CurrentUrlSegment, sitemapData.Host).ToLowerInvariant();
+                return $"{languageBranch.URLSegment}/{sitemapData.Host}".ToLowerInvariant();
             }
 
             return sitemapData.Host.ToLowerInvariant();

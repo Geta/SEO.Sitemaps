@@ -46,38 +46,36 @@ namespace Geta.SEO.Sitemaps.XML
         protected SitemapData SitemapData { get; set; }
         protected SiteDefinition SiteSettings { get; set; }
         protected IEnumerable<LanguageBranch> EnabledLanguages { get; set; }
-        protected IEnumerable<CurrentLanguageContent> HrefLanguageContents { get; set; }
 
-        protected XNamespace SitemapXmlNamespace
-        {
-            get { return @"http://www.sitemaps.org/schemas/sitemap/0.9"; }
-        }
+        protected XNamespace SitemapXmlNamespace => @"http://www.sitemaps.org/schemas/sitemap/0.9";
 
-        protected XNamespace SitemapXhtmlNamespace
-        {
-            get { return @"http://www.w3.org/1999/xhtml"; }
-        }
+        protected XNamespace SitemapXhtmlNamespace => @"http://www.w3.org/1999/xhtml";
 
         public bool IsDebugMode { get; set; }
 
-        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, ISiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
+        protected SitemapXmlGenerator(
+            ISitemapRepository sitemapRepository,
+            IContentRepository contentRepository,
+            UrlResolver urlResolver,
+            ISiteDefinitionRepository siteDefinitionRepository,
+            ILanguageBranchRepository languageBranchRepository,
             IContentFilter contentFilter)
         {
-            this.SitemapRepository = sitemapRepository;
-            this.ContentRepository = contentRepository;
-            this.UrlResolver = urlResolver;
-            this.SiteDefinitionRepository = siteDefinitionRepository;
-            this.LanguageBranchRepository = languageBranchRepository;
-            this.EnabledLanguages = this.LanguageBranchRepository.ListEnabled();
-            this.UrlSet = new HashSet<string>();
-            this.ContentFilter = contentFilter;
+            SitemapRepository = sitemapRepository;
+            ContentRepository = contentRepository;
+            UrlResolver = urlResolver;
+            SiteDefinitionRepository = siteDefinitionRepository;
+            LanguageBranchRepository = languageBranchRepository;
+            EnabledLanguages = LanguageBranchRepository.ListEnabled();
+            UrlSet = new HashSet<string>();
+            ContentFilter = contentFilter;
         }
 
         protected virtual XElement GenerateRootElement()
         {
             var rootElement = new XElement(SitemapXmlNamespace + "urlset");
 
-            if (this.SitemapData.IncludeAlternateLanguagePages)
+            if (SitemapData.IncludeAlternateLanguagePages)
             {
                 rootElement.Add(new XAttribute(XNamespace.Xmlns + "xhtml", SitemapXhtmlNamespace));
             }
@@ -96,13 +94,12 @@ namespace Geta.SEO.Sitemaps.XML
         {
             try
             {
-
-                this.SitemapData = sitemapData;
-                var sitemapSiteUri = new Uri(this.SitemapData.SiteUrl);
-                this.SiteSettings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
-                this.HostLanguageBranch = GetHostLanguageBranch();
+                SitemapData = sitemapData;
+                var sitemapSiteUri = new Uri(SitemapData.SiteUrl);
+                SiteSettings = GetSiteDefinitionFromSiteUri(sitemapSiteUri);
+                HostLanguageBranch = GetHostLanguageBranch();
                 SiteDefinition.Current = SiteSettings;
-                XElement sitemap = CreateSitemapXmlContents(out entryCount);
+                var sitemap = CreateSitemapXmlContents(out entryCount);
 
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
                 doc.Add(sitemap);
@@ -117,7 +114,7 @@ namespace Geta.SEO.Sitemaps.XML
 
                 if (persistData && !StopGeneration)
                 {
-                    this.SitemapRepository.Save(sitemapData);
+                    SitemapRepository.Save(sitemapData);
                 }
 
                 return true;
@@ -142,9 +139,9 @@ namespace Geta.SEO.Sitemaps.XML
         /// <returns>XElement that contains sitemap entries according to the configuration</returns>
         private XElement CreateSitemapXmlContents(out int entryCount)
         {
-            IEnumerable<XElement> sitemapXmlElements = GetSitemapXmlElements();
+            var sitemapXmlElements = GetSitemapXmlElements();
 
-            XElement sitemapElement = GenerateRootElement();
+            var sitemapElement = GenerateRootElement();
 
             sitemapElement.Add(sitemapXmlElements);
 
@@ -154,14 +151,16 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected virtual IEnumerable<XElement> GetSitemapXmlElements()
         {
-            if (this.SiteSettings == null)
+            if (SiteSettings == null)
             {
                 return Enumerable.Empty<XElement>();
             }
 
-            var rootPage = this.SitemapData.RootPageId < 0 ? this.SiteSettings.StartPage : new ContentReference(this.SitemapData.RootPageId);
+            var rootPage = SitemapData.RootPageId < 0
+                ? SiteSettings.StartPage
+                : new ContentReference(SitemapData.RootPageId);
 
-            IList<ContentReference> descendants = this.ContentRepository.GetDescendents(rootPage).ToList();
+            IList<ContentReference> descendants = ContentRepository.GetDescendents(rootPage).ToList();
 
             if (!ContentReference.RootPage.CompareToIgnoreWorkID(rootPage))
             {
@@ -171,225 +170,145 @@ namespace Geta.SEO.Sitemaps.XML
             return GenerateXmlElements(descendants);
         }
 
+        protected virtual IEnumerable<IContent> GetSitemapContent(IEnumerable<ContentReference> pages)
+        {
+            return ContentRepository
+                .GetItems(pages, LanguageSelector.MasterLanguage())
+                .Where(x => x is IRoutable
+                            && !(x is MediaData)
+                            && !(x is IExcludeFromSitemap));
+        }
+
         protected virtual IEnumerable<XElement> GenerateXmlElements(IEnumerable<ContentReference> pages)
         {
             IList<XElement> sitemapXmlElements = new List<XElement>();
+            var contents = GetSitemapContent(pages);
 
-            foreach (ContentReference contentReference in pages)
+            foreach (var content in contents)
             {
                 if (StopGeneration)
                 {
                     return Enumerable.Empty<XElement>();
                 }
 
-                if (this.ContentRepository.TryGet<IExcludeFromSitemap>(contentReference, out _))
-                {
-                    continue;
-                }
+                var existingLanguages = content is ILocalizable localizableContent
+                    ? localizableContent.ExistingLanguages
+                    : new[] {CultureInfo.InvariantCulture};
 
-                var contentLanguages = this.GetLanguageBranches(contentReference);
-
-                foreach (var contentLanguageInfo in contentLanguages)
+                foreach (var language in existingLanguages)
                 {
                     if (StopGeneration)
                     {
                         return Enumerable.Empty<XElement>();
                     }
 
-                    var localeContent = contentLanguageInfo.Content as ILocale;
-
-                    if (localeContent != null && ExcludeContentLanguageFromSitemap(localeContent.Language))
+                    if (!Equals(language, CultureInfo.InvariantCulture) && ExcludeContentLanguageFromSitemap(language))
                     {
                         continue;
                     }
 
-                    if (this.UrlSet.Count >= MaxSitemapEntryCount)
+                    if (UrlSet.Count >= MaxSitemapEntryCount)
                     {
-                        this.SitemapData.ExceedsMaximumEntryCount = true;
+                        SitemapData.ExceedsMaximumEntryCount = true;
                         return sitemapXmlElements;
                     }
 
-                    AddFilteredContentElement(contentLanguageInfo, sitemapXmlElements);
+                    AddFilteredContentElement(new CurrentLanguageContent
+                    {
+                        Content = content,
+                        CurrentLanguage = language,
+                        MasterLanguage = GetMasterLanguage(content)
+                    }, sitemapXmlElements);
                 }
             }
 
             return sitemapXmlElements;
         }
 
-        protected virtual IEnumerable<CurrentLanguageContent> GetLanguageBranches(ContentReference contentLink)
+        protected virtual IEnumerable<HrefLangData> GetHrefLangData(IContent content)
         {
-            bool isSpecificLanguage = !string.IsNullOrWhiteSpace(this.SitemapData.Language);
+            var localizableContent = content as ILocalizable;
+            var existingLanguages = localizableContent?.ExistingLanguages ?? Enumerable.Empty<CultureInfo>();
 
-            if (isSpecificLanguage)
+            foreach (var language in existingLanguages)
             {
-                LanguageSelector languageSelector = !this.SitemapData.EnableLanguageFallback
-                    ? new LanguageSelector(this.SitemapData.Language)
-                    : LanguageSelector.Fallback(this.SitemapData.Language, false);
-
-                IContent contentData;
-
-                if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
-                {
-                    return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
-                }
-
-                return Enumerable.Empty<CurrentLanguageContent>();
-            }
-
-            if (this.SitemapData.EnableLanguageFallback)
-            {
-                return GetFallbackLanguageBranches(contentLink);
-            }
-
-            return this.ContentRepository.GetLanguageBranches<IContent>(contentLink).Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
-        }
-
-        protected virtual IEnumerable<CurrentLanguageContent> GetFallbackLanguageBranches(ContentReference contentLink)
-        {
-            foreach (var languageBranch in this.EnabledLanguages)
-            {
-                var languageContent = ContentRepository.Get<IContent>(contentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false));
-
-                if (languageContent == null)
+                if (!ContentRepository.TryGet(content.ContentLink, language, out IContent languageVersion))
                 {
                     continue;
                 }
 
-                yield return new CurrentLanguageContent { Content = languageContent, CurrentLanguage = languageBranch.Culture, MasterLanguage = GetMasterLanguage(languageContent) };
-            }
-        }
-
-        protected virtual IEnumerable<HrefLangData> GetHrefLangDataFromCache(ContentReference contentLink)
-        {
-            var cacheKey = string.Format("HrefLangData-{0}", contentLink.ToReferenceWithoutVersion());
-            var cachedObject = CacheManager.Get(cacheKey) as IEnumerable<HrefLangData>;
-
-            if (cachedObject == null)
-            {
-                cachedObject = GetHrefLangData(contentLink);
-                CacheManager.Insert(cacheKey, cachedObject, new CacheEvictionPolicy(null, new [] { "SitemapGenerationKey" }, TimeSpan.FromMinutes(10), CacheTimeoutType.Absolute));
-            }
-
-            return cachedObject;
-        }
-
-        protected virtual IEnumerable<HrefLangData> GetHrefLangData(ContentReference contentLink)
-        {
-            foreach (var languageBranch in this.EnabledLanguages)
-            {
-                var languageContent = ContentRepository.Get<IContent>(contentLink, LanguageSelector.Fallback(languageBranch.Culture.Name, false));
-
-                if (languageContent == null || ContentFilter.ShouldExcludeContent(languageContent))
+                if (ContentFilter.ShouldExcludeContent(languageVersion))
                 {
                     continue;
                 }
 
-                var hrefLangData = CreateHrefLangData(contentLink, languageBranch.Culture, GetMasterLanguage(languageContent));
+                var hrefLangData = CreateHrefLangData(languageVersion);
+
+                if (hrefLangData.Href == null)
+                {
+                    continue;
+                }
+
                 yield return hrefLangData;
 
                 if (hrefLangData.HrefLang == "x-default")
                 {
-                    yield return new HrefLangData
-                    {
-                        HrefLang = languageBranch.Culture.Name.ToLowerInvariant(),
-                        Href = hrefLangData.Href
-                    };
+                    yield return new HrefLangData {HrefLang = language.Name, Href = hrefLangData.Href};
                 }
             }
         }
 
-        protected virtual HrefLangData CreateHrefLangData(ContentReference contentLink, CultureInfo language, CultureInfo masterLanguage)
+        protected virtual HrefLangData CreateHrefLangData(IContent content)
         {
-            string languageUrl = UrlResolver.GetUrl(contentLink, language.Name);
-            string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
-            var data = new HrefLangData();
+            var localizableContent = (ILocalizable) content;
+            var languageUrl = UrlResolver.GetUrl(content);
 
-            if (languageUrl.Equals(masterLanguageUrl) && contentLink.CompareToIgnoreWorkID(this.SiteSettings.StartPage))
+            if (string.IsNullOrEmpty(languageUrl))
             {
-
-                data.HrefLang = "x-default";
-            }
-            else
-            {
-                data.HrefLang = language.Name.ToLowerInvariant();
+                return new HrefLangData {Href = null};
             }
 
-            data.Href = GetAbsoluteUrl(languageUrl);
+            var masterLanguageUrl = UrlResolver.GetUrl(content.ContentLink, localizableContent.MasterLanguage.Name);
+            var data = new HrefLangData
+            {
+                HrefLang = languageUrl.Equals(masterLanguageUrl)
+                    ? "x-default"
+                    : localizableContent.Language.Name.ToLowerInvariant(),
+                Href = GetAbsoluteUrl(languageUrl)
+            };
+
             return data;
-        }
-
-        protected virtual XElement GenerateSiteElement(IContent contentData, string url)
-        {
-            DateTime modified = DateTime.Now.AddMonths(-1);
-
-            var changeTrackableContent = contentData as IChangeTrackable;
-            var versionableContent = contentData as IVersionable;
-
-            if (changeTrackableContent != null)
-            {
-                modified = changeTrackableContent.Saved;
-            }
-            else if (versionableContent != null && versionableContent.StartPublish.HasValue)
-            {
-                modified = versionableContent.StartPublish.Value;
-            }
-
-            var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
-
-            var element = new XElement(
-                SitemapXmlNamespace + "url",
-                new XElement(SitemapXmlNamespace + "loc", url),
-                new XElement(SitemapXmlNamespace + "lastmod", modified.ToString(DateTimeFormat, CultureInfo.InvariantCulture)),
-                new XElement(SitemapXmlNamespace + "changefreq", (property != null && !property.IsNull) ? property.ChangeFreq : "weekly"),
-                new XElement(SitemapXmlNamespace + "priority", (property != null && !property.IsNull) ? property.Priority : GetPriority(url))
-            );
-
-            if (this.SitemapData.IncludeAlternateLanguagePages)
-            {
-                AddHrefLangToElement(contentData, element);
-            }
-
-            if (IsDebugMode)
-            {
-                var localeContent = contentData as ILocale;
-                var language = localeContent != null ? localeContent.Language : CultureInfo.InvariantCulture;
-                var contentName = Regex.Replace(contentData.Name, "[-]+", "", RegexOptions.None);
-
-                element.AddFirst(new XComment($"page ID: '{contentData.ContentLink.ID}', name: '{contentName}', language: '{language.Name}'"));
-            }
-
-            return element;
         }
 
         protected virtual void AddHrefLangToElement(IContent content, XElement element)
         {
-            var localeContent = content as ILocalizable;
+            var langData = GetHrefLangData(content).ToList();
+            var langCount = langData.Count;
 
-            if (localeContent == null)
+            if (langCount < 2 || langCount == 2 && langData.Count(x => x.HrefLang == "x-default") == 1)
             {
                 return;
             }
 
-            var hrefLangDatas = GetHrefLangDataFromCache(content.ContentLink);
-            var count = hrefLangDatas.Count();
-
-            if (count < 2)
+            foreach (var data in langData)
             {
-                return;
-            }
-
-            if (count == 2 && hrefLangDatas.Count(x => x.HrefLang == "x-default") == 1)
-            {
-                return;
-            }
-
-            foreach (var hrefLangData in hrefLangDatas)
-            {
-                element.Add(CreateHrefLangElement(hrefLangData));
+                element.Add(CreateHrefLangElement(data));
             }
         }
 
-        protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
+        protected virtual XElement CreateHrefLangElement(HrefLangData data)
+        {
+            return new XElement(
+                SitemapXhtmlNamespace + "link",
+                new XAttribute("rel", "alternate"),
+                new XAttribute("hreflang", data.HrefLang),
+                new XAttribute("href", data.Href)
+            );
+        }
+
+        protected virtual void AddFilteredContentElement(
+            CurrentLanguageContent languageContentInfo,
+            IList<XElement> xmlElements)
         {
             if (ContentFilter.ShouldExcludeContent(languageContentInfo, SiteSettings, SitemapData))
             {
@@ -399,15 +318,13 @@ namespace Geta.SEO.Sitemaps.XML
             var content = languageContentInfo.Content;
             string url;
 
-            var localizableContent = content as ILocalizable;
-
-            if (localizableContent != null)
+            if (content is ILocalizable localizableContent)
             {
-                string language = string.IsNullOrWhiteSpace(this.SitemapData.Language)
+                var language = string.IsNullOrWhiteSpace(SitemapData.Language)
                     ? languageContentInfo.CurrentLanguage.Name
-                    : this.SitemapData.Language;
+                    : SitemapData.Language;
 
-                url = this.UrlResolver.GetUrl(content.ContentLink, language);
+                url = UrlResolver.GetUrl(content.ContentLink, language);
 
                 if (string.IsNullOrWhiteSpace(url))
                 {
@@ -415,14 +332,15 @@ namespace Geta.SEO.Sitemaps.XML
                 }
 
                 // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
-                if (this.HostLanguageBranch != null && localizableContent.Language.Name.Equals(this.HostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
+                if (HostLanguageBranch != null &&
+                    localizableContent.Language.Name.Equals(HostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    url = url.Replace(string.Format("/{0}/", this.HostLanguageBranch), "/");
+                    url = url.Replace(string.Format("/{0}/", HostLanguageBranch), "/");
                 }
             }
             else
             {
-                url = this.UrlResolver.GetUrl(content.ContentLink);
+                url = UrlResolver.GetUrl(content.ContentLink);
 
                 if (string.IsNullOrWhiteSpace(url))
                 {
@@ -434,12 +352,13 @@ namespace Geta.SEO.Sitemaps.XML
 
             var fullContentUrl = new Uri(url);
 
-            if (this.UrlSet.Contains(fullContentUrl.ToString()) || UrlFilter.IsUrlFiltered(fullContentUrl.AbsolutePath, this.SitemapData))
+            if (UrlSet.Contains(fullContentUrl.ToString()) ||
+                UrlFilter.IsUrlFiltered(fullContentUrl.AbsolutePath, SitemapData))
             {
                 return;
             }
 
-            XElement contentElement = this.GenerateSiteElement(content, fullContentUrl.ToString());
+            var contentElement = GenerateSiteElement(content, fullContentUrl.ToString());
 
             if (contentElement == null)
             {
@@ -447,43 +366,65 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             xmlElements.Add(contentElement);
-            this.UrlSet.Add(fullContentUrl.ToString());
+            UrlSet.Add(fullContentUrl.ToString());
         }
 
-        protected virtual XElement CreateHrefLangElement(HrefLangData data)
+        protected virtual XElement GenerateSiteElement(IContent contentData, string url)
         {
-            return new XElement(
-                SitemapXhtmlNamespace + "link",
-                new XAttribute("rel", "alternate"),
-                new XAttribute("hreflang", data.HrefLang),
-                new XAttribute("href", data.Href)
-                );
+            var modified = DateTime.Now.AddMonths(-1);
+
+            var changeTrackableContent = contentData as IChangeTrackable;
+            var versionableContent = contentData as IVersionable;
+
+            if (changeTrackableContent != null)
+            {
+                modified = changeTrackableContent.Saved;
+            }
+            else if (versionableContent?.StartPublish != null)
+            {
+                modified = versionableContent.StartPublish.Value;
+            }
+
+            var property = contentData.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
+
+            var element = new XElement(
+                SitemapXmlNamespace + "url",
+                new XElement(SitemapXmlNamespace + "loc", url),
+                new XElement(SitemapXmlNamespace + "lastmod",
+                    modified.ToString(DateTimeFormat, CultureInfo.InvariantCulture)),
+                new XElement(SitemapXmlNamespace + "changefreq",
+                    (property != null && !property.IsNull) ? property.ChangeFreq : "weekly"),
+                new XElement(SitemapXmlNamespace + "priority",
+                    (property != null && !property.IsNull) ? property.Priority : GetPriority(url))
+            );
+
+            if (SitemapData.IncludeAlternateLanguagePages)
+            {
+                AddHrefLangToElement(contentData, element);
+            }
+
+            if (IsDebugMode)
+            {
+                var language = contentData is ILocale localeContent ? localeContent.Language : CultureInfo.InvariantCulture;
+                var contentName = Regex.Replace(contentData.Name, "[-]+", "", RegexOptions.None);
+
+                element.AddFirst(new XComment(
+                    $"page ID: '{contentData.ContentLink.ID}', name: '{contentName}', language: '{language.Name}'"));
+            }
+
+            return element;
         }
 
         protected virtual string GetPriority(string url)
         {
-            int depth = new Uri(url).Segments.Length - 1;
+            var depth = new Uri(url).Segments.Length - 1;
 
             return Math.Max(1.0 - (depth / 10.0), 0.5).ToString(CultureInfo.InvariantCulture);
         }
 
-        protected CultureInfo GetCurrentLanguage(IContent content)
+        protected virtual CultureInfo GetMasterLanguage(IContent content)
         {
-            var localizableContent = content as ILocalizable;
-
-            if (localizableContent != null)
-            {
-                return localizableContent.Language;
-            }
-
-            return CultureInfo.InvariantCulture;
-        }
-
-        protected CultureInfo GetMasterLanguage(IContent content)
-        {
-            var localizableContent = content as ILocalizable;
-
-            if (localizableContent != null)
+            if (content is ILocalizable localizableContent)
             {
                 return localizableContent.MasterLanguage;
             }
@@ -491,14 +432,16 @@ namespace Geta.SEO.Sitemaps.XML
             return CultureInfo.InvariantCulture;
         }
 
-        protected SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
+        protected virtual SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
         {
-            return this.SiteDefinitionRepository
+            return SiteDefinitionRepository
                 .List()
-                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host, StringComparison.InvariantCultureIgnoreCase)));
+                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef =>
+                                               hostDef.Name.Equals(sitemapSiteUri.Host,
+                                                   StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        protected string GetHostLanguageBranch()
+        protected virtual string GetHostLanguageBranch()
         {
             var hostDefinition = GetHostDefinition();
 
@@ -507,60 +450,60 @@ namespace Geta.SEO.Sitemaps.XML
                 : null;
         }
 
-        protected bool HostDefinitionExistsForLanguage(string languageBranch)
+        protected virtual bool HostDefinitionExistsForLanguage(string languageBranch)
         {
-            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", this.SitemapData.SiteUrl, languageBranch);
-            object cachedObject = HttpRuntime.Cache.Get(cacheKey);
+            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", SitemapData.SiteUrl, languageBranch);
+            var cachedObject = HttpRuntime.Cache.Get(cacheKey);
 
             if (cachedObject == null)
             {
                 cachedObject =
-                    this.SiteSettings.Hosts.Any(
+                    SiteSettings.Hosts.Any(
                         x =>
-                        x.Language != null &&
-                        x.Language.ToString().Equals(languageBranch, StringComparison.InvariantCultureIgnoreCase));
+                            x.Language != null &&
+                            x.Language.ToString().Equals(languageBranch, StringComparison.InvariantCultureIgnoreCase));
 
-                HttpRuntime.Cache.Insert(cacheKey, cachedObject, null, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(cacheKey, cachedObject, null, DateTime.Now.AddMinutes(10),
+                    Cache.NoSlidingExpiration);
             }
 
-            return (bool)cachedObject;
+            return (bool) cachedObject;
         }
 
-        protected HostDefinition GetHostDefinition()
+        protected virtual HostDefinition GetHostDefinition()
         {
-            var siteUrl = new Uri(this.SitemapData.SiteUrl);
-            string sitemapHost = siteUrl.Authority;
+            var siteUrl = new Uri(SitemapData.SiteUrl);
+            var sitemapHost = siteUrl.Authority;
 
-            return this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
-                   this.SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
+            return SiteSettings.Hosts.FirstOrDefault(x =>
+                       x.Name.Equals(sitemapHost, StringComparison.InvariantCultureIgnoreCase)) ??
+                   SiteSettings.Hosts.FirstOrDefault(x => x.Name.Equals(SiteDefinition.WildcardHostName));
         }
 
-        protected bool ExcludeContentLanguageFromSitemap(CultureInfo language)
+        protected virtual bool ExcludeContentLanguageFromSitemap(CultureInfo language)
         {
-            return this.HostLanguageBranch != null &&
-               !this.HostLanguageBranch.Equals(language.Name, StringComparison.InvariantCultureIgnoreCase) &&
-               HostDefinitionExistsForLanguage(language.Name);
+            return HostLanguageBranch != null &&
+                   !HostLanguageBranch.Equals(language.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                   HostDefinitionExistsForLanguage(language.Name);
         }
 
-        protected string GetAbsoluteUrl(string url)
+        protected virtual string GetAbsoluteUrl(string url)
         {
-            Uri absoluteUri;
-
-            // if the URL is relative we add the base site URL (protocol and hostname)
-            if (!IsAbsoluteUrl(url, out absoluteUri))
-            {
-                url = UriSupport.Combine(this.SitemapData.SiteUrl, url);
-            }
             // Force the SiteUrl
+            if (IsAbsoluteUrl(url, out var absoluteUri))
+            {
+                url = UriUtil.Combine(SitemapData.SiteUrl, absoluteUri.PathAndQuery);
+            }
+            // if the URL is relative we add the base site URL (protocol and hostname)
             else
             {
-                url = UriSupport.Combine(this.SitemapData.SiteUrl, absoluteUri.AbsolutePath);
+                url = UriUtil.Combine(SitemapData.SiteUrl, url);
             }
 
             return url;
         }
 
-        protected bool IsAbsoluteUrl(string url, out Uri absoluteUri)
+        protected virtual bool IsAbsoluteUrl(string url, out Uri absoluteUri)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out absoluteUri);
         }

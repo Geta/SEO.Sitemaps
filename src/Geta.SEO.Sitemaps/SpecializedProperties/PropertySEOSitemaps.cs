@@ -6,6 +6,7 @@
  * Author: Jacob Khan
  */
 
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -27,54 +28,30 @@ namespace Geta.SEO.Sitemaps.SpecializedProperties
 
         public string ChangeFreq
         {
-            get
-            {
-                return this.changeFrequency;
-            }
-
-            set
-            {
-                this.changeFrequency = value;
-            }
+            get => changeFrequency;
+            set => changeFrequency = value;
         }
 
         public bool Enabled
         {
-            get
-            {
-                return this.enabled;
-            }
-
-            set
-            {
-                this.enabled = value;
-            }
+            get => enabled;
+            set => enabled = value;
         }
 
         public string Priority
         {
-            get
-            {
-                return this.priority;
-            }
-
-            set
-            {
-                this.priority = value;
-            }
+            get => priority;
+            set => priority = value;
         }
 
         [XmlIgnore]
         protected override string String
         {
-            get
-            {
-                return base.String;
-            }
+            get => base.String;
 
             set
             {
-                this.Deserialize(value);
+                Deserialize(value);
                 base.String = value;
             }
         }
@@ -86,15 +63,16 @@ namespace Geta.SEO.Sitemaps.SpecializedProperties
 
             reader.ReadStartElement(PropertyName);
 
-            this.enabled = bool.Parse(reader.ReadElementString("enabled"));
-            this.changeFrequency = reader.ReadElementString("changefreq");
-            this.priority = reader.ReadElementString("priority");
+            enabled = bool.Parse(reader.ReadElementString("enabled"));
+            changeFrequency = reader.ReadElementString("changefreq");
+            priority = reader.ReadElementString("priority");
 
             reader.ReadEndElement();
 
             reader.Close();
         }
 
+        [Obsolete]
         public override PropertyData ParseToObject(string str)
         {
             return Parse(str);
@@ -107,16 +85,16 @@ namespace Geta.SEO.Sitemaps.SpecializedProperties
 
             writer.WriteStartElement(PropertyName);
 
-            writer.WriteElementString("enabled", this.enabled.ToString());
-            writer.WriteElementString("changefreq", this.changeFrequency);
-            writer.WriteElementString("priority", this.priority);
+            writer.WriteElementString("enabled", enabled.ToString());
+            writer.WriteElementString("changefreq", changeFrequency);
+            writer.WriteElementString("priority", priority);
 
             writer.WriteEndElement();
 
             writer.Flush();
             writer.Close();
 
-            this.String = s.GetStringBuilder().ToString();
+            String = s.GetStringBuilder().ToString();
         }
     }
 }

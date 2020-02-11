@@ -2,11 +2,10 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
-using System.IO.Compression;
 using System.Reflection;
 using System.Web.Caching;
 using System.Web.Mvc;
-using EPiServer;
+using EPiServer.Core;
 using EPiServer.Framework.Cache;
 using EPiServer.Logging.Compatibility;
 using EPiServer.ServiceLocation;
@@ -24,21 +23,33 @@ namespace Geta.SEO.Sitemaps.Controllers
 
         private readonly ISitemapRepository _sitemapRepository;
         private readonly SitemapXmlGeneratorFactory _sitemapXmlGeneratorFactory;
+        private readonly IContentCacheKeyCreator _contentCacheKeyCreator;
+        private readonly ISynchronizedObjectInstanceCache _synchronizedObjectInstanceCache;
 
         // This constructor was added to support web forms projects without dependency injection configured.
-        public GetaSitemapController() : this(ServiceLocator.Current.GetInstance<ISitemapRepository>(), ServiceLocator.Current.GetInstance<SitemapXmlGeneratorFactory>())
+        public GetaSitemapController() : this(
+            ServiceLocator.Current.GetInstance<ISitemapRepository>(),
+            ServiceLocator.Current.GetInstance<SitemapXmlGeneratorFactory>(),
+            ServiceLocator.Current.GetInstance<IContentCacheKeyCreator>(),
+            ServiceLocator.Current.GetInstance<ISynchronizedObjectInstanceCache>())
         {
         }
 
-        public GetaSitemapController(ISitemapRepository sitemapRepository, SitemapXmlGeneratorFactory sitemapXmlGeneratorFactory)
+        public GetaSitemapController(
+            ISitemapRepository sitemapRepository,
+            SitemapXmlGeneratorFactory sitemapXmlGeneratorFactory,
+            IContentCacheKeyCreator contentCacheKeyCreator,
+            ISynchronizedObjectInstanceCache synchronizedObjectInstanceCache)
         {
             _sitemapRepository = sitemapRepository;
             _sitemapXmlGeneratorFactory = sitemapXmlGeneratorFactory;
+            _contentCacheKeyCreator = contentCacheKeyCreator;
+            _synchronizedObjectInstanceCache = synchronizedObjectInstanceCache;
         }
 
         public ActionResult Index()
         {
-            SitemapData sitemapData = _sitemapRepository.GetSitemapData(Request.Url.ToString());
+            var sitemapData = _sitemapRepository.GetSitemapData(Request.Url.ToString());
 
             if (sitemapData == null)
             {
@@ -62,51 +73,47 @@ namespace Geta.SEO.Sitemaps.Controllers
 
         private bool GetSitemapData(SitemapData sitemapData)
         {
-            int entryCount;
-            string userAgent = Request.ServerVariables["USER_AGENT"];
+            var userAgent = Request.ServerVariables["USER_AGENT"];
 
             var isGoogleBot = userAgent != null &&
                               userAgent.IndexOf("Googlebot", StringComparison.InvariantCultureIgnoreCase) > -1;
 
-            string googleBotCacheKey = isGoogleBot ? "Google-" : string.Empty;
+            var googleBotCacheKey = isGoogleBot ? "Google-" : string.Empty;
 
             if (SitemapSettings.Instance.EnableRealtimeSitemap)
             {
-                string cacheKey = googleBotCacheKey + _sitemapRepository.GetSitemapUrl(sitemapData);
+                var cacheKey = googleBotCacheKey + _sitemapRepository.GetSitemapUrl(sitemapData);
 
-                var sitemapDataData = CacheManager.Get(cacheKey) as byte[];
-
-                if (sitemapDataData != null)
+                if (_synchronizedObjectInstanceCache.Get(cacheKey) is byte[] sitemapDataData)
                 {
                     sitemapData.Data = sitemapDataData;
                     return true;
                 }
 
-                if (_sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, false, out entryCount))
+                if (!_sitemapXmlGeneratorFactory
+                    .GetSitemapXmlGenerator(sitemapData)
+                    .Generate(sitemapData, false, out _))
                 {
-                    if (SitemapSettings.Instance.EnableRealtimeCaching)
-                    {
-                        CacheEvictionPolicy cachePolicy;
+                    return false;
+                }
 
-                        if (isGoogleBot)
-                        {
-                            cachePolicy = new CacheEvictionPolicy(null, new[] {DataFactoryCache.VersionKey}, null, Cache.NoSlidingExpiration, CacheTimeoutType.Sliding);
-                        }
-                        else
-                        {
-                            cachePolicy = null;
-                        }
-
-                        CacheManager.Insert(cacheKey, sitemapData.Data, cachePolicy);
-                    }
-
+                if (!SitemapSettings.Instance.EnableRealtimeCaching)
+                {
                     return true;
                 }
 
-                return false;
+                var cachePolicy = isGoogleBot
+                    ? new CacheEvictionPolicy(Cache.NoSlidingExpiration, CacheTimeoutType.Sliding, null,
+                        new[] {_contentCacheKeyCreator.VersionKey})
+                    : null;
+
+                _synchronizedObjectInstanceCache.Insert(cacheKey, sitemapData.Data, cachePolicy);
+                return true;
             }
 
-            return _sitemapXmlGeneratorFactory.GetSitemapXmlGenerator(sitemapData).Generate(sitemapData, !SitemapSettings.Instance.EnableRealtimeSitemap, out entryCount);
+            return _sitemapXmlGeneratorFactory
+                .GetSitemapXmlGenerator(sitemapData)
+                .Generate(sitemapData, !SitemapSettings.Instance.EnableRealtimeSitemap, out _);
         }
     }
 }
