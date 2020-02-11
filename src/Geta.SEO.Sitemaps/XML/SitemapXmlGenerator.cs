@@ -445,9 +445,7 @@ namespace Geta.SEO.Sitemaps.XML
         {
             var hostDefinition = GetHostDefinition();
 
-            return hostDefinition != null && hostDefinition.Language != null
-                ? hostDefinition.Language.Name
-                : null;
+            return hostDefinition?.Language?.Name;
         }
 
         protected virtual bool HostDefinitionExistsForLanguage(string languageBranch)
