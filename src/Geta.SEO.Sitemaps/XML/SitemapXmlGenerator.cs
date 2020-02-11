@@ -335,7 +335,7 @@ namespace Geta.SEO.Sitemaps.XML
                 if (HostLanguageBranch != null &&
                     localizableContent.Language.Name.Equals(HostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    url = url.Replace(string.Format("/{0}/", HostLanguageBranch), "/");
+                    url = url.Replace($"/{HostLanguageBranch}/", "/");
                 }
             }
             else
@@ -452,7 +452,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected virtual bool HostDefinitionExistsForLanguage(string languageBranch)
         {
-            var cacheKey = string.Format("HostDefinitionExistsFor{0}-{1}", SitemapData.SiteUrl, languageBranch);
+            var cacheKey = $"HostDefinitionExistsFor{SitemapData.SiteUrl}-{languageBranch}";
             var cachedObject = HttpRuntime.Cache.Get(cacheKey);
 
             if (cachedObject == null)
