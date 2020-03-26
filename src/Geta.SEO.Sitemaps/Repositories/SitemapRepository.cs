@@ -9,6 +9,7 @@ using EPiServer.Data;
 using EPiServer.Data.Dynamic;
 using EPiServer.DataAbstraction;
 using EPiServer.ServiceLocation;
+using EPiServer.Web;
 using Geta.SEO.Sitemaps.Entities;
 
 namespace Geta.SEO.Sitemaps.Repositories
@@ -17,11 +18,16 @@ namespace Geta.SEO.Sitemaps.Repositories
     public class SitemapRepository : ISitemapRepository
     {
         private readonly ILanguageBranchRepository _languageBranchRepository;
+        private readonly ISiteDefinitionResolver _siteDefinitionResolver;
 
-        public SitemapRepository(ILanguageBranchRepository languageBranchRepository)
+
+        public SitemapRepository(ILanguageBranchRepository languageBranchRepository, ISiteDefinitionResolver siteDefinitionResolver)
         {
             if (languageBranchRepository == null) throw new ArgumentNullException("languageBranchRepository");
+            if (siteDefinitionResolver == null) throw new ArgumentNullException("siteDefinitionResolver");
+
             _languageBranchRepository = languageBranchRepository;
+            _siteDefinitionResolver = siteDefinitionResolver;
         }
 
         private static DynamicDataStore SitemapStore
@@ -48,7 +54,12 @@ namespace Geta.SEO.Sitemaps.Repositories
             
             var host = url.Path.TrimStart('/').ToLowerInvariant();
 
-            return GetAllSitemapData().FirstOrDefault(x => GetHostWithLanguage(x) == host && (x.SiteUrl == null || x.SiteUrl.Contains(url.Host)));
+            var siteDefinition = _siteDefinitionResolver.GetByHostname(url.Host, true, out _);
+            if (siteDefinition == null)
+            {
+                return null;
+            }
+            return GetAllSitemapData().FirstOrDefault(x => GetHostWithLanguage(x) == host && (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host)));
         }
 
         public string GetSitemapUrl(SitemapData sitemapData)
