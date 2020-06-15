@@ -23,8 +23,8 @@ namespace Geta.SEO.Sitemaps.Repositories
 
         public SitemapRepository(ILanguageBranchRepository languageBranchRepository, ISiteDefinitionResolver siteDefinitionResolver)
         {
-            if (languageBranchRepository == null) throw new ArgumentNullException("languageBranchRepository");
-            if (siteDefinitionResolver == null) throw new ArgumentNullException("siteDefinitionResolver");
+            if (languageBranchRepository == null) throw new ArgumentNullException(nameof(languageBranchRepository));
+            if (siteDefinitionResolver == null) throw new ArgumentNullException(nameof(siteDefinitionResolver));
 
             _languageBranchRepository = languageBranchRepository;
             _siteDefinitionResolver = siteDefinitionResolver;
