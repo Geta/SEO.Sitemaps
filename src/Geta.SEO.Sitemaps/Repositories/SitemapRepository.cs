@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EPiServer;
 using EPiServer.Data;
-using EPiServer.Data.Dynamic;
 using EPiServer.DataAbstraction;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
@@ -19,39 +18,35 @@ namespace Geta.SEO.Sitemaps.Repositories
     {
         private readonly ILanguageBranchRepository _languageBranchRepository;
         private readonly ISiteDefinitionResolver _siteDefinitionResolver;
+        private readonly ISitemapLoader _sitemapLoader;
 
 
-        public SitemapRepository(ILanguageBranchRepository languageBranchRepository, ISiteDefinitionResolver siteDefinitionResolver)
+        public SitemapRepository(ILanguageBranchRepository languageBranchRepository, ISiteDefinitionResolver siteDefinitionResolver, ISitemapLoader sitemapLoader)
         {
             if (languageBranchRepository == null) throw new ArgumentNullException(nameof(languageBranchRepository));
             if (siteDefinitionResolver == null) throw new ArgumentNullException(nameof(siteDefinitionResolver));
+            if (sitemapLoader == null) throw new ArgumentNullException(nameof(sitemapLoader));
 
             _languageBranchRepository = languageBranchRepository;
             _siteDefinitionResolver = siteDefinitionResolver;
-        }
-
-        private static DynamicDataStore SitemapStore
-        {
-            get
-            {
-                return typeof(SitemapData).GetStore();
-            }
+            _sitemapLoader = sitemapLoader;
         }
 
         public void Delete(Identity id)
         {
-            SitemapStore.Delete(id);
+            _sitemapLoader.Delete(id);
         }
 
         public SitemapData GetSitemapData(Identity id)
         {
-            return SitemapStore.Items<SitemapData>().FirstOrDefault(sitemap => sitemap.Id == id);
+            return _sitemapLoader.GetSitemapData(id);
         }
 
         public SitemapData GetSitemapData(string requestUrl)
         {
             var url = new Url(requestUrl); 
             
+            // contains the sitemap URL, for example en/sitemap.xml
             var host = url.Path.TrimStart('/').ToLowerInvariant();
 
             var siteDefinition = _siteDefinitionResolver.GetByHostname(url.Host, true, out _);
@@ -59,7 +54,12 @@ namespace Geta.SEO.Sitemaps.Repositories
             {
                 return null;
             }
-            return GetAllSitemapData().FirstOrDefault(x => GetHostWithLanguage(x) == host && (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host)));
+
+            var allSitemapData = GetAllSitemapData();
+
+            return allSitemapData.FirstOrDefault(x => 
+                GetHostWithLanguage(x) == host && 
+                (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host)));
         }
 
         public string GetSitemapUrl(SitemapData sitemapData)
@@ -67,6 +67,12 @@ namespace Geta.SEO.Sitemaps.Repositories
             return string.Format("{0}{1}", sitemapData.SiteUrl, GetHostWithLanguage(sitemapData));
         }
 
+        /// <summary>
+        /// Returns host with language.
+        /// For example en/sitemap.xml
+        /// </summary>
+        /// <param name="sitemapData"></param>
+        /// <returns></returns>
         public string GetHostWithLanguage(SitemapData sitemapData)
         {
             if (string.IsNullOrWhiteSpace(sitemapData.Language))
@@ -80,23 +86,17 @@ namespace Geta.SEO.Sitemaps.Repositories
             {
                 return string.Format("{0}/{1}", languageBranch.CurrentUrlSegment, sitemapData.Host).ToLowerInvariant();
             }
-
             return sitemapData.Host.ToLowerInvariant();
         }
 
         public IList<SitemapData> GetAllSitemapData()
         {
-            return SitemapStore.Items<SitemapData>().ToList();
+            return _sitemapLoader.GetAllSitemapData();
         }
 
         public void Save(SitemapData sitemapData)
         {
-            if (sitemapData == null)
-            {
-                return;
-            }
-
-            SitemapStore.Save(sitemapData);
+            _sitemapLoader.Save(sitemapData);
         }
     }
 }
