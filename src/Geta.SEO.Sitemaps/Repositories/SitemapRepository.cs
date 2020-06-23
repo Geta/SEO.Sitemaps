@@ -55,11 +55,18 @@ namespace Geta.SEO.Sitemaps.Repositories
                 return null;
             }
 
-            var allSitemapData = GetAllSitemapData();
+            var sitemapData = GetAllSitemapData()?.Where(x =>
+                GetHostWithLanguage(x) == host &&
+                (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host))).ToList();
 
-            return allSitemapData.FirstOrDefault(x => 
-                GetHostWithLanguage(x) == host && 
-                (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host)));
+            if (sitemapData?.Count == 1)
+            {
+                return sitemapData.FirstOrDefault();
+            }
+
+            // Could happen that we found multiple sitemaps when for each host in the SiteDefinition a Sitemap is created.
+            // In that case, use the requestURL to get the correct SiteMapData
+            return sitemapData?.FirstOrDefault(x => new Url(x.SiteUrl).Host == url.Host);
         }
 
         public string GetSitemapUrl(SitemapData sitemapData)
