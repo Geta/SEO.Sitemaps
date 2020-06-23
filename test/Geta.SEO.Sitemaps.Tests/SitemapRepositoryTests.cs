@@ -54,7 +54,7 @@ namespace Tests
 
             var siteMapData = siteMapService.GetSitemapData(requestUrl);
 
-            Assert.True(siteMapData.Equals(expectedSitemapData));
+            Assert.Equal(siteMapData, expectedSitemapData);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Tests
             
             var siteMapData = siteMapService.GetSitemapData(requestUrl);
 
-            Assert.True(siteMapData.Equals(expectedSitemapData));
+            Assert.Equal(siteMapData, expectedSitemapData);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace Tests
             
             var siteMapData = siteMapService.GetSitemapData(requestUrl);
 
-            Assert.True(siteMapData.Equals(expectedSitemapData));
+            Assert.Equal(siteMapData, expectedSitemapData);
         }
 
         [Fact]
@@ -164,7 +164,7 @@ namespace Tests
 
             var siteMapData = siteMapService.GetSitemapData(requestUrl);
 
-            Assert.True(siteMapData.Equals(expectedSitemapData));
+            Assert.Equal(siteMapData, expectedSitemapData);
         }
 
         [Fact]
@@ -182,7 +182,8 @@ namespace Tests
 
             var sitemapUrl = siteMapService.GetHostWithLanguage(sitemapData);
 
-            Assert.True(sitemapUrl != null && sitemapUrl.Equals(expectedSiteMapUrl));
+            Assert.True(sitemapUrl != null);
+            Assert.Equal(sitemapUrl, expectedSiteMapUrl);
         }
 
         [Fact]
@@ -200,7 +201,8 @@ namespace Tests
 
             var sitemapUrl = siteMapService.GetHostWithLanguage(sitemapData);
 
-            Assert.True(sitemapUrl != null && sitemapUrl.Equals(expectedSiteMapUrl));
+            Assert.True(sitemapUrl != null);
+            Assert.Equal(sitemapUrl, expectedSiteMapUrl);
         }
     }
 }
