@@ -96,6 +96,9 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData(new[] { "http://localhost", "http://localhost:5001" }, "http://localhost:5001")]
+        [InlineData(new[] { "https://localhost" }, "https://localhost")]
+        [InlineData(new[] { "https://localhost:5001" }, "https://localhost:5001")]
         [InlineData(new[] { "https://xyz.com" }, "https://xyz.com")]
         [InlineData(new[] { "https://xyz.com", "https://abc.xyz.com", "http://xyz.nl" }, "https://xyz.com")]
         [InlineData(new[] { "https://xyz.com", "https://abc.xyz.com", "http://xyz.nl" }, "https://abc.xyz.com")]
@@ -114,7 +117,7 @@ namespace Tests
             var siteDefinition = new SiteDefinition();
             siteDefinition.Hosts = new List<HostDefinition>
             {
-                new HostDefinition {Name = new Uri(requestedHostURL, UriKind.Absolute).Host}
+                new HostDefinition {Name = new Uri(requestedHostURL, UriKind.Absolute).Authority}
             };
 
             var siteDefinitionResolver = new Mock<ISiteDefinitionResolver>();
@@ -136,6 +139,9 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData(new[] { "http://localhost", "http://localhost:5001" }, "http://localhost:5001")]
+        [InlineData(new[] { "https://localhost" }, "https://localhost")]
+        [InlineData(new[] { "https://localhost:5001" }, "https://localhost:5001")]
         [InlineData(new[] { "https://xyz.com" }, "https://xyz.com")]
         [InlineData(new[] { "https://xyz.com", "https://abc.xyz.com", "http://xyz.nl" }, "https://xyz.com")]
         [InlineData(new[] { "https://xyz.com", "https://abc.xyz.com", "http://xyz.nl" }, "https://abc.xyz.com")]
@@ -154,7 +160,7 @@ namespace Tests
             var hostDefinition = new HostDefinition();
             var siteDefinition = new SiteDefinition();
             siteDefinition.Hosts = siteMapUrls.Select(x => new HostDefinition
-            { Name = new Uri(x, UriKind.Absolute).Host }).ToList(); 
+            { Name = new Uri(x, UriKind.Absolute).Authority }).ToList(); 
 
             var siteDefinitionResolver = new Mock<ISiteDefinitionResolver>();
             siteDefinitionResolver
