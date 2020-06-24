@@ -57,7 +57,7 @@ namespace Geta.SEO.Sitemaps.Repositories
 
             var sitemapData = GetAllSitemapData()?.Where(x =>
                 GetHostWithLanguage(x) == host &&
-                (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Host))).ToList();
+                (x.SiteUrl == null || siteDefinition.Hosts.Any(h => h.Name == new Url(x.SiteUrl).Authority))).ToList();
 
             if (sitemapData?.Count == 1)
             {
@@ -66,7 +66,7 @@ namespace Geta.SEO.Sitemaps.Repositories
 
             // Could happen that we found multiple sitemaps when for each host in the SiteDefinition a Sitemap is created.
             // In that case, use the requestURL to get the correct SiteMapData
-            return sitemapData?.FirstOrDefault(x => new Url(x.SiteUrl).Host == url.Host);
+            return sitemapData?.FirstOrDefault(x => new Url(x.SiteUrl).Authority == url.Authority);
         }
 
         public string GetSitemapUrl(SitemapData sitemapData)
