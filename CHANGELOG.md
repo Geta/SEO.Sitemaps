@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.2]
+
+- Fix issue #109 find site definition from url, and find sitemap from site definition
+
 ## [3.1.1]
 
 - Fix issue #111 generating in debug mode fails if page name contains double dash "--"
