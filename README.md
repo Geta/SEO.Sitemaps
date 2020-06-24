@@ -97,6 +97,31 @@ Implement the `IExcludeFromSitemap` interface to ignore page types in the sitema
 public class OrderConfirmationPage : PageData, IExcludeFromSitemap
 ```
 
+### Exclude content
+
+If you need more control to exclude content from the sitemap you can make your own implementation of IContentFilter. Make sure to inherit from ContentFilter and call the `ShouldExcludeContent` method of the base class. 
+
+```
+public class SiteContentFilter : ContentFilter
+    {
+        public override bool ShouldExcludeContent(IContent content)
+        {
+            if (base.ShouldExcludeContent(content))
+            {
+                return true;
+            }
+
+            // Custom logic here
+
+            return false;
+        }
+    }
+```
+
+Register in your DI container.
+
+```services.AddTransient<IContentFilter, SiteContentFilter>();```
+
 ## Limitations
 
 - Each sitemap will contain max 50k entries (according to [sitemaps.org protocol](http://www.sitemaps.org/protocol.html#index)) so if the site in which you are using this plugin contains more active pages then you should split them over multiple sitemaps (by specifying a different root page or include/avoid paths for each).

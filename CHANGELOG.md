@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.2]
+## [3.1.3]
 
 - Fix issue #109 find site definition from url, and find sitemap from site definition
+
+## [3.1.2]
+
+- Fix issue #118. Credits to [Vladimir Vedeneev](https://github.com/lanorkin)
 
 ## [3.1.1]
 
