@@ -11,5 +11,9 @@
     <tags>Sitemap SEO EPiServer Commerce</tags>
     <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
+    <dependencies>
+      <dependency id="Geta.SEO.Sitemaps" version="$version$" />
+    </dependencies>
   </metadata>
 </package>
+
