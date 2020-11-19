@@ -565,19 +565,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected bool TryGet<T>(ContentReference contentLink, out T content) where T : IContentData
         {
-            content = default(T);
-            try
-            {
-                var status = this.ContentRepository.TryGet<T>(contentLink, out var local);
-                content = (T)local;
-                return status;
-            }
-            catch (Exception e)
-            {
-                Log.Error("Error on contentReference " + contentLink.ID + Environment.NewLine + e);
-            }
-
-            return false;
+            return TryGet<T>(contentLink, null, out content);
         }
 
         protected bool TryGet<T>(ContentReference contentLink, LoaderOptions settings, out T content) where T : IContentData
@@ -585,7 +573,9 @@ namespace Geta.SEO.Sitemaps.XML
             content = default(T);
             try
             {
-                var status = this.ContentRepository.TryGet<T>(contentLink, settings, out var local);
+                T local;
+                var status = settings != null ? this.ContentRepository.TryGet<T>(contentLink, settings, out  local) 
+                    : this.ContentRepository.TryGet<T>(contentLink, out  local);
                 content = (T)local;
                 return status;
             }
