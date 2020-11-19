@@ -182,7 +182,7 @@ namespace Geta.SEO.Sitemaps.XML
                     return Enumerable.Empty<XElement>();
                 }
 
-                if (this.ContentRepository.TryGet<IExcludeFromSitemap>(contentReference, out _))
+                if (TryGet<IExcludeFromSitemap>(contentReference, out _))
                 {
                     continue;
                 }
@@ -226,9 +226,7 @@ namespace Geta.SEO.Sitemaps.XML
                     ? new LanguageSelector(this.SitemapData.Language)
                     : LanguageSelector.Fallback(this.SitemapData.Language, false);
 
-                IContent contentData;
-
-                if (this.ContentRepository.TryGet(contentLink, languageSelector, out contentData))
+                if (TryGet<IContent>(contentLink, languageSelector, out var contentData))
                 {
                     return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
                 }
@@ -267,7 +265,7 @@ namespace Geta.SEO.Sitemaps.XML
             if (cachedObject == null)
             {
                 cachedObject = GetHrefLangData(contentLink);
-                CacheManager.Insert(cacheKey, cachedObject, new CacheEvictionPolicy(null, new [] { "SitemapGenerationKey" }, TimeSpan.FromMinutes(10), CacheTimeoutType.Absolute));
+                CacheManager.Insert(cacheKey, cachedObject, new CacheEvictionPolicy(null, new[] { "SitemapGenerationKey" }, TimeSpan.FromMinutes(10), CacheTimeoutType.Absolute));
             }
 
             return cachedObject;
@@ -563,6 +561,40 @@ namespace Geta.SEO.Sitemaps.XML
         protected bool IsAbsoluteUrl(string url, out Uri absoluteUri)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out absoluteUri);
+        }
+
+        protected bool TryGet<T>(ContentReference contentLink, out T content) where T : IContentData
+        {
+            content = default(T);
+            try
+            {
+                var status = this.ContentRepository.TryGet<T>(contentLink, out var local);
+                content = (T)local;
+                return status;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error on contentReference " + contentLink.ID + Environment.NewLine + e);
+            }
+
+            return false;
+        }
+
+        protected bool TryGet<T>(ContentReference contentLink, LoaderOptions settings, out T content) where T : IContentData
+        {
+            content = default(T);
+            try
+            {
+                var status = this.ContentRepository.TryGet<T>(contentLink, settings, out var local);
+                content = (T)local;
+                return status;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error on contentReference " + contentLink.ID + Environment.NewLine + e);
+            }
+
+            return false;
         }
     }
 }
