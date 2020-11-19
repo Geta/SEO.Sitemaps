@@ -226,7 +226,7 @@ namespace Geta.SEO.Sitemaps.XML
                     ? new LanguageSelector(this.SitemapData.Language)
                     : LanguageSelector.Fallback(this.SitemapData.Language, false);
 
-                if (TryGet<IContent>(contentLink, languageSelector, out var contentData))
+                if (TryGet<IContent>(contentLink, out var contentData, languageSelector))
                 {
                     return new[] { new CurrentLanguageContent { Content = contentData, CurrentLanguage = new CultureInfo(this.SitemapData.Language), MasterLanguage = GetMasterLanguage(contentData) } };
                 }
@@ -563,12 +563,7 @@ namespace Geta.SEO.Sitemaps.XML
             return Uri.TryCreate(url, UriKind.Absolute, out absoluteUri);
         }
 
-        protected bool TryGet<T>(ContentReference contentLink, out T content) where T : IContentData
-        {
-            return TryGet<T>(contentLink, null, out content);
-        }
-
-        protected bool TryGet<T>(ContentReference contentLink, LoaderOptions settings, out T content) where T : IContentData
+        protected bool TryGet<T>(ContentReference contentLink, out T content, LoaderOptions settings = null) where T : IContentData
         {
             content = default(T);
             try
