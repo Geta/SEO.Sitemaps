@@ -39,7 +39,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         protected readonly ISitemapRepository SitemapRepository;
         protected readonly IContentRepository ContentRepository;
-        protected readonly UrlResolver UrlResolver;
+        protected readonly IUrlResolver UrlResolver;
         protected readonly ISiteDefinitionRepository SiteDefinitionRepository;
         protected readonly ILanguageBranchRepository LanguageBranchRepository;
         protected readonly IContentFilter ContentFilter;
@@ -60,7 +60,7 @@ namespace Geta.SEO.Sitemaps.XML
 
         public bool IsDebugMode { get; set; }
 
-        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, UrlResolver urlResolver, ISiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
+        protected SitemapXmlGenerator(ISitemapRepository sitemapRepository, IContentRepository contentRepository, IUrlResolver urlResolver, ISiteDefinitionRepository siteDefinitionRepository, ILanguageBranchRepository languageBranchRepository,
             IContentFilter contentFilter)
         {
             this.SitemapRepository = sitemapRepository;
@@ -489,11 +489,11 @@ namespace Geta.SEO.Sitemaps.XML
             return CultureInfo.InvariantCulture;
         }
 
-        protected SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
+        public SiteDefinition GetSiteDefinitionFromSiteUri(Uri sitemapSiteUri)
         {
             return this.SiteDefinitionRepository
                 .List()
-                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Host, StringComparison.InvariantCultureIgnoreCase)));
+                .FirstOrDefault(siteDef => siteDef.SiteUrl == sitemapSiteUri || siteDef.Hosts.Any(hostDef => hostDef.Name.Equals(sitemapSiteUri.Authority, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         protected string GetHostLanguageBranch()
