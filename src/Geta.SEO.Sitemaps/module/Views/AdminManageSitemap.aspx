@@ -156,6 +156,7 @@
                     <br/><br/>
                     Include alternate language pages:
                     <asp:CheckBox runat="server" ID="cbIncludeAlternateLanguagePages" Checked='<%# CurrentSitemapData.IncludeAlternateLanguagePages %>'/>
+                    <br/><br/>
                     Enable simple address support:
                     <asp:CheckBox runat="server" ID="cbEnableSimpleAddressSupport" Checked='<%# CurrentSitemapData.EnableSimpleAddressSupport %>'/>
                 </td>
@@ -208,6 +209,7 @@
                     <br/><br/>
                     Include alternate language pages:
                     <asp:CheckBox runat="server" ID="cbIncludeAlternateLanguagePages" Checked="false"/>
+                    <br/><br/>
                     Enable simple address support:
                     <asp:CheckBox runat="server" ID="cbEnableSimpleAddressSupport" Checked="false"/>
                 </td>
