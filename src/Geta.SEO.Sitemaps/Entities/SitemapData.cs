@@ -25,7 +25,8 @@ namespace Geta.SEO.Sitemaps.Entities
         public bool EnableLanguageFallback { get; set; }
 
         public bool IncludeAlternateLanguagePages { get; set; }
-
+        public bool EnableSimpleAddressSupport { get; set; }
+        
         public IList<string> PathsToInclude { get; set; }
 
         public IList<string> PathsToAvoid { get; set; }
