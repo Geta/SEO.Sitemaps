@@ -4,11 +4,13 @@
 using System;
 using EPiServer.Core;
 using EPiServer.Framework.Web;
+using EPiServer.Logging.Compatibility;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 using Geta.SEO.Sitemaps.Entities;
 using Geta.SEO.Sitemaps.SpecializedProperties;
+using Geta.SEO.Sitemaps.XML;
 
 namespace Geta.SEO.Sitemaps.Utils
 {
@@ -16,6 +18,7 @@ namespace Geta.SEO.Sitemaps.Utils
     public class ContentFilter : IContentFilter
     {
         protected static Injected<TemplateResolver> TemplateResolver { get; set; }
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SitemapXmlGenerator));
 
         public virtual bool ShouldExcludeContent(IContent content)
         {
@@ -24,9 +27,7 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
-            var securableContent = content as ISecurable;
-
-            if (securableContent != null && !IsAccessibleToEveryone(securableContent))
+            if (!IsAccessibleToEveryone(content))
             {
                 return true;
             }
@@ -36,9 +37,8 @@ namespace Geta.SEO.Sitemaps.Utils
                 return true;
             }
 
-            var versionableContent = content as IVersionable;
 
-            if (versionableContent != null && !IsPublished(versionableContent))
+            if (!IsPublished(content))
             {
                 return true;
             }
@@ -94,7 +94,7 @@ namespace Geta.SEO.Sitemaps.Utils
         private static bool IsSitemapPropertyEnabled(IContentData content)
         {
             var property = content.Property[PropertySEOSitemaps.PropertyName] as PropertySEOSitemaps;
-            if (property==null) //not set on the page, check if there are default values for a page type perhaps
+            if (property == null) //not set on the page, check if there are default values for a page type perhaps
             {
                 var page = content as PageData;
                 if (page == null)
@@ -103,7 +103,7 @@ namespace Geta.SEO.Sitemaps.Utils
                 var seoProperty = page.GetType().GetProperty(PropertySEOSitemaps.PropertyName);
                 if (seoProperty?.GetValue(page) is PropertySEOSitemaps) //check unlikely situation when the property name is the same as defined for SEOSiteMaps
                 {
-                    var isEnabled= ((PropertySEOSitemaps)seoProperty.GetValue(page)).Enabled;
+                    var isEnabled = ((PropertySEOSitemaps)seoProperty.GetValue(page)).Enabled;
                     return isEnabled;
                 }
 
@@ -117,34 +117,51 @@ namespace Geta.SEO.Sitemaps.Utils
             return true;
         }
 
-        private static bool IsAccessibleToEveryone(ISecurable content)
+        private static bool IsAccessibleToEveryone(IContent content)
         {
-            var visitorPrinciple = new System.Security.Principal.GenericPrincipal(
-                new System.Security.Principal.GenericIdentity("visitor"),
-                new[] { "Everyone" });
+            try
+            {
+                if (content is ISecurable securableContent)
+                {
+                    var visitorPrinciple = new System.Security.Principal.GenericPrincipal(
+                        new System.Security.Principal.GenericIdentity("visitor"),
+                        new[] { "Everyone" });
 
-            return content.GetSecurityDescriptor().HasAccess(visitorPrinciple, AccessLevel.Read);
+                    return securableContent.GetSecurityDescriptor().HasAccess(visitorPrinciple, AccessLevel.Read);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error on content parent " + content.ContentLink.ID + Environment.NewLine + e);
+            }
+
+            return false;
         }
 
-        private static bool IsPublished(IVersionable versionableContent)
+        private static bool IsPublished(IContent content)
         {
-            var isPublished = versionableContent.Status == VersionStatus.Published;
-
-            if (!isPublished || versionableContent.IsPendingPublish)
+            if (content is IVersionable versionableContent)
             {
-                return false;
+                var isPublished = versionableContent.Status == VersionStatus.Published;
+
+                if (!isPublished || versionableContent.IsPendingPublish)
+                {
+                    return false;
+                }
+
+                var now = DateTime.Now.ToUniversalTime();
+                var startPublish = versionableContent.StartPublish.GetValueOrDefault(DateTime.MinValue).ToUniversalTime();
+                var stopPublish = versionableContent.StopPublish.GetValueOrDefault(DateTime.MaxValue).ToUniversalTime();
+
+                if (startPublish > now || stopPublish < now)
+                {
+                    return false;
+                }
+
+                return true;
             }
 
-            var now = DateTime.Now.ToUniversalTime();
-            var startPublish = versionableContent.StartPublish.GetValueOrDefault(DateTime.MinValue).ToUniversalTime();
-            var stopPublish = versionableContent.StopPublish.GetValueOrDefault(DateTime.MaxValue).ToUniversalTime();
-
-            if (startPublish > now || stopPublish < now)
-            {
-                return false;
-            }
-
-            return true;
+            return false;
         }
     }
 }
