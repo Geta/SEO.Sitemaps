@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.5]
+
+- PR #136 EPiServer.Core.PageNotFoundException on parent content. Credits to [adnanzameerx](https://github.com/adnanzameerx).
+
 ## [3.1.4]
 
 - Fix issue #130 404 for sitemap.xml
