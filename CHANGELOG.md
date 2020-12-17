@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.5]
+## [4.0.0]
 
 - PR #136 EPiServer.Core.PageNotFoundException on parent content. Credits to [adnanzameerx](https://github.com/adnanzameerx).
 - Issue #125/ PR #134 Simple Address Support. Credits to [adnanzameerx](https://github.com/adnanzameerx).
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 ## [3.1.4]
 
 - Fix issue #130 404 for sitemap.xml
-- PR #132 Content excpetion handling in GenerateXmlElements function. Credits to [adnanzameerx](https://github.com/adnanzameerx).
+- PR #132 Content exception handling in GenerateXmlElements function. Credits to [adnanzameerx](https://github.com/adnanzameerx).
 
 ## [3.1.3]
 
