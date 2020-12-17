@@ -282,7 +282,7 @@ namespace Geta.SEO.Sitemaps.XML
                     continue;
                 }
 
-                var hrefLangData = CreateHrefLangData(contentLink, languageBranch.Culture, GetMasterLanguage(languageContent));
+                var hrefLangData = CreateHrefLangData(languageContent, languageBranch.Culture, GetMasterLanguage(languageContent));
                 yield return hrefLangData;
 
                 if (hrefLangData.HrefLang == "x-default")
@@ -296,13 +296,33 @@ namespace Geta.SEO.Sitemaps.XML
             }
         }
 
-        protected virtual HrefLangData CreateHrefLangData(ContentReference contentLink, CultureInfo language, CultureInfo masterLanguage)
+        protected virtual HrefLangData CreateHrefLangData(IContent content, CultureInfo language, CultureInfo masterLanguage)
         {
-            string languageUrl = UrlResolver.GetUrl(contentLink, language.Name);
-            string masterLanguageUrl = UrlResolver.GetUrl(contentLink, masterLanguage.Name);
+            string languageUrl;
+            string masterLanguageUrl;
+
+            if (this.SitemapData.EnableSimpleAddressSupport && content is PageData pageData && !string.IsNullOrWhiteSpace(pageData.ExternalURL))
+            {
+                languageUrl = pageData.ExternalURL;
+                
+                TryGet(content.ContentLink, out IContent masterContent, new LanguageSelector(masterLanguage.Name));
+                
+                masterLanguageUrl = string.Empty;
+                if (masterContent is PageData masterPageData && !string.IsNullOrWhiteSpace(masterPageData.ExternalURL))
+                {
+                    masterLanguageUrl = masterPageData.ExternalURL;
+                }
+            }
+            else
+            {
+                languageUrl = UrlResolver.GetUrl(content.ContentLink, language.Name);
+                masterLanguageUrl = UrlResolver.GetUrl(content.ContentLink, masterLanguage.Name);
+            }
+
+
             var data = new HrefLangData();
 
-            if (languageUrl.Equals(masterLanguageUrl) && contentLink.CompareToIgnoreWorkID(this.SiteSettings.StartPage))
+            if (languageUrl.Equals(masterLanguageUrl) && content.ContentLink.CompareToIgnoreWorkID(this.SiteSettings.StartPage))
             {
 
                 data.HrefLang = "x-default";
@@ -387,7 +407,8 @@ namespace Geta.SEO.Sitemaps.XML
             }
         }
 
-        protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo, IList<XElement> xmlElements)
+        protected virtual void AddFilteredContentElement(CurrentLanguageContent languageContentInfo,
+            IList<XElement> xmlElements)
         {
             if (ContentFilter.ShouldExcludeContent(languageContentInfo, SiteSettings, SitemapData))
             {
@@ -395,36 +416,45 @@ namespace Geta.SEO.Sitemaps.XML
             }
 
             var content = languageContentInfo.Content;
-            string url;
+            string url = null;
 
-            var localizableContent = content as ILocalizable;
-
-            if (localizableContent != null)
+            if (this.SitemapData.EnableSimpleAddressSupport && content is PageData pageData && !string.IsNullOrWhiteSpace(pageData.ExternalURL))
             {
-                string language = string.IsNullOrWhiteSpace(this.SitemapData.Language)
-                    ? languageContentInfo.CurrentLanguage.Name
-                    : this.SitemapData.Language;
-
-                url = this.UrlResolver.GetUrl(content.ContentLink, language);
-
-                if (string.IsNullOrWhiteSpace(url))
-                {
-                    return;
-                }
-
-                // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
-                if (this.HostLanguageBranch != null && localizableContent.Language.Name.Equals(this.HostLanguageBranch, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    url = url.Replace(string.Format("/{0}/", this.HostLanguageBranch), "/");
-                }
+                url = pageData.ExternalURL;
             }
-            else
-            {
-                url = this.UrlResolver.GetUrl(content.ContentLink);
 
-                if (string.IsNullOrWhiteSpace(url))
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                var localizableContent = content as ILocalizable;
+
+                if (localizableContent != null)
                 {
-                    return;
+                    string language = string.IsNullOrWhiteSpace(this.SitemapData.Language)
+                        ? languageContentInfo.CurrentLanguage.Name
+                        : this.SitemapData.Language;
+
+                    url = this.UrlResolver.GetUrl(content.ContentLink, language);
+
+                    if (string.IsNullOrWhiteSpace(url))
+                    {
+                        return;
+                    }
+
+                    // Make 100% sure we remove the language part in the URL if the sitemap host is mapped to the page's LanguageBranch.
+                    if (this.HostLanguageBranch != null && localizableContent.Language.Name.Equals(this.HostLanguageBranch,
+                            StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        url = url.Replace(string.Format("/{0}/", this.HostLanguageBranch), "/");
+                    }
+                }
+                else
+                {
+                    url = this.UrlResolver.GetUrl(content.ContentLink);
+
+                    if (string.IsNullOrWhiteSpace(url))
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -569,8 +599,8 @@ namespace Geta.SEO.Sitemaps.XML
             try
             {
                 T local;
-                var status = settings != null ? this.ContentRepository.TryGet<T>(contentLink, settings, out  local) 
-                    : this.ContentRepository.TryGet<T>(contentLink, out  local);
+                var status = settings != null ? this.ContentRepository.TryGet<T>(contentLink, settings, out local)
+                    : this.ContentRepository.TryGet<T>(contentLink, out local);
                 content = (T)local;
                 return status;
             }
