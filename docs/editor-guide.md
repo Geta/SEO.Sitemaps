@@ -9,6 +9,7 @@ Add a new sitemap definition and fill values for sitemap host and other fields:
 - Root page id - the specified page and it's descendants will be listed in the sitemap. You can leave 0 to list all pages.
 - Debug info - if checked sitemap will contain info about page id, language and name as a comment for each entry
 - Format - currently standard or mobile (to specify [mobile content](http://support.google.com/webmasters/bin/answer.py?hl=en&answer=34648))
+- Check 'Enable simple address support' to use the simple address (if used on the page) in the sitemap
 
 ![Add a sitemap](images/SitemapAdd.png?raw=true)
 

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [3.1.5]
 
 - PR #136 EPiServer.Core.PageNotFoundException on parent content. Credits to [adnanzameerx](https://github.com/adnanzameerx).
+- Issue #125/ PR #134 Simple Address Support. Credits to [adnanzameerx](https://github.com/adnanzameerx).
 
 ## [3.1.4]
 
