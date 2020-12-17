@@ -200,6 +200,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
                 Language = ((DropDownList)insertItem.FindControl("ddlLanguage")).SelectedValue,
                 EnableLanguageFallback = ((CheckBox)insertItem.FindControl("cbEnableLanguageFallback")).Checked,
                 IncludeAlternateLanguagePages = ((CheckBox)insertItem.FindControl("cbIncludeAlternateLanguagePages")).Checked,
+                EnableSimpleAddressSupport = ((CheckBox)insertItem.FindControl("cbEnableSimpleAddressSupport")).Checked,
                 PathsToAvoid = GetDirectoryList(insertItem, "txtDirectoriesToAvoid"),
                 PathsToInclude = GetDirectoryList(insertItem, "txtDirectoriesToInclude"),
                 IncludeDebugInfo = ((CheckBox)insertItem.FindControl("cbIncludeDebugInfo")).Checked,
@@ -306,6 +307,7 @@ namespace Geta.SEO.Sitemaps.Modules.Geta.SEO.Sitemaps
             sitemapData.Language = ((DropDownList)item.FindControl("ddlLanguage")).SelectedValue;
             sitemapData.EnableLanguageFallback = ((CheckBox)item.FindControl("cbEnableLanguageFallback")).Checked;
             sitemapData.IncludeAlternateLanguagePages = ((CheckBox) item.FindControl("cbIncludeAlternateLanguagePages")).Checked;
+            sitemapData.EnableSimpleAddressSupport = ((CheckBox)item.FindControl("cbEnableSimpleAddressSupport")).Checked;
             sitemapData.PathsToAvoid = GetDirectoryList(item, "txtDirectoriesToAvoid");
             sitemapData.PathsToInclude = GetDirectoryList(item, "txtDirectoriesToInclude");
             sitemapData.IncludeDebugInfo = ((CheckBox)item.FindControl("cbIncludeDebugInfo")).Checked;
