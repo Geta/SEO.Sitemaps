@@ -81,15 +81,6 @@
         OutputFileName="$(OutDir)\Geta.SEO.Sitemaps.zip"
         OverwriteExistingFile="true" />
 
-      <!-- Create the package -->
-      <PropertyGroup>
-        <NugetCommand>
-          "$(NuGetExe)" pack "$(NuspecFile)" -OutputDirectory "$(OutDir.TrimEnd('\\'))" -Version "$(Version)" -Properties Configuration=$(Configuration)
-        </NugetCommand>
-
-      </PropertyGroup>
-      <Exec Command="$(NugetCommand)"/>
-
       <!-- Cleanup -->
       <RemoveDir Directories="$(TmpOutDir)" />
     </Target>
