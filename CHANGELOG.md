@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.1]
+
+- Issue #146 - exception handling when something is wrong with the product content
+
 ## [4.0.0]
 
 - PR #136 EPiServer.Core.PageNotFoundException on parent content. Credits to [adnanzameerx](https://github.com/adnanzameerx).
