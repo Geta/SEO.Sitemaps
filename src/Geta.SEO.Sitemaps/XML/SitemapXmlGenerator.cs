@@ -608,9 +608,9 @@ namespace Geta.SEO.Sitemaps.XML
                 content = (T)local;
                 return status;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Error on contentReference " + contentLink.ID + Environment.NewLine + e);
+                Log.Error($"Error TryGet for {nameof(contentLink)}: {contentLink?.ID}", ex);
             }
 
             return false;
@@ -625,9 +625,9 @@ namespace Geta.SEO.Sitemaps.XML
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Error getting language branches for contentReference " + contentLink + Environment.NewLine + e);
+                Log.Error($"Error TryGetLanguageBranches for {nameof(contentLink)}: {contentLink?.ID}", ex);
             }
             return false;
         }
