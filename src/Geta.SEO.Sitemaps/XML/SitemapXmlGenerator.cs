@@ -239,7 +239,11 @@ namespace Geta.SEO.Sitemaps.XML
                 return GetFallbackLanguageBranches(contentLink);
             }
 
-            return this.ContentRepository.GetLanguageBranches<IContent>(contentLink).Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
+            if (TryGetLanguageBranches<IContent>(contentLink, out var contentLanguages))
+            {
+                return contentLanguages.Select(x => new CurrentLanguageContent { Content = x, CurrentLanguage = GetCurrentLanguage(x), MasterLanguage = GetMasterLanguage(x) });
+            }
+            return Enumerable.Empty<CurrentLanguageContent>();
         }
 
         protected virtual IEnumerable<CurrentLanguageContent> GetFallbackLanguageBranches(ContentReference contentLink)
@@ -604,11 +608,27 @@ namespace Geta.SEO.Sitemaps.XML
                 content = (T)local;
                 return status;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Error on contentReference " + contentLink.ID + Environment.NewLine + e);
+                Log.Error($"Error TryGet for {nameof(contentLink)}: {contentLink?.ID}", ex);
             }
 
+            return false;
+        }
+
+        protected bool TryGetLanguageBranches<T>(ContentReference contentLink, out IEnumerable<T> content) where T : IContentData
+        {
+            content = Enumerable.Empty<T>();
+            try
+            {
+                content = this.ContentRepository.GetLanguageBranches<T>(contentLink);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error TryGetLanguageBranches for {nameof(contentLink)}: {contentLink?.ID}", ex);
+            }
             return false;
         }
     }
