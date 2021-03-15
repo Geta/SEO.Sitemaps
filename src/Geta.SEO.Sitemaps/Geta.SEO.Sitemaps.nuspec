@@ -11,6 +11,7 @@
     <tags>Sitemap SEO EPiServer EPiServerModulePackage ThirdPartyAddOn</tags>
     <projectUrl>https://github.com/Geta/SEO.Sitemaps/</projectUrl>
     <iconUrl>http://cdn.geta.no/opensource/icons/geta-sitemaps-icon.png</iconUrl>
+    <repository type="git" url="URL" branch="BRANCH_NAME" commit="COMMIT" />
   </metadata>
   <files>
     <file src="bin\Geta.SEO.Sitemaps.dll" target="lib\net45\" />
